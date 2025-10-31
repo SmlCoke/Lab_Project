@@ -162,8 +162,6 @@ for M = Mlist
     a = 1;
     [H, w] = freqz(b, a, 2048, 'whole');   % 0..2π
 
-    % 延迟互补（频域精确表达）
-    % G = exp(-1j * w * (M-1)/2) - H;
     [G, ww] = freqz(b_g, a, 2048, 'whole');
 
     figure('Name', sprintf('4-39_M=%d', M), 'NumberTitle','off');

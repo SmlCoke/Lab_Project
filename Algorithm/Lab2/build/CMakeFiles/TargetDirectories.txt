@@ -1,3 +1,0 @@
-/home/runner/work/Lab_Project/Lab_Project/Algorithm/Lab2/build/CMakeFiles/Lab2.dir
-/home/runner/work/Lab_Project/Lab_Project/Algorithm/Lab2/build/CMakeFiles/edit_cache.dir
-/home/runner/work/Lab_Project/Lab_Project/Algorithm/Lab2/build/CMakeFiles/rebuild_cache.dir

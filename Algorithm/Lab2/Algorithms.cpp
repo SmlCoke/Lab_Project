@@ -30,7 +30,7 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp(const std::vector<s
     // 键值对一次存放：需要访问的结点(必定包含0), 当前结点编号(0~29), 遍历一遍回到0的路径权重
     std::unordered_map<state, uint16_t, statehash> dp_solved;
     std::unordered_map<state, uint16_t, statehash> dp_curr;
-    std::unordered_map<state, uint8_t, statehash> child; // 记录当前状态的最优后继结点
+\
     // 从结点0开始，遍历结点集合{0}并回到结点0的路径长度为0
     dp_solved[{1,0}] = 0;
     dp_curr[{1,0}] = 0;
@@ -52,8 +52,7 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp(const std::vector<s
                 uint32_t solved_index = mask_index ^ (1 << node_index); // 在当前集合序列中删除该结点
 
                 uint16_t best_length = std::numeric_limits<uint16_t>::max();
-                uint8_t best_node_j = 0; // 当前状态的最优后继结点
-
+                
                 // 遍历新的集合序列中的结点，寻找下一个访问的结点是多少时，能够使得当前dp[mask_index][node_index]最小
                 for (uint8_t node_j = 0; node_j < node_nums; node_j++)
                 {
@@ -72,7 +71,6 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp(const std::vector<s
                         if (candidate < best_length)
                         {
                             best_length = candidate;
-                            best_node_j = node_j;
                         }
                     }
 
@@ -113,17 +111,6 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp(const std::vector<s
             best_first_node_index = node_index;
         }
     }
-
-    // 根据child map回溯最优路径
-    // std::vector<uint8_t> best_path;
-    // uint8_t current_node = best_first_node_index;
-    // uint32_t current_mask = full_index;
-    // while (current_mask > 0)
-    // {
-    //     best_path.push_back(current_node);
-    //     current_node = child[{current_mask, current_node}];
-    //     current_mask = current_mask ^ (1 << current_node); // 将结点current_node注销
-    // }
 
     return {{0,0}, best_length};
 

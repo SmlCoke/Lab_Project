@@ -222,3 +222,98 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast(const std::vec
     return {best_path, best_length};
 
 }
+
+// 帮助函数：计算给定状态(mask, curr)的DP值，按需计算
+uint16_t compute_dp_val(uint32_t mask, uint8_t curr, const std::vector<std::vector<uint16_t>>& adj,
+                        std::unordered_map<state, uint16_t, statehash>& memo)
+{
+    // 检查是否已计算
+    auto it = memo.find({mask, curr});
+    if (it != memo.end()) {
+        return it->second;
+    }
+    
+    // 基础情况
+    if (mask == 1 && curr == 0) {
+        return 0;
+    }
+    
+    // 计算
+    uint32_t prev_mask = mask ^ (1u << curr);
+    uint16_t best = std::numeric_limits<uint16_t>::max() / 2;
+    
+    for (uint8_t j = 0; j < adj.size(); j++) {
+        if (!(prev_mask & (1u << j))) continue;
+        
+        uint16_t prev_val = compute_dp_val(prev_mask, j, adj, memo);
+        uint16_t candidate = prev_val + adj[curr][j];
+        if (candidate < best) {
+            best = candidate;
+        }
+    }
+    
+    memo[{mask, curr}] = best;
+    return best;
+}
+
+std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast_pro(const std::vector<std::vector<uint16_t>> & adj, bool verbose)
+{
+    uint8_t node_nums = adj.size();
+    uint32_t full_mask = (1 << node_nums) - 1;
+
+    const uint16_t INF = std::numeric_limits<uint16_t>::max() / 2;
+
+    // 使用记忆化递归，只计算需要的状态
+    std::unordered_map<state, uint16_t, statehash> memo;
+    memo[{1, 0}] = 0;
+    
+    // 查找最优解
+    uint16_t best_length = INF;
+    uint8_t best_first_node = 0;
+    
+    for (uint8_t node_index = 1; node_index < node_nums; node_index++)
+    {
+        uint16_t val = compute_dp_val(full_mask, node_index, adj, memo);
+        if (val + adj[0][node_index] < best_length)
+        {
+            best_length = val + adj[0][node_index];
+            best_first_node = node_index;
+        }
+    }
+
+    // 重建路径：从终点回溯，每次找最优前驱
+    std::vector<uint8_t> best_path;
+    best_path.reserve(node_nums + 1);
+    best_path.push_back(0);
+    best_path.push_back(best_first_node);
+    
+    uint8_t current_node = best_first_node;
+    uint32_t mask = full_mask;
+    
+    while (mask != 1) {
+        uint32_t prev_mask = mask ^ (1u << current_node);
+        uint16_t current_val = compute_dp_val(mask, current_node, adj, memo);
+        
+        // 找最优前驱
+        uint8_t next_node = 255;
+        for (uint8_t j = 0; j < node_nums; j++) {
+            if (!(prev_mask & (1u << j))) continue;
+            
+            uint16_t prev_val = compute_dp_val(prev_mask, j, adj, memo);
+            if (prev_val + adj[current_node][j] == current_val) {
+                next_node = j;
+                break;
+            }
+        }
+        
+        if (next_node == 255) {
+            std::__throw_runtime_error("Error: Cannot find next node in path reconstruction!");
+        }
+        
+        mask = prev_mask;
+        current_node = next_node;
+        best_path.push_back(current_node);
+    }
+
+    return {best_path, best_length};
+}

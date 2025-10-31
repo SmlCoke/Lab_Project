@@ -8,6 +8,7 @@
 
 std::vector<std::vector<std::uint16_t>> load_data(const std::string & dataset, const bool & verbose) {
     // 打开文件
+    std::cout << "input file path: " << dataset.c_str() << std::endl;
     std::ifstream infile(dataset);
     if (!infile.is_open()) {
         std::__throw_runtime_error("Error: cannot load in dataset");

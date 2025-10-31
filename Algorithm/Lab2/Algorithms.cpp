@@ -214,110 +214,24 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast(const std::vec
         }
     }
 
-    // 根据child map回溯最优路径
-    std::vector<uint8_t> best_path;
-    best_path.push_back(0);
-    uint8_t current_node = best_first_node_index;
-    uint32_t current_mask = full_index;
-
-    while (current_mask > 0)
-    {
-        best_path.push_back(current_node);
-        current_node = next_node[current_mask][current_node];
-        current_mask ^= (1 << current_node); // 将结点current_node注销
-
-    }
-
-    return {best_path, best_length};
-
-}
-
-std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_with_path(const std::vector<std::vector<uint16_t>> &adj, bool verbose)
-{
-    uint8_t node_nums = adj.size();
-    uint32_t mask_nums = 1u << node_nums;
-    const uint16_t INF = std::numeric_limits<uint16_t>::max() / 2;
-
-    // dp[mask][i] = 从当前在i结点，访问mask中所有结点再回到0的最短路径长度
-    std::vector<std::vector<uint16_t>> dp(mask_nums, std::vector<uint16_t>(node_nums, INF));
-    // next_node[mask][i] = 从(i, mask)状态出发的最优下一节点
-    std::vector<std::vector<uint8_t>> next_node(mask_nums, std::vector<uint8_t>(node_nums, 255));
-
-    // 初始状态：从0出发，mask={0}
-    dp[1][0] = 0;
-
-    // 按集合大小递增遍历
-    for (uint8_t node_num = 2; node_num <= node_nums; ++node_num)
-    {
-        for (uint32_t mask = 1; mask < mask_nums; mask += 2)
-        {
-            if (std::popcount(mask) != node_num) continue;
-
-            for (uint8_t curr = 1; curr < node_nums; ++curr)
-            {
-                if (!(mask & (1 << curr))) continue; // 当前结点不在mask中
-
-                uint32_t prev_mask = mask ^ (1 << curr); // 去掉当前结点
-                uint16_t best_len = INF;
-                uint8_t best_next = 255;
-
-                // 枚举下一个结点
-                for (uint8_t nxt = 0; nxt < node_nums; ++nxt)
-                {
-                    if (nxt == curr) continue;  // 删除不可能情况
-                    if (nxt == 0 && node_num != 2) continue; // 避免提前回0
-                    if (!(prev_mask & (1 << nxt))) continue; // 结点不在待访问结点集合中
-
-                    uint16_t cand = dp[prev_mask][nxt] + adj[curr][nxt];
-                    if (cand < best_len)
-                    {
-                        best_len = cand;
-                        best_next = nxt;
-                    }
-                }
-
-                if (best_len < INF)
-                {
-                    dp[mask][curr] = best_len;
-                    next_node[mask][curr] = best_next;
-                }
-            }
-        }
-    }
-
-    // 计算最终回到0的最短路径
-    uint16_t best_length = INF;
-    uint8_t best_first_node = 255;
-    uint32_t full_mask = (1u << node_nums) - 1;
-
-    for (uint8_t last = 1; last < node_nums; ++last)
-    {
-        uint16_t cand = dp[full_mask][last] + adj[0][last];
-        if (cand < best_length)
-        {
-            best_length = cand;
-            best_first_node = last;
-        }
-    }
-
-    // 回溯最优路径
+    // 根据 next_node 回溯最优路径（修复）
     std::vector<uint8_t> best_path;
     best_path.reserve(node_nums + 1);
     best_path.push_back(0); // 起点
+    uint8_t current_node = best_first_node_index;
+    uint32_t mask = full_index;
+    best_path.push_back(current_node);
 
-    uint8_t curr = best_first_node;
-    uint32_t mask = full_mask;
-    best_path.push_back(curr);
-
-    while (mask != 1) // mask==1 说明只剩0
-    {
-        uint8_t nxt = next_node[mask][curr];
-        mask ^= (1 << curr);
-        curr = nxt;
-        best_path.push_back(curr);
+    while (mask != 1) { // 只剩下起点0时停止
+        uint8_t next = next_node[mask][current_node];
+        if (next == 255) {
+            std::__throw_runtime_error("Error: invalid next_node (255) during path reconstruction.");
+        }
+        mask ^= (1u << current_node); // 注销当前结点
+        current_node = next;
+        best_path.push_back(current_node);
     }
 
-
-
     return {best_path, best_length};
+
 }

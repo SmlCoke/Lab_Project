@@ -1,3 +1,0 @@
-D:\MSYS\msys64\mingw64\bin\cmake.exe -E rm -f CMakeFiles\Lab2.dir/objects.a
-D:\MSYS\msys64\mingw64\bin\ar.exe qc CMakeFiles\Lab2.dir/objects.a @CMakeFiles\Lab2.dir\objects1.rsp
-D:\MSYS\msys64\mingw64\bin\clang++.exe -g -Wl,--whole-archive CMakeFiles\Lab2.dir/objects.a -Wl,--no-whole-archive -o Lab2.exe -Wl,--out-implib,libLab2.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Lab2.dir\linkLibs.rsp

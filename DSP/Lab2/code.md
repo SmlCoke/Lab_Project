@@ -21,6 +21,8 @@ for i = 1:size(seqs,1)
     plot(w, abs(X)); 
     grid on; 
     xlim([0 2*pi]);
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
     xlabel('\omega'); 
     ylabel('|X(e^{j\omega})|');
     title([label ' 幅度']);
@@ -30,6 +32,8 @@ for i = 1:size(seqs,1)
     plot(w, unwrap(angle(X)));   % unwrap 去除 2π 跳变，使相位连续
     grid on; 
     xlim([0 2*pi]);
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
     xlabel('\omega'); 
     ylabel('\angle X(e^{j\omega})'); 
     title([label ' 相位']);
@@ -41,9 +45,10 @@ end
 
 ### 3-34
 ```matlab
-%% 3-34 周期序列的 DFS 与傅里叶变换(冲激谱)
-% 说明：DFS 系数 X[k] = (1/N) * DFT{x[0..N-1]}。
-% 周期序列的 DTFT 为在 ω_k=2πk/N 处的冲激，权重 2π X[k]。
+%% 3-34 周期序列的 DFS 与 DTFT
+% 周期序列在一个周期内的 DFT 就是该周期序列的 DFS
+% 周期序列的 DTFT 为在 ω_k=2πk/N 处的"冲激"，权重 2π X[k]。
+% 与非周期离散时间信号的DTFT谱不同，周期离散时间信号的谱是冲激谱，需要用stem作图
 clear; clc; close all;
 cases = {
     20, @(n) cos(0.8*pi*n) + cos(0.1*pi*n), '3-34(a) N=20';
@@ -82,6 +87,8 @@ for i = 1:size(cases,1)
     stem(wk, 2*pi/N*abs(Xk), 'filled'); 
     grid on; 
     xlim([0 2*pi]);
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
     xlabel('\omega'); 
     title('|X(e^{j\omega})|');
 
@@ -90,10 +97,11 @@ for i = 1:size(cases,1)
     stem(wk, angle(Xk), 'filled'); 
     grid on; 
     xlim([0 2*pi]);
-    xlabel('\omeg a'); 
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
+    xlabel('\omega'); 
     title('\angle X(e^{j\omega})');
 end
-
 ```
 ---
 
@@ -111,57 +119,73 @@ a = 1;   % 分母系数
 figure('Name','4-38 回声系统', 'NumberTitle','off');
 t = tiledlayout(2,2, 'Padding','compact','TileSpacing','compact');
 
+% 零极点图
 nexttile; 
 zplane(b,a);   % zplane函数求解零极点图
 grid on; 
 title('零极点图');
 
+% 幅度响应
 nexttile; 
 plot(w, abs(H)); 
-grid on; xlim([0 2*pi]);
-xlabel('\omega');  
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+ylabel('|H(e^{j\omega})|')
 title('幅度响应');
 
+% 相位响应
 nexttile; 
 plot(w, unwrap(angle(H))); 
 grid on; 
 xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
 xlabel('\omega'); 
+ylabel('\angle H(e^{j\omega})')
 title('相位响应');
 
+% 群延迟
 nexttile; 
 plot(wg, gd); 
 grid on; 
 xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
 xlabel('\omega'); 
-ylabel('样点'); 
+ylabel('grd [H(e^{j\omega})]'); 
 title('群延迟');
-
 ```
 
 ---
 
 ### 4-39
 ```matlab
-% filepath: d:\MATLABap\Application\DSP\chap_solutions.m
-%% 全局设置
-clear; clc; close all;
-
 %% 4-39 滑动平均系统与其延迟互补系统
 % h_M[n] = (1/M) * rect_M[n]
-% g_M[n] = sinc(n-(M-1)/2) - h_M[n]（当 M 为奇数时 g_M 等价于 δ[n-(M-1)/2]-h_M[n]，为 FIR）
+% g_M[n] = sinc(n-(M-1)/2) - h_M[n]
+clear; clc; close all;
+
 Mlist = 2:5;
 
 for M = Mlist
+    disp("--------------------------------------");
+    fprintf("M=%d\n", M);
     b = ones(1, M) / M;     % 滑动平均 FIR 系数
     seq = 0 : (M-1);
-    disp('seq')
-    disp(seq - (M-1)/2)
     b_g = sinc(seq - (M-1)/2) - b;
-    disp(b_g)
+    disp("hm序列：");
+    disp(b);
+    disp("gm序列：");
+    disp(b_g);
     a = 1;
+
+    % 滑动平均系统
     [H, w] = freqz(b, a, 2048, 'whole');   % 0..2π
 
+    % 延迟互补系统
     [G, ww] = freqz(b_g, a, 2048, 'whole');
 
     figure('Name', sprintf('4-39_M=%d', M), 'NumberTitle','off');
@@ -178,7 +202,9 @@ for M = Mlist
     plot(w, abs(H)); 
     grid on; 
     xlim([0 2*pi]);
-    xlabel('\omega'); 
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
+    xlabel('\omega');  
     title('|H_M(e^{j\omega})|');
 
     % h_M 相位
@@ -186,6 +212,8 @@ for M = Mlist
     plot(w, unwrap(angle(H))); 
     grid on; 
     xlim([0 2*pi]);
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
     xlabel('\omega'); 
     title('\angle H_M(e^{j\omega})');
 
@@ -200,6 +228,8 @@ for M = Mlist
     plot(w, abs(G)); 
     grid on; 
     xlim([0 2*pi]);
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
     xlabel('\omega'); 
     title('|G_M(e^{j\omega})|');
 
@@ -208,8 +238,11 @@ for M = Mlist
     plot(w, unwrap(angle(G))); 
     grid on; 
     xlim([0 2*pi]);
+    xticks(0:0.5*pi:2*pi);
+    xticklabels(string(0:0.5:2) + "\pi");
     xlabel('\omega'); 
     title('\angle G_M(e^{j\omega})');
+
 end
 
 %% 工具函数：归一化 sinc

@@ -1,0 +1,52 @@
+****** HSPICE -- L-2016.03-2 win64 (May  2 2016) ******
+ Input File: task5_N6.sp
+ lic:
+ lic: FLEXlm: v11.2.1
+ lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU
+ lic: HOSTID: "581cf82b6ee8"       PID:      21800
+ lic: Using FLEXlm license file:
+ lic: 27000@LAPTOP-EC5F5EVU
+ lic: Checkout 1 hspice
+ lic: License/Maintenance for hspice will expire on 30-dec-2029/2029.2029
+ lic: 1(in_use)/99(total) FLOATING license(s) on SERVER 27000@LAPTOP-EC5F5EVU
+ lic:
+ init: begin read circuit files,  cpu clock=  7.40E-02
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TLINE\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TI\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\SIGNET\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PCI\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\LIN_TECH\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PET\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\DI0\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\COMLINE\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BURR_BRM\
+       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BJT\
+       option runlvl
+       option post =     2.00
+ init: end read circuit files,  cpu clock=  7.50E-02 peak memory=        48 mb
+ init: begin check errors,  cpu clock=  7.50E-02
+ init: end check errors,  cpu clock=  8.70E-02 peak memory=        49 mb
+ init: begin setup matrix, pivot=     0 cpu clock=  8.70E-02
+       establish matrix -- done,  cpu clock=  8.70E-02 peak memory=        49 mb
+       re-order matrix -- done,  cpu clock=  8.70E-02 peak memory=        49 mb
+ init: end setup matrix,  cpu clock=  8.80E-02 peak memory=        49 mb
+ dcop: begin dcop,  cpu clock=  8.80E-02
+ dcop: end dcop,  cpu clock=  9.00E-02 peak memory=        49 mb  tot_iter=       3
+ output: task5_N6.mt0
+ sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  9.00E-02
+ tran: time= 1.0087E-09 tot_iter=     379 conv_iter=      93 cpu clock= 1.07E-01
+ tran: time= 2.0000E-09 tot_iter=     747 conv_iter=     187 cpu clock= 1.21E-01
+ tran: time= 3.0027E-09 tot_iter=    1224 conv_iter=     295 cpu clock= 1.39E-01
+ tran: time= 4.0250E-09 tot_iter=    1591 conv_iter=     383 cpu clock= 1.54E-01
+ tran: time= 5.0188E-09 tot_iter=    2086 conv_iter=     500 cpu clock= 1.75E-01
+ tran: time= 6.0000E-09 tot_iter=    2438 conv_iter=     587 cpu clock= 1.89E-01
+ tran: time= 7.0342E-09 tot_iter=    2951 conv_iter=     706 cpu clock= 2.08E-01
+ tran: time= 8.0250E-09 tot_iter=    3310 conv_iter=     794 cpu clock= 2.24E-01
+ tran: time= 9.0588E-09 tot_iter=    3819 conv_iter=     912 cpu clock= 2.43E-01
+ tran: time= 1.0000E-08 tot_iter=    4170 conv_iter=     996 cpu clock= 2.57E-01
+ sweep: tran tran0    end,  cpu clock=  2.57E-01 peak memory=        49 mb
+>info:         ***** hspice job concluded
+ lic: Release hspice token(s)

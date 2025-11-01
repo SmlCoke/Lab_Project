@@ -1,0 +1,22 @@
+* "simulator" "HSPICE" 
+* "version" "L-2016.03-2 win64"
+* "format" "HSP"
+* "rundate" "14:02:50 10/23/2025 "
+* "netlist" "task4.sp "
+* "runtitle" "*****************************************************"
+* time =    0.            
+* temperature =   25.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc=   1.0000p       
+.nodeset
++ in =   0.            
++ inv1_out = 499.9870m       
++ inv2_out =   7.8757u       
++ inv3_out = 499.9870m       
++ inv4_out =   7.8757u       
++ invl_out = 199.0751f       
++ vdd_inv = 500.0000m       
++ vdd_laod = 500.0000m       
++ vdd_load = 999.2879f       
+***   END: Saved Operating Point ***                     

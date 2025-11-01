@@ -374,7 +374,7 @@ The simulation swept 51 voltage points from 0.5V to 1.5V. For example, several o
 \caption{Selected EDP measurements at different supply voltages}
 \end{table}
 
-The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.904×10$^{-26} W \cdot s^2$}.
+The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.904×10$^{-26} W \cdot s^2$} with $t_{p\_total}$ = \textbf{38.60 ps} and power = \textbf{-26.20 $\mu W$}.
 
 \begin{figure}[htbp]
     \centering
@@ -412,12 +412,12 @@ The voltage scaling results demonstrate fundamental trade-offs in digital circui
 \begin{itemize}
     \item[1.] \textbf{Delay characteristics}: As shown in Figure \ref{fig:task4_delay}, delay increases exponentially as supply voltage decreases to threshold. At 0.5V, the circuit operates near the threshold voltage region where transistor drive current is severely degraded.
     
-    \item[2.] \textbf{Power characteristics}: Figure \ref{fig:task4_power} shows that power consumption decreases quadratically with supply voltage, following the relationship $P \propto V_{DD}^2$. At 1.0V, power is 69.53 $\mu W$, while at 0.58V it drops to 18.12 $\mu W$ (a 74\% reduction).
+    \item[2.] \textbf{Power characteristics}: Figure \ref{fig:task4_power} shows that power consumption decreases quadratically with supply voltage, following the relationship $P \propto V_{DD}^2$. At 1.0V, power is approximately 101 $\mu W$, while at 0.56V it drops to 26.20 $\mu W$ (a 74\% reduction).
     
-    \item[3.] \textbf{EDP optimization}: Figure \ref{fig:task4_edp} reveals a minimum at 0.58V. This represents the optimal balance between:
+    \item[3.] \textbf{EDP optimization}: Figure \ref{fig:task4_edp} reveals a minimum at 0.56V. This represents the optimal balance between:
     \begin{itemize}
-        \item Speed: Still reasonable at 34.37 ps ( 49\% slower than at 1.0V)
-        \item Energy efficiency: Power reduced by 74\% compared to nominal voltage
+        \item Speed: Still reasonable at 38.60 ps
+        \item Energy efficiency: Power of 26.20 $\mu W$, providing excellent energy-delay trade-off
     \end{itemize}
     
 \end{itemize}
@@ -466,22 +466,21 @@ The simulation results for stage numbers from 1 to 10 are summarized:
 \toprule
 \textbf{N (Stages)} & \textbf{$t_{p\_total}$ (ps)} & \textbf{Optimal f} \\
 \midrule
-1 & 208.8 & 256.00 \\
-2 & 46.43 & 16.00 \\
-3 & 31.96 & 6.35 \\
-4 & 29.63 & 4.00 \\
-5 & 29.12 & 3.03 \\
-6 & 30.34 & 2.52 \\
-7 & 31.82 & 2.20 \\
-8 & 33.02 & 1.97 \\
-9 & 34.87 & 1.81 \\
-10 & 36.95 & 1.68 \\
+1 & 209.3 & 256.00 \\
+2 & 45.86 & 16.00 \\
+3 & 31.67 & 6.35 \\
+4 & 29.17 & 4.00 \\
+5 & 29.17 & 3.03 \\
+6 & 30.06 & 2.52 \\
+7 & 31.55 & 2.20 \\
+8 & 33.31 & 1.97 \\
+9 & 35.29 & 1.81 \\
 \bottomrule
 \end{tabular}
 \caption{Total delay vs. number of stages}
 \end{table}
 
-The \textbf{optimal configuration is N = 5 stages} with a minimum total delay of \textbf{29.12 ps}.
+The \textbf{optimal configuration is N = 4 or N = 5 stages} (both achieve the same delay) with a minimum total delay of \textbf{29.17 ps}.
 
 \begin{figure}[h]
 \centering
@@ -495,24 +494,24 @@ The \textbf{optimal configuration is N = 5 stages} with a minimum total delay of
 The results validate theoretical predictions and reveal practical design insights:
 
 \begin{itemize}
-    \item[1. ] \textbf{Optimal stage number}: The experimental optimum of N = 5 closely matches the theoretical prediction of $N \approx 4.32$ stages. This confirms that the optimal sizing factor should be near $f \approx 3.6$. At N = 5, $f = 256^{1/5} = 3.03$, which is reasonably close to 3.6.
+    \item[1. ] \textbf{Optimal stage number}: The experimental results show that both N = 4 and N = 5 achieve the minimum delay of 29.17 ps. This closely matches the theoretical prediction of $N \approx 4.32$ stages, suggesting the optimal point lies between 4 and 5 stages. At N = 4, $f = 256^{1/4} = 4.00$, and at N = 5, $f = 256^{1/5} = 3.03$. The theoretical optimal sizing factor is near $f \approx 3.6$, which indeed falls between these two values.
 
-    \item[2. ] \textbf{Delay vs. stages curve}: Figure \ref{fig:task5_delay} shows a minimum at N = 5:
+    \item[2. ] \textbf{Delay vs. stages curve}: Figure \ref{fig:task5_delay} shows a minimum at N = 4 and N = 5:
     \begin{itemize}
-        \item N < 5: Too few stages means each stage must provide large gain, resulting in excessive delay per stage
+        \item N < 4: Too few stages means each stage must provide large gain, resulting in excessive delay per stage
         \item N > 5: Too many stages accumulate delay despite each being individually fast
-        \item N = 5: Optimal balance between stage count and individual stage delay
+        \item N = 4 or N = 5: Optimal balance between stage count and individual stage delay
     \end{itemize}
     
-    \item[3. ] \textbf{Single stage penalty}: Using just 1 stage (N=1) results in 208.8 ps delay - over 7× slower than the optimum. This dramatic penalty demonstrates why direct drive of large loads is impractical.
+    \item[3. ] \textbf{Single stage penalty}: Using just 1 stage (N=1) results in 209.3 ps delay - over 7× slower than the optimum. This dramatic penalty demonstrates why direct drive of large loads is impractical.
     
-    \item[4. ] \textbf{Diminishing returns}: The delay reduction from N=4 to N=5 is 0.51 ps (1.7\% improvement), while further increasing stages degrades performance. This suggests the optimization landscape is relatively flat near the optimum, which provides design flexibility.
+    \item[4. ] \textbf{Flat optimum}: Both N=4 and N=5 achieve the same delay of 29.17 ps, demonstrating that the optimization landscape is relatively flat near the optimum. This provides design flexibility - either 4 or 5 stages can be chosen based on other constraints such as area or power.
     
     \item[5. ] \textbf{Comparison with Task 2}: 
     \begin{itemize}
-        \item Task 2 (fixed 4 stages): Best delay = 37.32 ps
-        \item Task 5 (optimized 5 stages): Delay = 29.12 ps
-        \item Improvement: 22\% faster by adding one stage and optimizing sizing
+        \item Task 2 (fixed 4 stages with non-uniform sizing): Best delay = 37.32 ps
+        \item Task 5 (optimized 4 stages with uniform scaling): Delay = 29.17 ps
+        \item Improvement: 22\% faster with optimal uniform sizing factor $f = 4.00$
     \end{itemize}
 
 
@@ -533,9 +532,9 @@ This laboratory investigation of CMOS inverter chains using 16nm FinFET technolo
 
     \item \textbf{Theoretical vs. Practical Optimization}: While classical theory predicts uniform 4× scaling for optimal delay, experimental results show that $f_2=5, f_3=15, f_4=60$ provides superior performance. This deviation highlights the importance of parasitic effects, non-ideal scaling, and technology-specific characteristics that simple analytical models may overlook.
     
-    \item \textbf{Voltage Scaling for Energy Efficiency}: The EDP analysis revealed that operating at 0.58V (27\% below nominal) achieves optimal energy efficiency. This represents a 74\% power reduction with only 49\% delay penalty, making it highly attractive for energy-constrained applications.
+    \item \textbf{Voltage Scaling for Energy Efficiency}: The EDP analysis revealed that operating at 0.56V (25\% below nominal 0.75V) achieves optimal energy efficiency. This represents approximately 74\% power reduction compared to higher voltages, making it highly attractive for energy-constrained applications.
     
-    \item \textbf{Architectural Optimization}: Allowing variable stage count (Task 5) achieved 22\% better performance compared to fixed 4-stage design (Task 2). The optimal $N=5$ stages with $f \approx 3.03$ validates theoretical predictions based on $f = 3.6$.
+    \item \textbf{Architectural Optimization}: Allowing variable stage count with uniform sizing (Task 5) achieved 22\% better performance compared to the manually-tuned 4-stage design in Task 2. Both $N=4$ stages with $f = 4.00$ and $N=5$ stages with $f \approx 3.03$ achieve optimal performance, validating theoretical predictions that suggest an optimal sizing factor near $f \approx 3.6$.
 \end{enumerate}
 
 \subsection{Conclusions}

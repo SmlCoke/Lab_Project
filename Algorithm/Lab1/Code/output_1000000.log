@@ -1,0 +1,19 @@
+Brute_force_search_pro:
+Consumes: 401569689500 ns (401570 ms)
+The integer that appears the most times is : 28384
+and its number of occurrences: 30
+
+Merge_sort_search:
+Consumes: 388759900 ns (388.76 ms)
+The integer that appears the most times is : 28384
+and its number of occurrences: 30
+
+Divide_and_conquer_search:
+Consumes: 1584604100 ns (1584.6 ms)
+The integer that appears the most times is : 28384
+and its number of occurrences: 30
+
+hash_search:
+Consumes: 3135200 ns (3.1352 ms)
+The integer that appears the most times is : 28384
+and its number of occurrences: 30

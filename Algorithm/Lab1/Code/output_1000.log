@@ -1,0 +1,19 @@
+Brute_force_search_pro:
+Consumes: 566900 ns (0.5669 ms)
+The integer that appears the most times is : 9
+and its number of occurrences: 18
+
+Merge_sort_search:
+Consumes: 207700 ns (0.2077 ms)
+The integer that appears the most times is : 9
+and its number of occurrences: 18
+
+Divide_and_conquer_search:
+Consumes: 1036300 ns (1.0363 ms)
+The integer that appears the most times is : 9
+and its number of occurrences: 18
+
+hash_search:
+Consumes: 12400 ns (0.0124 ms)
+The integer that appears the most times is : 9
+and its number of occurrences: 18

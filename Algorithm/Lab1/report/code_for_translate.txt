@@ -1,0 +1,125 @@
+// Pro3. 分治算法 + unordered_map，合并映射表
+result search_max_counts_with_merge_result(std::vector<uint32_t> & numbers, uint32_t begin, uint32_t end)
+{
+    result res;
+    if (begin > end)
+    {
+        return res;
+        // 返回一个空的频率映射表
+    }
+
+    else if (begin == end)
+    {
+        res.freq_map = new std::unordered_map<uint32_t, uint32_t>;
+        res.nums.push_back(numbers[begin]);
+        res.counts = 1;
+        (*(res.freq_map))[numbers[begin]] = 1;
+        return res;
+    }
+
+    else  // 如果 begin < end 执行正常分治操作
+    {
+        uint32_t mid = (begin + end)/2;
+        result res_Left = search_max_counts_with_merge_result(numbers, begin, mid);
+        result res_Right = search_max_counts_with_merge_result(numbers, mid + 1, end);
+
+        // 将返回得到的两个小映射表合并为一个大映射表
+        // 合并策略：遍历更小的映射表，尽可能避免带来额外开销
+        // 遍历小映射表的复杂度为O(k)，k = n/2, n/4, ..., 在大映射表中查找元素的复杂度为O(1)
+        // 交换一次，确保Left为小映射表
+        if (res_Left.freq_map->size() > res_Right.freq_map->size())
+        {
+            std::swap(res_Left, res_Right);
+        }
+
+        for (auto & freq_pair : *(res_Left.freq_map))
+        {
+            uint32_t current_num =freq_pair.first;
+            uint32_t current_count = freq_pair.second;
+
+            // 在较大的映射表中搜索当前整数
+            auto it = res_Right.freq_map->find(current_num);
+            if (it != res_Right.freq_map->end())
+            {
+                // 如果找到此元素，合并出现次数
+                it->second += current_count;
+
+                // 合并后元素出现次数等于当前最大出现次数，添加进入nums
+                if (it->second == res_Right.counts)
+                {
+                    res_Right.nums.push_back(current_num);
+                }
+
+                // 合并后元素出现次数大于当前最大出现次数，更新
+                if (it->second > res_Right.counts)
+                {
+                    res_Right.nums.clear();
+                    res_Right.nums.shrink_to_fit();
+                    res_Right.nums.push_back(current_num);
+                    res_Right.counts = it->second;
+                }
+            }
+            else
+            {
+                // 如果未找到此元素，添加
+                (*(res_Right.freq_map))[current_num] = current_count;
+
+                // 添加后元素出现次数等于当前最大出现次数，添加进入nums
+                if (current_count == res_Right.counts)
+                {
+                    res_Right.nums.push_back(current_num);
+                }
+
+                // 合并后元素出现次数大于当前最大出现次数，更新
+                if (current_count > res_Right.counts)
+                {
+                    res_Right.nums.clear();
+                    res_Right.nums.shrink_to_fit();
+                    res_Right.nums.push_back(current_num);
+                    res_Right.counts = current_count;
+                }
+            }
+        }
+
+        delete res_Left.freq_map;
+        return res_Right;
+
+    }
+}
+
+// Pro4. 基于哈希表的思想，将实际整数作为数组索引，将出现次数作为数组中的值
+std::pair<std::vector<uint32_t>, uint32_t> search_max_counts_with_hash(std::vector<uint32_t>& numbers)
+{
+    std::pair<std::vector<uint32_t>, uint32_t> result;
+    uint32_t length = numbers.size();
+    uint32_t * map = new uint32_t[length];
+    for (uint32_t i = 0; i < length; i++)
+    {
+        map[i] = 0;
+    }
+    for (auto number : numbers) {
+        map[number]++;
+    }
+
+    std::vector<uint32_t> nums;
+    uint32_t global_count = 0;
+    for (uint32_t i = 0; i < length; i++)
+    {
+        if (map[i] > global_count)
+        {
+            global_count = map[i];
+            nums.clear();
+            nums.push_back(i);
+        }
+        else if (map[i] ==global_count)
+        {
+            nums.push_back(i);
+        }
+    }
+
+    result.first = nums;
+    result.second = global_count;
+
+    return result;
+
+}

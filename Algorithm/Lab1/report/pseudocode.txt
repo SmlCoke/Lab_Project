@@ -1,0 +1,69 @@
+\subsection{先排序后扫描算法的伪代码以及C++代码实现}
+该算法先对数组进行排序，得到排序后的数组，只需要从头到尾遍历一次，遇到相同的元素则将该元素的出现次数加1；如果遇到不同的元素则将当前记录的结果与全局最大值对比并决定是否保留，然后开始下一次记录。
+
+该算法采取的排序方式为归并排序，其伪代码见下方：
+\begin{algorithm}[H]
+	\caption{Merge-Sort}
+	\begin{algorithmic}[1]
+	\Require A list of integers $\text{numbers}$, results, begin, end
+	\Ensure numbers \textbf{itself}
+	\If{begin < end}
+		\State mid $\gets$ (begin + end) / 2
+		\State Merge-Sort(numbers, results, begin, mid)
+		\State Merge-Sort(numbers, results, mid + 1, end)
+		\State Merge(numbers, results, begin, mid, end)
+	\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+归并排序的合并函数见下方，一切排序的操作均在这个函数完成：
+\begin{algorithm}[H]
+	\caption{Merge}
+	\begin{algorithmic}[1]
+	\Require A list of integers $\text{numbers}$, results, begin, mid, end
+	\Ensure numbers \textbf{itself} and results after sorting
+	\State L\_index $\gets$ begin, R\_index $\gets$ mid + 1, index $\gets$ begin
+	\While{L\_index <= mid and R\_index <= end}
+		\If{numbers[L\_index] <= numbers[R\_index]}
+			\State results[index] $\gets$ numbers[L\_index]
+			\State index $\gets$ index + 1, L\_index $\gets$ L\_index + 1
+		\EndIf
+		\If{numbers[L\_index] > numbers[R\_index]}
+			\State results[index] $\gets$ numbers[R\_index]
+			\State index $\gets$ index + 1, R\_index $\gets$ R\_index + 1
+		\EndIf
+	\EndWhile
+	\While{R\_index <= end} 
+		\State results[index++] = numbers[R\_index++]
+	\EndWhile
+	\While{L\_index <= end} 
+		\State results[index++] = numbers[L\_index++]
+	\EndWhile
+	\For{i $\gets$ begin to end}
+		\State numbers[i] = results[i]
+	\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+最后扫描排序好的数组并记录出现次数最多的整数以及出现次数的函数的伪代码见下方：
+\begin{algorithm}[H]
+	\caption{Merge}
+	\begin{algorithmic}[1]
+	\Require A list of integers $\text{numbers}$
+	\Ensure majority, counts
+	\State current\_num = numbers[0]
+	\For{num:numbers}
+		\If{num==current\_num}
+			\State current\_count $\gets$ current\_count + 1
+		\Else
+			\If{current\_count > global\_count}
+			\State majority $\gets \emptyset$, global\_count $\gets$ current\_count
+			\Else
+			\State majority = majority $\cup$ \{current\_num\}
+			\EndIf
+			\State current\_num $\gets$ num, current\_count $\gets$ 1
+		\EndIf
+	\EndFor
+	\Return majority, global\_count
+\end{algorithmic}
+\end{algorithm}

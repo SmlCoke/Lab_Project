@@ -11,7 +11,7 @@ if __name__ == "__main__":
     dir_path = args.dir_path
 
     safe = [".png", ".jpg", ".md", ".tex", ".pdf",
-            ".sp", ".py"]
+            ".sp", ".py", ".cpp", ".h", ".txt", ".log", ".svg"]
 
     for root, dirs, files in os.walk(dir_path):
             for filename in files:

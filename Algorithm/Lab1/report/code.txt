@@ -1,0 +1,78 @@
+// 归并排序函数
+void merge_sort(std::vector<uint32_t> & numbers, std::vector<uint32_t> & results, uint32_t begin, uint32_t end)
+{
+    if (begin < end)
+    {
+        uint32_t middle = (begin + end)/2;
+        merge_sort(numbers, results, begin, middle);
+        merge_sort(numbers, results, middle + 1, end);
+        merge(numbers, results, begin, middle, end);
+    }
+}
+// 归并排序的合并函数
+void merge(std::vector<uint32_t> & numbers, std::vector<uint32_t> & results, uint32_t begin, uint32_t mid, uint32_t end)
+{
+    uint32_t L_index = begin;
+    uint32_t R_index = mid + 1;
+    uint32_t index = begin;
+
+    while (L_index <= mid && R_index <= end)
+    {
+        if (numbers[L_index] <= numbers[R_index])
+        {
+            results.at(index++) = numbers.at(L_index++); // 左侧元素更小，移入左侧元素
+        }
+        else
+        {
+            results.at(index++) = numbers.at(R_index++); // 右侧元素更小，移入右侧元素
+        }
+    }
+    while (R_index <= end) results.at(index++) = numbers.at(R_index++);
+
+    while (L_index <= mid) results.at(index++) = numbers.at(L_index++);
+
+    // 将排序好的元素按需存回numbers，否则归并时会按照原数组的顺序排序
+    for (uint32_t i = begin; i <= end; i++)
+        numbers[i] = results[i];
+
+}
+
+// 基于有序数组的线性扫描函数，确定有序数组中出现次数最多的函数以及出现次数
+std::pair<std::vector<uint32_t>, uint32_t> search_max_counts(std::vector<uint32_t>& numbers)
+{
+    std::pair<std::vector<uint32_t>, uint32_t> result;
+    std::vector<uint32_t> nums;
+    uint32_t global_count = 0;
+    uint32_t current_count = 0;
+    uint32_t current_num = numbers[0];
+    for (unsigned int number : numbers)
+    {
+
+        if (number == current_num)
+        {
+            current_count++;
+        }
+        else  // 如果当前访问的正整数不等于当前记录的正整数，则代表记录的正整数段访问结束，可以更新全局信息
+        {
+            if (current_count > global_count) // 当前正整数的出现次数已经超过了最大出现次数，更新
+            {
+                global_count = current_count;
+                nums.clear();
+                nums.push_back(current_num);
+            }
+            else if (current_count == global_count) // 当前正整数的出现次数等于最大出现次数，保留
+            {
+                nums.push_back(current_num);
+            }
+
+            current_num = number;
+            current_count = 1;
+        }
+    }
+
+    result.first = nums;
+    result.second = global_count;
+
+    return result;
+
+}

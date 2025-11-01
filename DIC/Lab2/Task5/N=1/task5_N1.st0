@@ -3,14 +3,14 @@
  lic:
  lic: FLEXlm: v11.2.1
  lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU
- lic: HOSTID: "581cf82b6eec"       PID:      23768
+ lic: HOSTID: "e88088ab8cf6"       PID:      5104
  lic: Using FLEXlm license file:
  lic: 27000@LAPTOP-EC5F5EVU
  lic: Checkout 1 hspice
  lic: License/Maintenance for hspice will expire on 30-dec-2029/2029.2029
  lic: 1(in_use)/99(total) FLOATING license(s) on SERVER 27000@LAPTOP-EC5F5EVU
  lic:
- init: begin read circuit files,  cpu clock=  8.50E-02
+ init: begin read circuit files,  cpu clock=  9.30E-02
        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\
        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\
        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\
@@ -27,27 +27,27 @@
        option runlvl
        option post =     2.00
        option runlvl =     6.00
- init: end read circuit files,  cpu clock=  8.70E-02 peak memory=        48 mb
- init: begin check errors,  cpu clock=  8.70E-02
- init: end check errors,  cpu clock=  9.80E-02 peak memory=        49 mb
- init: begin setup matrix, pivot=     0 cpu clock=  9.80E-02
-       establish matrix -- done,  cpu clock=  9.80E-02 peak memory=        49 mb
-       re-order matrix -- done,  cpu clock=  9.80E-02 peak memory=        49 mb
- init: end setup matrix,  cpu clock=  9.90E-02 peak memory=        49 mb
- dcop: begin dcop,  cpu clock=  9.90E-02
- dcop: end dcop,  cpu clock=  1.01E-01 peak memory=        49 mb  tot_iter=       3
+ init: end read circuit files,  cpu clock=  9.50E-02 peak memory=        48 mb
+ init: begin check errors,  cpu clock=  9.50E-02
+ init: end check errors,  cpu clock=  1.06E-01 peak memory=        49 mb
+ init: begin setup matrix, pivot=     0 cpu clock=  1.06E-01
+       establish matrix -- done,  cpu clock=  1.06E-01 peak memory=        49 mb
+       re-order matrix -- done,  cpu clock=  1.06E-01 peak memory=        49 mb
+ init: end setup matrix,  cpu clock=  1.07E-01 peak memory=        49 mb
+ dcop: begin dcop,  cpu clock=  1.07E-01
+ dcop: end dcop,  cpu clock=  1.08E-01 peak memory=        49 mb  tot_iter=       3
  output: task5_N1.mt0
- sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  1.01E-01
- tran: time= 1.0122E-09 tot_iter=     303 conv_iter=     114 cpu clock= 1.05E-01
- tran: time= 2.0000E-09 tot_iter=     739 conv_iter=     265 cpu clock= 1.10E-01
- tran: time= 3.0019E-09 tot_iter=    1211 conv_iter=     438 cpu clock= 1.17E-01
- tran: time= 4.0250E-09 tot_iter=    1577 conv_iter=     573 cpu clock= 1.22E-01
- tran: time= 5.0268E-09 tot_iter=    1992 conv_iter=     730 cpu clock= 1.27E-01
- tran: time= 6.0000E-09 tot_iter=    2368 conv_iter=     866 cpu clock= 1.32E-01
- tran: time= 7.0040E-09 tot_iter=    2786 conv_iter=    1021 cpu clock= 1.37E-01
- tran: time= 8.0188E-09 tot_iter=    3120 conv_iter=    1144 cpu clock= 1.42E-01
- tran: time= 9.0116E-09 tot_iter=    3514 conv_iter=    1293 cpu clock= 1.46E-01
- tran: time= 1.0000E-08 tot_iter=    3865 conv_iter=    1423 cpu clock= 1.51E-01
- sweep: tran tran0    end,  cpu clock=  1.51E-01 peak memory=        49 mb
+ sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  1.08E-01
+ tran: time= 1.0122E-09 tot_iter=     303 conv_iter=     114 cpu clock= 1.12E-01
+ tran: time= 2.0000E-09 tot_iter=     739 conv_iter=     265 cpu clock= 1.18E-01
+ tran: time= 3.0019E-09 tot_iter=    1211 conv_iter=     438 cpu clock= 1.24E-01
+ tran: time= 4.0250E-09 tot_iter=    1577 conv_iter=     573 cpu clock= 1.28E-01
+ tran: time= 5.0268E-09 tot_iter=    1992 conv_iter=     730 cpu clock= 1.34E-01
+ tran: time= 6.0000E-09 tot_iter=    2368 conv_iter=     866 cpu clock= 1.39E-01
+ tran: time= 7.0040E-09 tot_iter=    2786 conv_iter=    1021 cpu clock= 1.44E-01
+ tran: time= 8.0188E-09 tot_iter=    3120 conv_iter=    1144 cpu clock= 1.48E-01
+ tran: time= 9.0116E-09 tot_iter=    3514 conv_iter=    1293 cpu clock= 1.54E-01
+ tran: time= 1.0000E-08 tot_iter=    3865 conv_iter=    1423 cpu clock= 1.58E-01
+ sweep: tran tran0    end,  cpu clock=  1.59E-01 peak memory=        49 mb
 >info:         ***** hspice job concluded
  lic: Release hspice token(s)

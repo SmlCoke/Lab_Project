@@ -99,11 +99,11 @@
         "variant": "cpp"
     },
     "cmake.debugConfig": {
-        "args": ["${workspaceFolder}/data/att20.txt"],
+        "args": ["${workspaceFolder}/data/bays29.txt"],
         "cwd": "${workspaceFolder}"
     },
     "cmake.runConfig": {
-        "args": ["${workspaceFolder}/data/att20.txt"],
+        "args": ["${workspaceFolder}/data/bays29.txt"],
         "cwd": "${workspaceFolder}"
     },
 }

@@ -10,8 +10,8 @@
   lic:  
   lic: FLEXlm: v11.2.1 
   lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU 
-  lic: HOSTID: "581cf82b6ee8"       PID:      8204 
-****** HSPICE -- L-2016.03-2 win64 (May  2 2016) ******                          Input File: task5_N8.sp                                                         lic:   lic: FLEXlm: v11.2.1  lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU  lic: HOSTID: "581cf82b6ee8"       PID:      8204   lic: Using FLEXlm license file: 
+  lic: HOSTID: "581cf82b6eec"       PID:      24668 
+****** HSPICE -- L-2016.03-2 win64 (May  2 2016) ******                          Input File: task5_N8.sp                                                         lic:   lic: FLEXlm: v11.2.1  lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU  lic: HOSTID: "581cf82b6eec"       PID:      24668   lic: Using FLEXlm license file: 
   lic: 27000@LAPTOP-EC5F5EVU 
   lic: Checkout 1 hspice 
   lic: License/Maintenance for hspice will expire on 30-dec-2029/2029.2029 
@@ -1433,7 +1433,7 @@
  *****************************************************************
  ******  option summary
  ******
- runlvl  = 3         bypass  = 2.0000    
+ runlvl  = 6         bypass  = 2.0000    
   Opening plot unit= 79
  file=task5_N8.pa0
 
@@ -1453,31 +1453,31 @@
  *****************************************************
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- tplh1=   5.3921p  targ=   1.6429n   trig=   1.6375n
- tphl1=   5.4735p  targ=   1.2180n   trig=   1.2125n
- tp1=   5.4328p
- tplh2=   4.4469p  targ=   1.2224n   trig=   1.2180n
- tphl2=   4.5708p  targ=   1.6475n   trig=   1.6429n
- tp2=   4.5088p
- tplh3=   3.6891p  targ=   1.6512n   trig=   1.6475n
- tphl3=   3.5353p  targ=   1.2260n   trig=   1.2224n
- tp3=   3.6122p
- tplh4=   3.9394p  targ=   1.2299n   trig=   1.2260n
- tphl4=   3.7617p  targ=   1.6549n   trig=   1.6512n
- tp4=   3.8506p
- tplh5=   4.0066p  targ=   1.6589n   trig=   1.6549n
- tphl5=   3.7852p  targ=   1.2337n   trig=   1.2299n
- tp5=   3.8959p
- tplh6=   3.9758p  targ=   1.2377n   trig=   1.2337n
- tphl6=   3.7514p  targ=   1.6627n   trig=   1.6589n
- tp6=   3.8636p
- tplh7=   3.9919p  targ=   1.6667n   trig=   1.6627n
- tphl7=   3.7645p  targ=   1.2414n   trig=   1.2377n
- tp7=   3.8782p
- tplh8=   4.1514p  targ=   1.2456n   trig=   1.2414n
- tphl8=   3.8083p  targ=   1.6705n   trig=   1.6667n
- tp8=   3.9799p
- tp_total=  33.0221p
+ tplh1=   6.4829p  targ=   1.6440n   trig=   1.6375n
+ tphl1=   5.5998p  targ=   1.2181n   trig=   1.2125n
+ tp1=   6.0414p
+ tplh2=   4.3024p  targ=   1.2224n   trig=   1.2181n
+ tphl2=   4.0394p  targ=   1.6480n   trig=   1.6440n
+ tp2=   4.1709p
+ tplh3=   3.9504p  targ=   1.6520n   trig=   1.6480n
+ tphl3=   3.7393p  targ=   1.2261n   trig=   1.2224n
+ tp3=   3.8448p
+ tplh4=   3.9319p  targ=   1.2301n   trig=   1.2261n
+ tphl4=   3.7362p  targ=   1.6557n   trig=   1.6520n
+ tp4=   3.8341p
+ tplh5=   3.9312p  targ=   1.6596n   trig=   1.6557n
+ tphl5=   3.7364p  targ=   1.2338n   trig=   1.2301n
+ tp5=   3.8338p
+ tplh6=   3.9308p  targ=   1.2377n   trig=   1.2338n
+ tphl6=   3.7363p  targ=   1.6634n   trig=   1.6596n
+ tp6=   3.8336p
+ tplh7=   3.9345p  targ=   1.6673n   trig=   1.6634n
+ tphl7=   3.7401p  targ=   1.2415n   trig=   1.2377n
+ tp7=   3.8373p
+ tplh8=   4.0328p  targ=   1.2455n   trig=   1.2415n
+ tphl8=   3.7912p  targ=   1.6711n   trig=   1.6673n
+ tp8=   3.9120p
+ tp_total=  33.3078p
 
           ***** job concluded
  ******  
@@ -1507,20 +1507,20 @@
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.00           1           3
-  transient          0.25       10001        4997        1092 rev=        28
+  op point           0.01           1           3
+  transient          0.44       10001       11130        3722 rev=       357
   readin             0.01
   errchk             0.01
   setup              0.00
   output             0.00
 
 
-           peak memory used         49.48 megabytes
-           total cpu time            0.27 seconds
-           total elapsed time        0.34 seconds
-           job started at     13:05:52 10/23/2025
-           job ended   at     13:05:52 10/23/2025
+           peak memory used         49.41 megabytes
+           total cpu time            0.46 seconds
+           total elapsed time        0.55 seconds
+           job started at     17:42:34 11/01/2025
+           job ended   at     17:42:35 11/01/2025
 
 
- init: begin read circuit files,  cpu clock=  7.80E-02                                 option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TLINE\                     option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TI\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\SIGNET\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PCI\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\LIN_TECH\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PET\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\DI0\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\COMLINE\                   option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BURR_BRM\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BJT\                       option runlvl                                                                   option post =     2.00                                                    init: end read circuit files,  cpu clock=  8.00E-02 peak memory=        48 mb   init: begin check errors,  cpu clock=  8.00E-02                                 init: end check errors,  cpu clock=  9.20E-02 peak memory=        49 mb         init: begin setup matrix, pivot=     0 cpu clock=  9.20E-02                           establish matrix -- done,  cpu clock=  9.30E-02 peak memory=        49 mb       re-order matrix -- done,  cpu clock=  9.30E-02 peak memory=        49 mb  init: end setup matrix,  cpu clock=  9.30E-02 peak memory=        49 mb         dcop: begin dcop,  cpu clock=  9.40E-02                                         dcop: end dcop,  cpu clock=  9.50E-02 peak memory=        49 mb  tot_iter=      output: task5_N8.mt0                                                            sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  9.60E-02 tran: time= 1.0118E-09 tot_iter=     457 conv_iter=      99 cpu clock= 1.17E-01 tran: time= 2.0000E-09 tot_iter=     884 conv_iter=     196 cpu clock= 1.39E-01 tran: time= 3.0533E-09 tot_iter=    1518 conv_iter=     327 cpu clock= 1.69E-01 tran: time= 4.0250E-09 tot_iter=    1923 conv_iter=     421 cpu clock= 1.89E-01 tran: time= 5.0009E-09 tot_iter=    2548 conv_iter=     557 cpu clock= 2.23E-01 tran: time= 6.0000E-09 tot_iter=    2961 conv_iter=     648 cpu clock= 2.42E-01 tran: time= 7.0097E-09 tot_iter=    3579 conv_iter=     783 cpu clock= 2.71E-01 tran: time= 8.0250E-09 tot_iter=    3980 conv_iter=     875 cpu clock= 2.92E-01 tran: time= 9.0108E-09 tot_iter=    4572 conv_iter=     998 cpu clock= 3.21E-01 tran: time= 1.0000E-08 tot_iter=    4995 conv_iter=    1091 cpu clock= 3.42E-01 sweep: tran tran0    end,  cpu clock=  3.42E-01 peak memory=        49 mb      >info:         ***** hspice job concluded                                                  total cpu time            0.27 seconds                                          total elapsed time            0.34 seconds                                      job started at     13:05:52 10/23/2025                                          job ended   at     13:05:52 10/23/2025                                 lic: Release hspice token(s) 
- lic: Release hspice token(s)  lic: total license checkout elapse time:        0.07(s)
+ init: begin read circuit files,  cpu clock=  9.50E-02                                 option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TLINE\                     option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TI\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\SIGNET\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PCI\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\LIN_TECH\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PET\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\DI0\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\COMLINE\                   option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BURR_BRM\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BJT\                       option runlvl                                                                   option post =     2.00                                                          option runlvl =     6.00                                                  init: end read circuit files,  cpu clock=  9.60E-02 peak memory=        48 mb   init: begin check errors,  cpu clock=  9.60E-02                                 init: end check errors,  cpu clock=  1.06E-01 peak memory=        49 mb         init: begin setup matrix, pivot=     0 cpu clock=  1.06E-01                           establish matrix -- done,  cpu clock=  1.06E-01 peak memory=        49 mb       re-order matrix -- done,  cpu clock=  1.06E-01 peak memory=        49 mb  init: end setup matrix,  cpu clock=  1.06E-01 peak memory=        49 mb         dcop: begin dcop,  cpu clock=  1.06E-01                                         dcop: end dcop,  cpu clock=  1.10E-01 peak memory=        49 mb  tot_iter=      output: task5_N8.mt0                                                            sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  1.10E-01 tran: time= 1.0303E-09 tot_iter=     928 conv_iter=     310 cpu clock= 1.47E-01 tran: time= 2.0000E-09 tot_iter=    1858 conv_iter=     621 cpu clock= 1.84E-01 tran: time= 3.0313E-09 tot_iter=    3264 conv_iter=    1091 cpu clock= 2.39E-01 tran: time= 4.0250E-09 tot_iter=    4195 conv_iter=    1403 cpu clock= 2.76E-01 tran: time= 5.0166E-09 tot_iter=    5564 conv_iter=    1860 cpu clock= 3.30E-01 tran: time= 6.0000E-09 tot_iter=    6493 conv_iter=    2171 cpu clock= 3.66E-01 tran: time= 7.0313E-09 tot_iter=    7899 conv_iter=    2641 cpu clock= 4.22E-01 tran: time= 8.0250E-09 tot_iter=    8830 conv_iter=    2953 cpu clock= 4.57E-01 tran: time= 9.0166E-09 tot_iter=   10199 conv_iter=    3410 cpu clock= 5.14E-01 tran: time= 1.0000E-08 tot_iter=   11128 conv_iter=    3721 cpu clock= 5.50E-01 sweep: tran tran0    end,  cpu clock=  5.51E-01 peak memory=        49 mb      >info:         ***** hspice job concluded                                                  total cpu time            0.46 seconds                                          total elapsed time            0.55 seconds                                      job started at     17:42:34 11/01/2025                                          job ended   at     17:42:35 11/01/2025                                 lic: Release hspice token(s) 
+ lic: Release hspice token(s)  lic: total license checkout elapse time:        0.09(s)

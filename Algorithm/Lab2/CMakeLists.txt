@@ -6,4 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(Lab2 main.cpp
         load_data.cpp
         load_data.h
-        Algorithms.cpp)
+        Algorithms.cpp
+        REFAlgorithms.cpp
+        REFAlgorithms.h)

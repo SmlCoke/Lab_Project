@@ -298,7 +298,7 @@ The measured power consumption results are:
 \toprule
 \textbf{Parameter} & \textbf{Value} & \textbf{Temperature (°C)} \\
 \midrule
-Average Power & -33.20 μW & 25.0 \\
+Average Power & $-49.86 \mu W$ & 25.0 \\
 \bottomrule
 \end{tabular}
 \caption{Power consumption of optimized inverter chain}
@@ -311,7 +311,7 @@ Note: The negative sign indicates power consumption (current flowing from the su
 The power consumption analysis reveals several important characteristics:
 
 \begin{itemize}
-    \item[1.] \textbf{Total power}: The measured average power of 33.20 $\mu W$ represents the combined dynamic and static power consumption of the 4-stage inverter chain.
+    \item[1.] \textbf{Total power}: The measured average power of $-49.86 \mu W$ represents the combined dynamic and static power consumption of the 4-stage inverter chain.
     
     \item[2.] \textbf{Dynamic power dominance}: At nominal supply voltage (0.75V) and room temperature, dynamic switching power typically dominates over static leakage power. The dynamic power is given by:
     $$P_{dynamic} = C_{load} \cdot V_{DD}^2 \cdot P_{0 \rightarrow 1} \cdot f_{clk}$$
@@ -335,7 +335,7 @@ HSPICE simulation is performed with the following key steps:
 
 \begin{enumerate}
     \item[1. ] Use the optimized chain configuration (f2 = 5, f3 = 15, f4 = 60)
-    \item[2. ] Sweep supply voltage from 0.5V to 1.0V in 20mV steps
+    \item[2. ] Sweep supply voltage from 0.5V to 1.5V in 20mV steps
     \item[3. ] Measure total propagation delay ($t_{p\_total}$) for each voltage
     \item[4. ] Measure average power consumption at each voltage
     \item[5. ] Calculate EDP for each operating point
@@ -353,32 +353,35 @@ A Python script named "parser\_mt.py" was used to extract data from the .mt0 out
 
 \subsection{Lab Results}
 
-The simulation swept 26 voltage points from 0.5V to 1.0V. For example, several operating points are summarized in the table below:
+The simulation swept 51 voltage points from 0.5V to 1.5V. For example, several operating points are summarized in the table below:
 
 \begin{table}[h]
 \centering
 \begin{tabular}{cccc}
 \toprule
-\textbf{Supply (V)} & \textbf{$t_{p\_total}$ (ps)} & \textbf{Power (μW)} & \textbf{EDP (W·s²)} \\
+\textbf{Supply (V)} & \textbf{$t_{p\_total}$ (ps)} & \textbf{Power ($\mu W$)} & \textbf{EDP ($W \cdot s^2$)} \\
 \midrule
-0.50 & 41.14 & -12.74 & 2.155×10$^{-26}$ \\
-0.58 & 34.37 & -18.12 & 2.141×10$^{-26}$ \\
-0.70 & 29.00 & -28.53 & 2.399×10$^{-26}$ \\
-0.80 & 26.21 & -39.79 & 2.735×10$^{-26}$ \\
-1.00 & 23.04 & -69.53 & 3.692×10$^{-26}$ \\
+0.50 & 44.56 & -20.23 & 4.018×10$^{-26}$ \\
+0.56 & 38.60 & -26.20 & 3.904×10$^{-26}$ \\
+0.58 & 37.12 & -28.39 & 3.913×10$^{-26}$ \\
+0.70 & 31.05 & -43.85 & 4.228×10$^{-26}$ \\
+0.80 & 28.12 & -59.85 & 4.732×10$^{-26}$ \\
+1.00 & 24.73 & -101.0 & 6.179×10$^{-26}$ \\
+1.20 & 22.57 & -617.0 & 31.42×10$^{-26}$ \\
+1.50 & 18.80 & -7.093e+6 & 2.507×10$^{-21}$ \\
 \bottomrule
 \end{tabular}
 \caption{Selected EDP measurements at different supply voltages}
 \end{table}
 
-The \textbf{optimal supply voltage is 0.58V}, achieving the minimum EDP of \textbf{2.141×10$^{-26}$ W·s$^{-2}$}.
+The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.904×10$^{-26} W \cdot s^2$}.
 
 \begin{figure}[htbp]
     \centering
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{Task4/tp_total_vs_volts.png} 
+        \includegraphics[width=\textwidth]{Task4/tp_total_vs_volts.pdf} 
         \caption{Total propagation delay vs. supply voltage}
         \label{fig:task4_delay}
     \end{subfigure}
@@ -386,7 +389,7 @@ The \textbf{optimal supply voltage is 0.58V}, achieving the minimum EDP of \text
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{Task4/power_vs_volts.png} 
+        \includegraphics[width=\textwidth]{Task4/power_vs_volts.pdf} 
         \caption{Average power consumption vs. supply voltage}
         \label{fig:task4_power}
     \end{subfigure}
@@ -397,7 +400,7 @@ The \textbf{optimal supply voltage is 0.58V}, achieving the minimum EDP of \text
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{Task4/edp_vs_volts.png}
+\includegraphics[width=0.75\textwidth]{Task4/edp_vs_volts.pdf}
 \caption{Energy-Delay Product vs. supply voltage}
 \label{fig:task4_edp}
 \end{figure}

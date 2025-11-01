@@ -1,7 +1,7 @@
 *****************************************************
 * Lab2 - Task 4: EDP measurement
 *****************************************************
-.option post=2 
+.option post=2 RUNLVL = 6
 .temp 25
 .param SUPPLY = 0.75
 .param Wfin = 0.078u   
@@ -22,7 +22,7 @@ Mp out in vdd vdd pfet L='Lg' NFIN ='nfin'
 
 * Definition of drive source
 Vdd_inv vdd_inv 0 DC 'SUPPLY'
-vdd_load vdd_laod 0 DC 'SUPPLY'
+vdd_load vdd_load 0 DC 'SUPPLY'
 VIN in 0 PULSE 0 'SUPPLY' 400p 25p 25p 400p 800p
 
 * Connet subckt
@@ -41,7 +41,8 @@ XinvL inv4_out invL_out vdd_load 0 inv nfin = 256
 * .enddata
 
 
-.tran 1p 10n sweep SUPPLY '0.5' '1.0' '0.02'
+* .tran 1p 10n sweep SUPPLY '0.5' '1.0' '0.02'
+.tran 1p 10n sweep SUPPLY '0.5' '1.5' '0.02'
 * .tran 1p 10n sweep data=volts
 .probe tran V(*) I(*)
 .measure tran tpLH1 TRIG V(in) = '0.5*SUPPLY' FALL = 2  TARG V(inv1_out) = '0.5*SUPPLY' RISE = 2

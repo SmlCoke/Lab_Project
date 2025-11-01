@@ -1,7 +1,7 @@
 * "simulator" "HSPICE" 
 * "version" "L-2016.03-2 win64"
 * "format" "HSP"
-* "rundate" "14:02:50 10/23/2025 "
+* "rundate" "17:28:53 11/01/2025 "
 * "netlist" "task4.sp "
 * "runtitle" "*****************************************************"
 * time =    0.            
@@ -15,8 +15,7 @@
 + inv2_out =   7.8757u       
 + inv3_out = 499.9870m       
 + inv4_out =   7.8757u       
-+ invl_out = 199.0751f       
++ invl_out = 499.9871m       
 + vdd_inv = 500.0000m       
-+ vdd_laod = 500.0000m       
-+ vdd_load = 999.2879f       
++ vdd_load = 500.0000m       
 ***   END: Saved Operating Point ***                     

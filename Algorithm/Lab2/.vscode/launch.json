@@ -7,7 +7,7 @@
             "type": "lldb",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}.exe",
-            "args": ["${workspaceFolder}/data/bays29.txt"],
+            "args": ["${workspaceFolder}/data/att20.txt"],
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false
         }

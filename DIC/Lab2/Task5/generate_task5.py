@@ -5,7 +5,7 @@ TEMPLATE_TOP = """*****************************************************
 * Task5: Inverter chain optimization (auto-generated)
 * N = {N}
 *****************************************************
-.option post=2
+.option post=2 RUNLVL = 6
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n

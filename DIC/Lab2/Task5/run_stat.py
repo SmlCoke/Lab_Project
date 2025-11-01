@@ -85,7 +85,7 @@ def parse_mts(dir_path):
     随后，将df每一列的数据进行归一化处理，生成对应名字的_excel_normalized.xlsx表格
     归一化公式： (x - min) / (max - min)
     """
-    pattern = re.compile(r".*N(\d+)\.xlsx")
+    pattern = re.compile(r".*N(\d+)\.mt0$")
     rows = []
     header = ['N', 'tp_total']
     current_row = []
@@ -96,7 +96,7 @@ def parse_mts(dir_path):
                 filepath = os.path.join(root, filename)
                 print("匹配到文件:", filepath)
                 N = N_match.group(1)
-                df = pd.read_excel(filepath)
+                df = parse_mt(filepath)
                 tp_total = df['tp_total'].iloc[0]
                 current_row = [N, tp_total]
                 rows.append(current_row)
@@ -105,10 +105,10 @@ def parse_mts(dir_path):
     print("✅ 汇总表已导出: summary.xlsx")
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description="Parse a HSPICE result file and display its contents.")
-    # parser.add_argument("input_dir", type=str, help="Path to the input directory")
-    # args = parser.parse_args()
-    # parse_mts(args.input_dir)
-    parse_mts("D:\\vscode\\Code\\HSpice\\DIC_exp\\Lab2\\Task5") 
+    parser = argparse.ArgumentParser(description="Parse a HSPICE result file and display its contents.")
+    parser.add_argument("input_dir", type=str, help="Path to the input directory")
+    args = parser.parse_args()
+    parse_mts(args.input_dir)
+    # parse_mts("D:\\vscode\\Code\\HSpice\\DIC_exp\\Lab2\\Task5") 
 
 

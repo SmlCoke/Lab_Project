@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include "Algorithms.h"
+#include "RefAlgorithms.h"
 #include "load_data.h"
 
 void solve1(const std::vector<std::vector<std::uint16_t>> & Adj, bool verbose)
@@ -68,6 +69,29 @@ void solve3(const std::vector<std::vector<std::uint16_t>> & Adj, bool verbose)
     std::cout << (int)path[path.size() - 1] << std::endl;
 }
 
+void solve_ref(const std::vector<std::vector<std::uint16_t>> & Adj, bool verbose)
+{
+    using clock = std::chrono::steady_clock;
+    auto begin_time = clock::now();
+
+    std::tuple<std::vector<uint8_t>, uint16_t> results = TSP_2opt(Adj, verbose);
+
+    auto end_time = clock::now();
+    
+    auto dur_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - begin_time).count();
+    auto dur_ms = std::chrono::duration<double, std::milli>(end_time - begin_time).count();
+
+    // 输出结果：运行时间以及查找结果
+    auto [path, length] = results;
+    std::cout << "Consumes: " << dur_ns << " ns (" << dur_ms << " ms)\n";
+    std::cout << "The minimum total length is : " << length << std::endl;
+    std::cout << "The corresponding path is : " << std::endl;
+    for (int i = 0; i < path.size() - 1; i++)
+    {
+        std::cout << (int)path[i] << " -> ";
+    }
+    std::cout << (int)path[path.size() - 1] << std::endl;
+}
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -80,7 +104,7 @@ int main(int argc, char *argv[]) {
     bool verbose = true;
 
     std::vector<std::vector<std::uint16_t>> Adj = load_data(file_path, verbose);
-    solve3(Adj, true);
+    solve_ref(Adj, true);
 
     return 0;
 

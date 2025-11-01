@@ -1,7 +1,7 @@
 *****************************************************
 * Lab2 - Task 3: CMOS Inverter Power
 *****************************************************
-.option post=2 
+.option post=2 RUNLVL=6
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n 
@@ -21,7 +21,7 @@ Mp out in vdd vdd pfet L='Lg' NFIN ='nfin'
 
 * Definition of drive source
 Vdd_inv vdd_inv 0 DC 'SUPPLY'
-vdd_load vdd_laod 0 DC 'SUPPLY' 
+vdd_load vdd_load 0 DC 'SUPPLY' 
 VIN in 0 PULSE 0 'SUPPLY' 400p 25p 25p 400p 800p
 
 * Connet subckt

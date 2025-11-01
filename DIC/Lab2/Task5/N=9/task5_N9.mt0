@@ -1,0 +1,18 @@
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.03-2 win64' PARAM_COUNT=0
+.TITLE '*****************************************************'
+ tplh1            tphl1            tp1              tplh2           
+ tphl2            tp2              tplh3            tphl3           
+ tp3              tplh4            tphl4            tp4             
+ tplh5            tphl5            tp5              tplh6           
+ tphl6            tp6              tplh7            tphl7           
+ tp7              tplh8            tphl8            tp8             
+ tplh9            tphl9            tp9              tp_total        
+ temper           alter#          
+  3.122e-012       3.724e-012       3.423e-012       4.895e-012     
+  5.035e-012       4.965e-012       4.335e-012       4.144e-012     
+  4.240e-012       3.864e-012       3.549e-012       3.706e-012     
+  3.834e-012       3.623e-012       3.728e-012       3.825e-012     
+  3.633e-012       3.729e-012       3.792e-012       3.578e-012     
+  3.685e-012       3.771e-012       3.569e-012       3.670e-012     
+  3.853e-012       3.601e-012       3.727e-012       3.487e-011     
+   25.0000        1               

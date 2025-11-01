@@ -3,14 +3,14 @@
  lic:
  lic: FLEXlm: v11.2.1
  lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU
- lic: HOSTID: "581cf82b6eec"       PID:      8100
+ lic: HOSTID: "e88088ab8cf6"       PID:      25132
  lic: Using FLEXlm license file:
  lic: 27000@LAPTOP-EC5F5EVU
  lic: Checkout 1 hspice
  lic: License/Maintenance for hspice will expire on 30-dec-2029/2029.2029
  lic: 1(in_use)/99(total) FLOATING license(s) on SERVER 27000@LAPTOP-EC5F5EVU
  lic:
- init: begin read circuit files,  cpu clock=  8.70E-02
+ init: begin read circuit files,  cpu clock=  8.40E-02
        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\
        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\
        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\
@@ -27,27 +27,27 @@
        option runlvl
        option post =     2.00
        option runlvl =     6.00
- init: end read circuit files,  cpu clock=  8.90E-02 peak memory=        48 mb
- init: begin check errors,  cpu clock=  8.90E-02
- init: end check errors,  cpu clock=  1.00E-01 peak memory=        49 mb
- init: begin setup matrix, pivot=     0 cpu clock=  1.00E-01
-       establish matrix -- done,  cpu clock=  1.01E-01 peak memory=        49 mb
-       re-order matrix -- done,  cpu clock=  1.01E-01 peak memory=        49 mb
- init: end setup matrix,  cpu clock=  1.01E-01 peak memory=        49 mb
- dcop: begin dcop,  cpu clock=  1.01E-01
- dcop: end dcop,  cpu clock=  1.03E-01 peak memory=        49 mb  tot_iter=       3
+ init: end read circuit files,  cpu clock=  8.60E-02 peak memory=        48 mb
+ init: begin check errors,  cpu clock=  8.60E-02
+ init: end check errors,  cpu clock=  9.80E-02 peak memory=        49 mb
+ init: begin setup matrix, pivot=     0 cpu clock=  9.80E-02
+       establish matrix -- done,  cpu clock=  9.80E-02 peak memory=        49 mb
+       re-order matrix -- done,  cpu clock=  9.80E-02 peak memory=        49 mb
+ init: end setup matrix,  cpu clock=  9.90E-02 peak memory=        49 mb
+ dcop: begin dcop,  cpu clock=  9.90E-02
+ dcop: end dcop,  cpu clock=  1.01E-01 peak memory=        49 mb  tot_iter=       3
  output: task5_N9.mt0
- sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  1.03E-01
- tran: time= 1.0410E-09 tot_iter=    1005 conv_iter=     329 cpu clock= 1.45E-01
- tran: time= 2.0000E-09 tot_iter=    2021 conv_iter=     665 cpu clock= 1.87E-01
- tran: time= 3.0378E-09 tot_iter=    3503 conv_iter=    1153 cpu clock= 2.49E-01
- tran: time= 4.0250E-09 tot_iter=    4508 conv_iter=    1484 cpu clock= 2.91E-01
- tran: time= 5.0486E-09 tot_iter=    6019 conv_iter=    1982 cpu clock= 3.54E-01
+ sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  1.01E-01
+ tran: time= 1.0410E-09 tot_iter=    1005 conv_iter=     329 cpu clock= 1.46E-01
+ tran: time= 2.0000E-09 tot_iter=    2021 conv_iter=     665 cpu clock= 1.90E-01
+ tran: time= 3.0378E-09 tot_iter=    3503 conv_iter=    1153 cpu clock= 2.51E-01
+ tran: time= 4.0250E-09 tot_iter=    4508 conv_iter=    1484 cpu clock= 2.94E-01
+ tran: time= 5.0486E-09 tot_iter=    6019 conv_iter=    1982 cpu clock= 3.55E-01
  tran: time= 6.0000E-09 tot_iter=    7055 conv_iter=    2325 cpu clock= 3.99E-01
- tran: time= 7.1955E-09 tot_iter=    8563 conv_iter=    2823 cpu clock= 4.66E-01
- tran: time= 8.0250E-09 tot_iter=    9594 conv_iter=    3163 cpu clock= 5.12E-01
- tran: time= 9.0542E-09 tot_iter=   11118 conv_iter=    3664 cpu clock= 5.84E-01
- tran: time= 1.0000E-08 tot_iter=   12129 conv_iter=    3997 cpu clock= 6.29E-01
- sweep: tran tran0    end,  cpu clock=  6.31E-01 peak memory=        49 mb
+ tran: time= 7.1955E-09 tot_iter=    8563 conv_iter=    2823 cpu clock= 4.62E-01
+ tran: time= 8.0250E-09 tot_iter=    9594 conv_iter=    3163 cpu clock= 5.05E-01
+ tran: time= 9.0542E-09 tot_iter=   11118 conv_iter=    3664 cpu clock= 5.74E-01
+ tran: time= 1.0000E-08 tot_iter=   12129 conv_iter=    3997 cpu clock= 6.17E-01
+ sweep: tran tran0    end,  cpu clock=  6.17E-01 peak memory=        49 mb
 >info:         ***** hspice job concluded
  lic: Release hspice token(s)

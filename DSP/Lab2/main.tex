@@ -1,0 +1,108 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption}   % \caption*需要
+\usepackage{subcaption} % 子图布局
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+
+% ------------------------- 代码展示设置 -------------------------
+% ------------------- MATLAB 代码展示风格（DSP 专用） -----------------
+\usepackage{listings}
+\usepackage{xcolor}
+
+% 定义 MATLAB 风格
+\lstdefinestyle{matlab-dsp}{
+    language=Matlab,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{brown},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    tabsize=4,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    escapeinside={\%*}{*)},
+    % MATLAB 关键字（基础）
+    morekeywords={if, else, elseif, end, for, while, switch, case, otherwise, try, catch, function, return, break, continue, pause, clear, clc, close, disp, plot, figure, hold, grid, xlabel, ylabel, title, xlim, ylim, fft, ifft, freqz, filter, conv, zeros, ones, length, size, abs, angle, unwrap, real, imag, exp, sin, cos, pi, inf, nan, true, false, struct, cell, classdef, properties, methods},
+    % DSP 常用函数（重点突出）
+    morekeywords=[2]{freqz, zplane, fftshift, ifftshift, fft, ifft, filter, filtfilt, butter, cheby1, ellip, fir1, fir2, remez, sinc, rectwin, hamming, hanning, blackman, kaiser, decimate, interp, resample, xcorr, conv, corrcoef, pwelch, spectrogram, tf, zpk, ss, bode, impulse, step, lsim, unwrap, angle, abs, real, imag, db, mag2db, db2mag, rms, mean, std, var, cov, eig, svd, lpc, prony, residuez, tf2zp, zp2tf, tf2sos, sos2tf, sosfilt, upfirdn, buffer, overlapadd, fftfilt},
+    % 常量/特殊变量
+    morekeywords=[3]{pi, Inf, NaN, eps, i, j, nargin, nargout, varargin, varargout},
+    % 注释以 % 开头
+    comment=[l]{\%},
+    % 字符串用单引号或双引号
+    alsoletter={.}, % 允许 . 在标识符中（如 x.y）
+    sensitive=true
+}
+
+% 默认使用此样式
+\lstset{style=matlab-dsp}
+
+% ------------------- 设置超链接，便于跳转 -----------------
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfborder={0 0 0},    % 消除超链接边框
+    colorlinks=true,       % 将边框改为颜色标记（可选）
+    linkcolor=black,       % 内部链接颜色（目录、引用等）
+    citecolor=black,       % 引用颜色
+    urlcolor=blue          % URL链接颜色（保持蓝色以便区分）
+}
+
+
+
+
+% ------------------------ 标题区 ----------------------------
+\title{DSP 实验二报告}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+
+
+% ------------------------ 页眉和页脚 ----------------------------
+\fancyhead[L]{冯峻}
+\fancyhead[C]{实验二}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+\tableofcontents
+\newpage
+
+
+
+
+
+
+
+\end{document}

@@ -339,7 +339,7 @@ HSPICE simulation is performed with the following key steps:
     \item[3. ] Measure total propagation delay ($t_{\text{p\_total}}$) for each voltage
     \item[4. ] Measure average power consumption at each voltage
     \item[5. ] Calculate EDP for each operating point
-\end{enumerate>
+\end{enumerate}
 
 Key HSPICE measurement statements:
 
@@ -511,12 +511,9 @@ The results validate theoretical predictions and reveal practical design insight
     \begin{itemize}
         \item Task 2 (fixed 4 stages with swept sizing): Best delay = 29.07 ps with (f2=4, f3=15, f4=60)
         \item Task 5 (optimized 4 stages with uniform scaling): Delay = 29.17 ps with (f2=4, f3=16, f4=64)
-        \item Task 5 fine-grained optimization: Best delay = 29.01 ps with (f2=4, f3=15, f4=56)
-        \item The results show that the manual parameter sweep in Task 2 and the fine-grained optimization in Task 5 both converge to similar optimal configurations around f2=4, f3=15
     \end{itemize}
 
-
-    \item \textbf{Technology scaling}: The optimal $N$ depends on the ratio of intrinsic delay to loading delay. As technology scales to smaller nodes with lower supply voltages, this ratio changes, potentially shifting the optimal $N$.
+    \item[6. ] \textbf{Technology scaling}: The optimal $N$ depends on the ratio of intrinsic delay to loading delay. As technology scales to smaller nodes with lower supply voltages, this ratio changes, potentially shifting the optimal $N$.
 \end{itemize}
 
 This task demonstrates the importance of holistic optimization - considering both stage count and transistor sizing to achieve optimal circuit performance.

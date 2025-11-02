@@ -16,4 +16,10 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp(const std::vector<s
 std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
 std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast_v2(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
 std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast_v3(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
+
+// Statistics tracking versions
+std::tuple<std::vector<uint8_t>, uint16_t, uint64_t, uint64_t> solve_TSP_with_dp_with_stat(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
+std::tuple<std::vector<uint8_t>, uint16_t, uint64_t, uint64_t> solve_TSP_with_dp_fast_with_stat(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
+std::tuple<std::vector<uint8_t>, uint16_t, uint64_t, uint64_t> solve_TSP_with_dp_fast_v2_with_stat(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
+std::tuple<std::vector<uint8_t>, uint16_t, uint64_t, uint64_t> solve_TSP_with_dp_fast_v3_with_stat(const std::vector<std::vector<uint16_t>> & adj, bool verbose);
 #endif //LAB2_ALGORITHMS_H

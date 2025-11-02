@@ -137,11 +137,11 @@ The simulation results for the third inverter in the chain show the following de
 \toprule
 \textbf{Parameter} & \textbf{Value (ps)} & \textbf{Temperature (°C)} & \textbf{Alter \#} \\
 \midrule
-$t_{pLH}$ & 6.190 & 25.0 & 1 \\
+$t_{pLH}$ & 6.212 & 25.0 & 1 \\
 
-$t_{pHL}$ & 5.633 & 25.0 & 1 \\
+$t_{pHL}$ & 5.680 & 25.0 & 1 \\
 
-$t_p$ & 5.911 & 25.0 & 1 \\
+$t_p$ & 5.946 & 25.0 & 1 \\
 \bottomrule
 \end{tabular}
 \caption{Measured FO4 delay parameters}
@@ -173,11 +173,11 @@ The waveform plots demonstrating the delay measurements are shown in Figures \re
 \end{figure}
 \subsection{Technical Analysis}
 
-The measured FO4 delay of approximately 5.9 ps demonstrates the high-speed capability of 16nm FinFET technology. Several observations from the results:
+The measured FO4 delay of approximately 5.946 ps demonstrates the high-speed capability of 16nm FinFET technology. Several observations from the results:
 
 \begin{itemize}
-    \item[1.] The $t_{pHL}$ (5.633 ps) is slightly faster than $t_{pLH}$ (6.190 ps), indicating that the NMOS pull-down network has higher drive strength than the PMOS pull-up network in this technology and sizing.
-    \item[2.] The difference between the rising delay and falling delay is only 9\%, which shows that the current process and transistor size parameters are well characterized.
+    \item[1.] The $t_{pHL}$ (5.680 ps) is slightly faster than $t_{pLH}$ (6.212 ps), indicating that the NMOS pull-down network has higher drive strength than the PMOS pull-up network in this technology and sizing.
+    \item[2.] The difference between the rising delay and falling delay is about 9\%, which shows that the current process and transistor size parameters are well characterized.
 \end{itemize}
 
 \newpage
@@ -572,13 +572,13 @@ This laboratory investigation of CMOS inverter chains using 16nm FinFET technolo
 \subsection{Key Observations}
 
 \begin{enumerate}
-    \item \textbf{FO4 Delay Characterization}: The measured FO4 delay of 5.9 ps demonstrates the high-speed capability of advanced FinFET technology. The slight asymmetry between $t_{pLH}$ and $t_{pHL}$ (9\% difference) reflects inherent mobility differences between NMOS and PMOS devices.
+    \item \textbf{FO4 Delay Characterization}: The measured FO4 delay of 5.946 ps demonstrates the high-speed capability of advanced FinFET technology. The slight asymmetry between $t_{pLH}$ (6.212 ps) and $t_{pHL}$ (5.680 ps), with about 9\% difference, reflects inherent mobility differences between NMOS and PMOS devices.
 
     \item \textbf{Theoretical vs. Practical Optimization}: While classical theory predicts uniform 4× scaling for optimal delay, experimental results show that $f_2=4, f_3=15, f_4=60$ provides superior performance for the fixed 4-stage chain in Task 2. This deviation highlights the importance of parasitic effects, non-ideal scaling, and technology-specific characteristics that simple analytical models may overlook.
     
     \item \textbf{Voltage Scaling for Energy Efficiency}: The EDP analysis revealed that operating at 0.56V (25\% below nominal 0.75V) achieves optimal energy efficiency. This represents approximately 74\% power reduction compared to higher voltages, making it highly attractive for energy-constrained applications.
     
-    \item \textbf{Architectural Optimization}: Allowing variable stage count with uniform sizing (Task 5) achieved 22\% better performance (29.17 ps) compared to the manually-tuned 4-stage design in Task 2 (37.32 ps). Both $N=4$ stages with $f = 4.00$ and $N=5$ stages with $f \approx 3.03$ achieve optimal performance, validating theoretical predictions that suggest an optimal sizing factor near $f \approx 3.6$. Further fine-grained optimization around these configurations found that N=4 with sizing (4, 15, 56) achieves the absolute minimum delay of 29.01 ps.
+    \item \textbf{Architectural Optimization}: Task 2's manual parameter sweep found the optimal 4-stage configuration (4, 15, 60) with 29.07 ps delay. Task 5's uniform sizing approach with $N=4$ stages ($f = 4.00$) yielded 29.17 ps, while $N=5$ stages ($f \approx 3.03$) also achieved 29.17 ps. This validates theoretical predictions suggesting an optimal sizing factor near $f \approx 3.6$. Further fine-grained optimization in Task 5 found that N=4 with sizing (4, 15, 56) achieves 29.01 ps, representing the absolute minimum delay. The convergence of multiple optimization approaches to similar configurations (f2=4, f3=15) demonstrates the robustness of the optimal design region.
 \end{enumerate}
 
 \subsection{Conclusions}

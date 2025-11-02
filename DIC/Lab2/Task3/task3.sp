@@ -6,7 +6,7 @@
 .param SUPPLY = 0.75
 .param Lg = 20n 
 * Configuration of inverter chain dimension
-.param f2 = 5
+.param f2 = 4
 .param f3 = 15
 .param f4 = 60
 * lib

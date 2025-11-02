@@ -7,7 +7,7 @@
 .param Wfin = 0.078u   
 .param Lg = 20n 
 * Configuration of inverter chain dimension
-.param f2 = 5
+.param f2 = 4
 .param f3 = 15
 .param f4 = 60
 * lib
@@ -32,18 +32,9 @@ Xinv3 inv2_out inv3_out vdd_inv 0 inv nfin = 'f3'
 Xinv4 inv3_out inv4_out vdd_inv 0 inv nfin = 'f4'
 XinvL inv4_out invL_out vdd_load 0 inv nfin = 256
 
-* .data volts SUPPLY
-* 0.5
-* 0.6
-* 0.75
-* 0.9
-* 1.0
-* .enddata
 
-
-* .tran 1p 10n sweep SUPPLY '0.5' '1.0' '0.02'
 .tran 1p 10n sweep SUPPLY '0.5' '1.5' '0.02'
-* .tran 1p 10n sweep data=volts
+
 .probe tran V(*) I(*)
 .measure tran tpLH1 TRIG V(in) = '0.5*SUPPLY' FALL = 2  TARG V(inv1_out) = '0.5*SUPPLY' RISE = 2
 .measure tran tpHL1 TRIG V(in) = '0.5*SUPPLY' RISE = 2  TARG V(inv1_out) = '0.5*SUPPLY' FALL = 2

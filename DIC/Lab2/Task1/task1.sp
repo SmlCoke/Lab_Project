@@ -1,7 +1,7 @@
 *****************************************************
 * Lab2 - Task 1: CMOS Inverter FO4 Delay Measurement
 *****************************************************
-.option post=2 
+.option post=2 RUNLVL = 6
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n 

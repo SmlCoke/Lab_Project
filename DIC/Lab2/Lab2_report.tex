@@ -220,14 +220,14 @@ Six different sizing combinations were simulated using parametric sweep:
 
 \subsection{Lab Results}
 
-The simulation results for all six configurations are summarized in Table \ref{tab:task2_results}. Key measurements include individual stage delays ($t_{p1}$ through $t_{p4}$) and total chain delay ($t_{p\_total}$).
+The simulation results for all six configurations are summarized in Table \ref{tab:task2_results}. Key measurements include individual stage delays ($t_{p1}$ through $t_{p4}$) and total chain delay ($t_{\text{p\_total}}$).
 
 \begin{table}[h]
 \centering
 \small
 \begin{tabular}{cccccccccc}
 \toprule
-\textbf{Index} & \textbf{f2} & \textbf{f3} & \textbf{f4} & \textbf{$t_{p1}$ (ps)} & \textbf{$t_{p2}$ (ps)} & \textbf{$t_{p3}$ (ps)} & \textbf{$t_{p4}$ (ps)} & \textbf{$t_{p\_total}$ (ps)} \\
+\textbf{Index} & \textbf{f2} & \textbf{f3} & \textbf{f4} & \textbf{$t_{p1}$ (ps)} & \textbf{$t_{p2}$ (ps)} & \textbf{$t_{p3}$ (ps)} & \textbf{$t_{p4}$ (ps)} & \textbf{$t_{\text{p\_total}}$ (ps)} \\
 \midrule
 1 & 4 & 16 & 64 & 8.360 & 18.86 & 5.991 & 7.738 & 40.95 \\
 2 & 4 & 15 & 60 & 8.295 & 17.76 & 6.012 & 7.785 & 39.86 \\
@@ -256,7 +256,7 @@ The experimental results reveal some important deviations from classical design 
 
 For a 4-stage chain with load factor F = 256, the optimal sizing factor should be $f = F^{1/N} = 256^{1/4} = 4$, suggesting uniform scaling with $f_2 = 4, f_3 = 16, f_4 = 64$. However, the practical result is that $f_2 = 5, f_3 = 15, f_4 = 60$, which deviates from the theoretical 4-16-64 progression.
 
-The classical theory assumes identical stage designs with pure capacitive loading. However, in practical FinFET technology, input capacitance includes both gate and parasitic components, while our theory model neglects parasitics capacitance. Moreover, wire parasitic capacitance becomes significant at small feature sizes. That cause drive strength varies non-linearly with transistor sizing. The optimal factor may be slightly larger than 4 (closer to e ≈ 2.718).
+The classical theory assumes identical stage designs with pure capacitive loading. However, in practical FinFET technology, input capacitance includes both gate and parasitic components, while our theory model neglects parasitics capacitance. Moreover, wire parasitic capacitance becomes significant at small feature sizes. That cause drive strength varies non-linearly with transistor sizing. The optimal factor may be slightly larger than 4.
 
 \textbf{Stage-by-stage analysis}: 
 \begin{itemize}
@@ -329,14 +329,14 @@ These power measurements establish the baseline for energy-delay optimization in
 
 Task 4 investigates the optimal operating point ($V_{dd}$) by sweeping supply voltage to minimize the Energy-Delay Product (EDP). The EDP metric captures the trade-off between performance and energy efficiency:
 
-\[EDP = Power \times Delay^2\]
+\[EDP = \text{Power} \times \text{Delay}^2\]
 
 HSPICE simulation is performed with the following key steps:
 
 \begin{enumerate}
     \item[1. ] Use the optimized chain configuration (f2 = 5, f3 = 15, f4 = 60)
     \item[2. ] Sweep supply voltage from 0.5V to 1.5V in 20mV steps
-    \item[3. ] Measure total propagation delay ($t_{p\_total}$) for each voltage
+    \item[3. ] Measure total propagation delay ($t_{\text{p\_total}}$) for each voltage
     \item[4. ] Measure average power consumption at each voltage
     \item[5. ] Calculate EDP for each operating point
 \end{enumerate}
@@ -359,7 +359,7 @@ The simulation swept 51 voltage points from 0.5V to 1.5V. For example, several o
 \centering
 \begin{tabular}{cccc}
 \toprule
-\textbf{Supply (V)} & \textbf{$t_{p\_total}$ (ps)} & \textbf{Power ($\mu W$)} & \textbf{EDP ($W \cdot s^2$)} \\
+\textbf{Supply (V)} & \textbf{$t_{\text{p\_total}}$ (ps)} & \textbf{Power ($\mu W$)} & \textbf{EDP ($W \cdot s^2$)} \\
 \midrule
 0.50 & 44.56 & -20.23 & 4.018×10$^{-26}$ \\
 0.56 & 38.60 & -26.20 & 3.904×10$^{-26}$ \\
@@ -374,7 +374,7 @@ The simulation swept 51 voltage points from 0.5V to 1.5V. For example, several o
 \caption{Selected EDP measurements at different supply voltages}
 \end{table}
 
-The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.904×10$^{-26} W \cdot s^2$} with $t_{p\_total}$ = \textbf{38.60 ps} and power = \textbf{-26.20 $\mu W$}.
+The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.904×10$^{-26} W \cdot s^2$} with $t_{\text{p\_total}}$ = \textbf{38.60 ps} and power = \textbf{-26.20 $\mu W$}.
 
 \begin{figure}[htbp]
     \centering
@@ -464,7 +464,7 @@ The simulation results for stage numbers from 1 to 10 are summarized:
 \centering
 \begin{tabular}{ccc}
 \toprule
-\textbf{N (Stages)} & \textbf{$t_{p\_total}$ (ps)} & \textbf{Optimal f} \\
+\textbf{N (Stages)} & \textbf{$t_{\text{p\_total}}$ (ps)} & \textbf{Optimal f} \\
 \midrule
 1 & 209.3 & 256.00 \\
 2 & 45.86 & 16.00 \\

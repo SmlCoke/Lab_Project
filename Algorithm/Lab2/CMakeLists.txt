@@ -7,5 +7,5 @@ add_executable(Lab2 main.cpp
         load_data.cpp
         load_data.h
         Algorithms.cpp
-        REFAlgorithms.cpp
-        REFAlgorithms.h)
+        RefAlgorithms.cpp
+        RefAlgorithms.h)

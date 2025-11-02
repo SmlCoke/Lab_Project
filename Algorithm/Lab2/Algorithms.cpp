@@ -389,10 +389,11 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast_v3(const std::
 
     std::vector<std::vector<uint32_t>> comb_table = load_combinational_table(node_nums); // 预计算组合数表
 
-    std::vector<std::vector<uint16_t>> dp_prev(1, std::vector<uint16_t>(1, 0));  // 记录节点个数为node_num-1的各个掩码对应路径总长
-    std::vector<std::vector<uint16_t>> dp_curr(1, std::vector<uint16_t>(1, 0));  // 记录节点个数为node_num的各个掩码对应路径总长
+    std::vector<std::vector<uint16_t>> dp_prev(1, std::vector<uint16_t>(node_nums, INF));  // 记录节点个数为node_num-1的各个掩码对应路径总长
+    std::vector<std::vector<uint16_t>> dp_curr(1, std::vector<uint16_t>(node_nums, INF));  // 记录节点个数为node_num的各个掩码对应路径总长
     std::vector<std::vector<uint8_t>> next_node(mask_nums/2, std::vector<uint8_t>(node_nums, 255)); // 记录当前状态的最优后继结点
     // 从结点0开始，遍历结点集合{0}并回到结点0的路径长度为0
+    dp_prev[0][0] = 0;
 
     // 集合V'中的结点数量，从2开始遍历到node_nums - 1
     for (uint8_t node_num = 2; node_num <= node_nums; node_num++)
@@ -470,12 +471,12 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast_v3(const std::
     uint8_t best_first_node_index = 0;
     // 最佳路径中的第一个结点，用于生成完整路径
     uint32_t full_index = (1 << node_nums) - 1;
-    uint32_t full_index_index = combination_index(full_index, node_nums-1, node_nums-1,comb_table);
+    uint32_t full_index_index = combination_index(full_index>>1, node_nums-1, node_nums-1,comb_table);
     for (uint8_t node_index = 1; node_index < node_nums; node_index++)
     {
-        if (dp_curr[full_index_index][node_index] + adj[0][node_index] < best_length)
+        if (dp_prev[full_index_index][node_index] + adj[0][node_index] < best_length)
         {
-            best_length = dp_curr[full_index_index][node_index] + adj[0][node_index];
+            best_length = dp_prev[full_index_index][node_index] + adj[0][node_index];
             best_first_node_index = node_index;
         }
     }

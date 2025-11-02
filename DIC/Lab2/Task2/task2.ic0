@@ -1,7 +1,7 @@
 * "simulator" "HSPICE" 
 * "version" "L-2016.03-2 win64"
 * "format" "HSP"
-* "rundate" "23:07:47 10/22/2025 "
+* "rundate" "11:41:44 11/02/2025 "
 * "netlist" "task2.sp "
 * "runtitle" "*****************************************************"
 * time =    0.            
@@ -12,9 +12,9 @@
 .nodeset
 + in =   0.            
 + inv1_out = 749.9788m       
-+ inv2_out =  14.8355u       
-+ inv3_out = 749.9791m       
-+ inv4_out =  14.8352u       
++ inv2_out =  14.8353u       
++ inv3_out = 749.9788m       
++ inv4_out =  14.8353u       
 + invl_out = 749.9792m       
 + vdd = 750.0000m       
 ***   END: Saved Operating Point ***                     

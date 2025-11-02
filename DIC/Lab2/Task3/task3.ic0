@@ -1,7 +1,7 @@
 * "simulator" "HSPICE" 
 * "version" "L-2016.03-2 win64"
 * "format" "HSP"
-* "rundate" "17:10:50 11/01/2025 "
+* "rundate" "11:53:30 11/02/2025 "
 * "netlist" "task3.sp "
 * "runtitle" "*****************************************************"
 * time =    0.            
@@ -11,7 +11,7 @@
 + gmindc=   1.0000p       
 .nodeset
 + in =   0.            
-+ inv1_out = 749.9787m       
++ inv1_out = 749.9788m       
 + inv2_out =  14.8353u       
 + inv3_out = 749.9788m       
 + inv4_out =  14.8353u       

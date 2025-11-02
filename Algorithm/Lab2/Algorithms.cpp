@@ -597,6 +597,7 @@ std::tuple<std::vector<uint8_t>, uint16_t, uint64_t, uint64_t> solve_TSP_with_dp
         }
     }
 
+    // 注意：此版本不实现路径重建，返回占位符路径（与原solve_TSP_with_dp函数行为一致）
     return {{0,0}, best_length, total_subproblems, unique_subproblems};
 
 }

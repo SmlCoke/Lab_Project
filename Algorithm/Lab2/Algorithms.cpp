@@ -459,10 +459,7 @@ std::tuple<std::vector<uint8_t>, uint16_t> solve_TSP_with_dp_fast_v3(const std::
         }
 
         // 将当前一层的数据搬到dp_prev，然后清空dp_curr
-        dp_prev = dp_curr;
-        for (auto &row : dp_curr) {
-            std::vector<uint16_t>().swap(row);
-        }
+        dp_prev = std::move(dp_curr);
         std::vector<std::vector<uint16_t>>().swap(dp_curr);
 
     }

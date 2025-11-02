@@ -86,69 +86,61 @@
 
 \section{实验目的}
 
-本实验旨在利用动态规划算法求解旅行商问题（Traveling Salesman Problem, TSP），并通过实现和优化多个版本的算法，深入理解动态规划的基本思想、状态转移方程的设计以及算法优化技巧。主要目标包括：
-
-\begin{enumerate}
-	\item 理解TSP问题的数学模型和动态规划求解方法
-	\item 实现基于状态压缩的动态规划算法
-	\item 对算法进行空间和时间上的优化
-	\item 分析不同优化策略对算法性能的影响
-	\item 统计动态规划过程中的子问题数量
-	\item 与近似算法进行对比分析
-\end{enumerate}
+本实验旨在利用动态规划算法求解旅行商问题（Traveling Salesman Problem, TSP），并通过实现和优化多个版本的算法，深入理解动态规划的基本思想、状态转移方程的设计以及算法优化技巧。 
 
 \section{算法原理}
 
 \subsection{TSP问题描述}
 
-旅行商问题（TSP）是组合优化领域的经典NP难问题。给定$n$个城市和每对城市之间的距离，要求找出一条访问每个城市恰好一次并返回起点的最短路径。形式化定义为：
+旅行商问题（TSP）是组合优化领域的经典NP难问题。给定$n$个结点和每对结点之间的距离，要求找出一条访问每个结点恰好一次并返回起点的最短路径。形式化定义为：
 
-给定完全加权图$G=(V,E)$，其中$V=\{0,1,\ldots,n-1\}$为城市集合，$d_{ij}$表示城市$i$到城市$j$的距离，目标是找到一个排列$\pi$，使得：
+给定完全加权图$G=(V,E)$，其中$V=\{0,1,\ldots,n-1\}$为结点集合，$d_{ij}$表示结点$i$到结点$j$的距离，目标是找到一个排列$\pi$，使得：
 
 \begin{equation}
-	\min \sum_{i=0}^{n-1} d_{\pi(i),\pi((i+1)\bmod n)}
+	\sum_{i=0}^{n-1} d_{\pi[i],\pi[(i+1)\bmod n]}
 \end{equation}
+达到最小。
 
 \subsection{动态规划解法}
 
 \subsubsection{状态定义}
 
-定义状态$dp[S][i]$表示从起点城市0出发，访问集合$S$中的所有城市，最后停留在城市$i$的最短路径长度。其中：
+定义状态$dp[S][i]$表示从当前结点i出发，访问集合$S$中的所有结点，最后回到初始结点0的最短路径长度。其中：
 \begin{itemize}
-	\item $S$是一个城市集合，用二进制掩码表示，第$k$位为1表示城市$k$在集合中
+	\item $S$是一个结点集合，用二进制掩码表示，第$k$位为1表示结点$k$在集合中，即结点$k$待访问
 	\item $i \in S$，且$0 \in S$（起点必须在集合中）
-	\item 最终答案为$\min_{i=1}^{n-1}\{dp[V][i] + d_{i,0}\}$，其中$V$表示所有城市的集合
+	\item 最终答案为$\min_{i=1}^{n-1}\{dp[V-\{i\}][i] + d_{0,i}\}$，其中$V$表示所有结点的集合
 \end{itemize}
 
 \subsubsection{状态转移方程}
 
 初始状态：$dp[\{0\}][0] = 0$
 
-对于$|S| \geq 2$的状态转移：
+对于$|S| \geq 2$的递归方程：
 \begin{equation}
-	dp[S][i] = \min_{j \in S \setminus \{i\}} \{dp[S \setminus \{i\}][j] + d_{i,j}\}
+	dp[S][i] = \min_{k \in S, k \neq 0}\{d[S-\{k\}][k] + d_{i,k}\} 
 \end{equation}
 
-该状态转移方程的含义是：要计算到达城市$i$且访问过集合$S$中所有城市的最短路径，需要枚举上一个访问的城市$j$（$j \in S$且$j \neq i$），从已访问$S \setminus \{i\}$且停在$j$的状态转移过来。
+该递归方程的含义是：要计算$dp[S][i]$，需要考虑从集合$S$中除$i$外的每个结点$k$出发，从$i$到$k$，然后从$k$访问完$S-\{i\}$中的所有结点的总路径，取其中的最小值。
 
 \subsubsection{算法流程}
 
 \begin{algorithm}[H]
 	\caption{动态规划求解TSP}
 	\begin{algorithmic}[1]
-		\Require 邻接矩阵$adj[n][n]$，城市数量$n$
+		\Require 邻接矩阵$adj[n][n]$，结点数量$n$
 		\Ensure 最短路径长度和路径序列
 		\State 初始化$dp[\{0\}][0] = 0$，其余为$\infty$
 		\For{$k = 2$ to $n$} \Comment{按照集合大小递增}
-		\For{所有大小为$k$且包含城市0的集合$S$}
+		\For{所有大小为$k$且包含结点0的集合$S$}
 		\For{$i \in S$且$i \neq 0$}
-		\For{$j \in S \setminus \{i\}$}
-		\State $dp[S][i] = \min(dp[S][i], dp[S \setminus \{i\}][j] + adj[i][j])$
+		\For{$j \in S - \{i\}$}
+		\State $dp[S][i] = \min_{k \in S, k \neq 0}\{d[S-\{k\}][k] + d_{i,k}\}$ 
 		\EndFor
 		\EndFor
 		\EndFor
 		\EndFor
-		\State $result = \min_{i=1}^{n-1}\{dp[V][i] + adj[0][i]\}$
+		\State $result = \min_{i=1}^{n-1}\{dp[V-\{i\}][i] + d_{0,i}\}$
 		\State \Return $result$和通过记录路径回溯得到的完整路径
 	\end{algorithmic}
 \end{algorithm}
@@ -158,60 +150,68 @@
 本实验实现了四个版本的动态规划算法，每个版本在前一版本基础上进行了优化：
 
 \begin{enumerate}
-	\item \textbf{solve\_TSP\_with\_dp}：基础版本，使用哈希表存储状态
-	\item \textbf{solve\_TSP\_with\_dp\_fast}：使用二维数组替代哈希表，提高访问效率
+	\item \textbf{solve\_TSP\_with\_dp}：基础版本，使用哈希表(unordered\_map)存储状态
+	
+	这样做的好处就是每次只会使用到两层状态：当前集合大小k和k-1的状态，因此可以通过迭代数组技术节省空间。
+
+	\item \textbf{solve\_TSP\_with\_dp\_fast}：使用二维数组(vector<vector>)替代哈希表，提高访问效率
+	
+	经过测试之后发现哈希表结点权重太高，所以想尝试直接使用二维数组存储状态。但是发现如果用二维数组存储，所有状态都会被初始化，导致内存开销过大。测试之后虽然发现在att7和att20数据集上性能提升了3-4倍，但在更大数据集上会因为内存不足而无法运行。因此接下来尝试进一步优化状态空间。
+
 	\item \textbf{solve\_TSP\_with\_dp\_fast\_v2}：利用起点固定为0的性质，将状态空间减半
-	\item \textbf{solve\_TSP\_with\_dp\_fast\_v3}：使用滚动数组技术，进一步优化空间复杂度
+	
+	由于我们考虑的所有掩码序列mask\_index，其LSP都被强制规定为1，因此我们就没有必要存储那些LSP为0的掩码序列对应的状态。这样一来，状态空间就从$O(2^n \cdot n)$减少到$O(2^{n-1} \cdot n)$，节省了一半的内存开销。经过测试，在att7和att20数据集上分别提升了约18\%和6.6\%的性能。
+
+	\item \textbf{solve\_TSP\_with\_dp\_fast\_v3}：迭代二维数组，进一步优化空间复杂度
+
+	算法fast\_v3综合考虑了算法dp和dp\_fast的优点：(1) 使用二维数组(vector<vector>)存储状态，提升访问效率；(2) 每次循环只记录当前集合大小$k$和$k-1$的状态，节省空间开销。具体做法如下：
+
+	我们在每次循环时，只需要拥有结点个数为$k-1$的掩码，然后根据该信息生成节点个数为$k$的掩码集合。但是这些掩码的值是离散的，无法直接使用vector存储，因此，我们需要采用一种方法，将这些离散的掩码(含有$k$个1的二进制序列)映射到连续的索引上。这种映射关系，需要我们实现：\textbf{假设对于$N$位宽的二进制序列，我们记1的个数为$N$的二进制序列集合为$S_N$，对于任意一个含有$N$个1的二进制序列$a$，我们需要一个函数$f(a)$，能够在不直接计算$S_N$中的所有序列的情况下，返回$a$在升序排列后的$S_N$中的索引位置}。
+
+	经过查找，我们确实找到了这种方法，如下：
+
+	\paragraph{组合数编号法}
+	设有一个宽度为 $M$ 的二进制掩码 $a$，其中恰有 $N$ 个 1。记 $S_N$ 为所有“宽度为 $M$、恰有 $N$ 个 1”的掩码集合，并按数值从小到大排序。我们的目标是在不显式生成 $S_N$ 的情况下，直接计算 $a$ 在 $S_N$ 中的索引（从0开始）。
+
+	令 $a$ 中从低位到高位的 1 的位置为
+	$0 \le p_1 < p_2 < \cdots < p_N \le M-1$，
+	则 $a$ 的索引由下式给出：
+	\begin{equation}
+	\mathrm{index}(a) \;=\; \sum_{i=1}^{N} \binom{p_i}{i}.
+	\end{equation}
+
+	\noindent 示例：$M=5, N=3, a=10110_2$，其 1 的位置为 $[1,2,4]$，则
+	\[
+	\mathrm{index}(a) \;=\; \binom{1}{1}+\binom{2}{2}+\binom{4}{3}\;=\;1+1+4\;=\;6.
+	\]
+
+	该方法等价于将“从 $M$ 位中选 $N$ 位为 1”的组合做秩(rank)编号，时间复杂度 $O(M)$，无需枚举全部组合，适用于将“固定 1 的个数”的子集映射到连续内存索引，从而实现 DP 层内的紧凑存储。
+
+	理论上，空间复杂度可以降低到$O(C_n^k \cdot n)$，其中$k$是当前处理的集合大小。但实验结果显示，在att7和att20数据集上性能反而下降了。这是因为v3需要频繁计算组合数索引，额外的计算开销超过了节省内存带来的收益。
 \end{enumerate}
 
-\section{实验设计}
+\newpage
+\section{实验内容与结果}
 
-\subsection{实验环境}
-
-\begin{itemize}
-	\item 编程语言：C++20
-	\item 编译器：g++ 13.3.0
-	\item 操作系统：Linux
-	\item 开发环境：VSCode
-\end{itemize}
-
-\subsection{数据集}
-
-实验使用了三个TSP数据集：
-
-\begin{table}[H]
-	\centering
-	\begin{tabular}{lcc}
-		\toprule
-		数据集 & 城市数量 & 说明 \\
-		\midrule
-		att7.txt & 7 & 小规模数据集，用于快速验证 \\
-		att20.txt & 20 & 中等规模数据集 \\
-		bays29.txt & 29 & 大规模数据集，仅用于近似算法测试 \\
-		\bottomrule
-	\end{tabular}
-	\caption{实验数据集}
-\end{table}
-
-\subsection{实验内容}
+\subsection{实验步骤}
 
 \begin{enumerate}
-	\item 实现四个版本的动态规划算法
+	\item 实现基础动态规划算法solve\_TSP\_with\_dp，后续不断更新迭代另外三个算法
 	\item 为每个算法添加子问题统计功能，记录：
 	\begin{itemize}
 		\item 所有子问题访问次数（包括重复访问）
 		\item 首次出现的子问题数量（不计重复）
 	\end{itemize}
-	\item 实现2-opt近似算法作为对照
+	\item 实现2-opt近似算法作为对照（\textbf{2-opt部分算法为AI生成}）
 	\item 在不同数据集上测试各算法的性能
 	\item 对比分析动态规划精确算法与近似算法的差异
 \end{enumerate}
 
-\section{实验结果}
+\subsection{实验结果}
 
-\subsection{动态规划算法结果}
+\subsubsection{动态规划算法结果}
 
-\subsubsection{att7数据集结果}
+\textbf{att7数据集结果}
 
 \begin{table}[H]
 	\centering
@@ -230,7 +230,7 @@
 
 \textbf{最优路径}：$0 \to 3 \to 5 \to 6 \to 2 \to 1 \to 4 \to 0$
 
-\subsubsection{att20数据集结果}
+\textbf{att20数据集结果}
 
 \begin{table}[H]
 	\centering
@@ -249,7 +249,11 @@
 
 \textbf{最优路径}：$0 \to 7 \to 8 \to 14 \to 17 \to 6 \to 5 \to 18 \to 16 \to 19 \to 11 \to 10 \to 12 \to 13 \to 4 \to 9 \to 3 \to 1 \to 2 \to 15 \to 0$
 
-\subsection{子问题统计结果}
+\textbf{bays29数据集结果}
+
+很遗憾，我实现的所有版本的动态规划算法在bays29数据集上无法在一个小时之内完成计算，内存消耗过大，因此未能获得结果。
+
+\subsubsection{子问题统计结果}
 
 通过为算法添加统计功能，我们获得了动态规划过程中的子问题访问情况：
 
@@ -270,10 +274,10 @@
 \begin{itemize}
 	\item 平均每个唯一子问题被访问约$\frac{492}{193} \approx 2.55$次（att7）
 	\item 平均每个唯一子问题被访问约$\frac{44826662}{4980737} \approx 9.00$次（att20）
-	\item 随着城市数量增加，子问题的重复访问率显著提高，这凸显了动态规划记忆化的重要性
+	\item 随着结点数量增加，子问题的重复访问率显著提高，这凸显了动态规划记忆化的重要性
 \end{itemize}
 
-\subsection{近似算法结果}
+\subsubsection{近似算法结果}
 
 使用2-opt近似算法在三个数据集上的结果：
 
@@ -291,12 +295,13 @@
 	\caption{2-opt近似算法结果}
 \end{table}
 
+\newpage
 \section{结果分析}
 
 \subsection{算法优化效果分析}
 
 \begin{enumerate}
-	\item \textbf{哈希表 vs 数组（v1 vs v2）}
+	\item \textbf{哈希表 vs 数组（dp vs dp\_fast）}
 	
 	使用二维数组替代哈希表后，在att7上速度提升了3.67倍，在att20上提升了3.75倍。这是因为：
 	\begin{itemize}
@@ -304,19 +309,19 @@
 		\item 数组访问具有更好的缓存局部性
 	\end{itemize}
 	
-	\item \textbf{状态空间压缩（v2 vs v3）}
+	\item \textbf{状态空间压缩（dp\_fast vs dp\_fast\_v2）}
 	
 	利用起点固定的特性将状态空间减半后，在att7上进一步提升了约18\%的性能（从0.0485ms降至0.0413ms）。在att20上也有约6.6\%的提升。空间复杂度从$O(2^n \cdot n)$降至$O(2^{n-1} \cdot n)$。
 	
-	\item \textbf{滚动数组优化（v3 vs v4）}
+	\item \textbf{迭代更新数组（dp\_fast\_v2 vs dp\_fast\_v3）}
 	
-	v4版本使用滚动数组，理论上可以将空间复杂度降低到$O(C_n^k \cdot n)$，其中$k$是当前处理的集合大小。但实验结果显示：
+	v3版本迭代更新数组，这样不必记录所有的掩码状态，理论上可以将空间复杂度降低到$O(C_n^k \cdot n)$，其中$k$是当前处理的集合大小。但实验结果显示：
 	\begin{itemize}
-		\item 在att7上，v4反而比v3慢（0.0772ms vs 0.0413ms）
-		\item 在att20上，v4比v3慢得多（5402.87ms vs 1223.09ms）
+		\item 在att7上，v3反而比v2慢（0.0772ms vs 0.0413ms）
+		\item 在att20上，v3比v2慢得多（5402.87ms vs 1223.09ms）
 	\end{itemize}
 	
-	这是因为v4需要频繁计算组合数索引，额外的计算开销超过了节省内存带来的收益。在内存充足的情况下，v3是最优选择。
+	这是因为v3需要频繁计算组合数索引，额外的计算开销超过了节省内存带来的收益。在内存充足的情况下，v2是最优选择。
 \end{enumerate}
 
 \subsection{精确算法与近似算法对比}
@@ -361,30 +366,25 @@
 	\caption{算法复杂度对比}
 \end{table}
 
-\section{结论}
+\newpage
+
+\section{结论与实验心得}
 
 通过本次实验，我们深入理解了动态规划算法在求解TSP问题中的应用，得出以下结论：
 
 \begin{enumerate}
-	\item \textbf{动态规划有效性}：基于状态压缩的动态规划算法能够在$O(n^2 \cdot 2^n)$时间内求解TSP问题的最优解，适用于$n \leq 20$的中小规模问题。
+	\item \textbf{动态规划有效性}：基于状态压缩的动态规划算法能够在$O(n^2 \cdot 2^n)$时间内求解TSP问题的最优解，适用于$n \leq 20$的中小规模问题。一旦规模过大，指数级复杂度在有限时间内无法求解。
 	
-	\item \textbf{优化策略的重要性}：通过使用数组代替哈希表、压缩状态空间等优化手段，可以将算法性能提升3-4倍。但并非所有理论上的优化都能带来实际收益，需要权衡计算开销和内存访问效率。
+	\item \textbf{优化策略的重要性}：通过使用数组代替哈希表、压缩状态空间等优化手段，可以将算法性能提升3-4倍。但并非所有理论上的优化都能带来实际收益（例如v3利用组合数索引方法本意是想降低存储负担，但是带来了大量的计算过程，增大了时间复杂度），需要权衡计算开销和内存访问效率。
 	
 	\item \textbf{子问题重复访问}：统计数据表明，动态规划过程中存在大量的子问题重复访问（平均9次/att20），验证了记忆化搜索的必要性。
-	
-	\item \textbf{精确算法的局限性}：尽管动态规划能够求得最优解，但其指数级的时间和空间复杂度限制了其在大规模问题上的应用。对于$n > 25$的问题，近似算法成为更实际的选择。
-	
-	\item \textbf{算法选择权衡}：在实际应用中，需要根据问题规模、解的质量要求和可用计算资源来选择合适的算法。对于要求最优解的中小规模问题，优化后的动态规划算法是最佳选择；对于大规模问题或对解的质量要求不高的场景，近似算法更为合适。
 \end{enumerate}
 
-\section{实验心得}
 
 通过本次实验，我对动态规划算法有了更深入的理解：
 
 \begin{itemize}
-	\item 学会了如何将实际问题抽象为动态规划问题，设计合理的状态表示和转移方程
-	\item 掌握了状态压缩、滚动数组等常用的动态规划优化技巧
-	\item 认识到算法理论分析与实际性能之间可能存在差异，需要通过实验验证
+	\item 掌握了状态压缩、迭代更新数组等常用的动态规划优化技巧
 	\item 体会到了精确算法和近似算法各自的优势与局限性
 	\item 提高了C++编程能力和性能分析能力
 \end{itemize}

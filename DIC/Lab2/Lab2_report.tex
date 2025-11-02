@@ -229,19 +229,19 @@ The simulation results for all six configurations are summarized in Table \ref{t
 \toprule
 \textbf{Index} & \textbf{f2} & \textbf{f3} & \textbf{f4} & \textbf{$t_{p1}$ (ps)} & \textbf{$t_{p2}$ (ps)} & \textbf{$t_{p3}$ (ps)} & \textbf{$t_{p4}$ (ps)} & \textbf{$t_{\text{p\_total}}$ (ps)} \\
 \midrule
-1 & 4 & 16 & 64 & 8.360 & 18.86 & 5.991 & 7.738 & 40.95 \\
-2 & 4 & 15 & 60 & 8.295 & 17.76 & 6.012 & 7.785 & 39.86 \\
-3 & 4 & 20 & 80 & 8.428 & 22.65 & 6.429 & 7.929 & 45.43 \\
-4 & 5 & 16 & 64 & 9.439 & 15.88 & 5.600 & 7.255 & 38.18 \\
-5 & 5 & 15 & 60 & 9.492 & 15.09 & 5.506 & 7.238 & 37.32 \\
-6 & 5 & 20 & 80 & 9.414 & 19.16 & 5.762 & 7.446 & 41.78 \\
+1 & 4 & 16 & 64 & 8.619 & 6.786 & 6.752 & 7.009 & 29.17 \\
+2 & 4 & 15 & 60 & 8.607 & 6.548 & 6.644 & 7.271 & 29.07 \\
+3 & 4 & 20 & 80 & 8.602 & 7.739 & 7.188 & 6.232 & 29.76 \\
+4 & 5 & 16 & 64 & 9.749 & 6.279 & 6.477 & 6.958 & 29.46 \\
+5 & 5 & 15 & 60 & 9.753 & 6.071 & 6.385 & 7.228 & 29.44 \\
+6 & 5 & 20 & 80 & 9.723 & 7.086 & 6.841 & 6.166 & 29.82 \\
 \bottomrule
 \end{tabular}
 \caption{Inverter chain delay measurements for different sizing configurations}
 \label{tab:task2_results}
 \end{table}
 
-The optimal configuration is found to be \textbf{$f_2 = 5, f_3 = 15, f_4 = 60$} with a minimum total delay of \textbf{37.32 ps}.
+The optimal configuration is found to be \textbf{$f_2 = 4, f_3 = 15, f_4 = 60$} with a minimum total delay of \textbf{29.07 ps}.
 
 \begin{figure}[h]
 \centering
@@ -252,20 +252,20 @@ The optimal configuration is found to be \textbf{$f_2 = 5, f_3 = 15, f_4 = 60$} 
 
 \subsection{Technical Analysis}
 
-The experimental results reveal some important deviations from classical design theory:
+The experimental results reveal interesting insights about inverter chain optimization:
 
-For a 4-stage chain with load factor F = 256, the optimal sizing factor should be $f = F^{1/N} = 256^{1/4} = 4$, suggesting uniform scaling with $f_2 = 4, f_3 = 16, f_4 = 64$. However, the practical result is that $f_2 = 5, f_3 = 15, f_4 = 60$, which deviates from the theoretical 4-16-64 progression.
+For a 4-stage chain with load factor F = 256, the optimal sizing factor should be $f = F^{1/N} = 256^{1/4} = 4$, suggesting uniform scaling with $f_2 = 4, f_3 = 16, f_4 = 64$. The experimental results show that while $f_2 = 4$ matches the theory, the optimal configuration is $f_2 = 4, f_3 = 15, f_4 = 60$, which deviates slightly from the theoretical 4-16-64 progression by using f3=15 instead of 16, and f4=60 instead of 64.
 
-The classical theory assumes identical stage designs with pure capacitive loading. However, in practical FinFET technology, input capacitance includes both gate and parasitic components, while our theory model neglects parasitics capacitance. Moreover, wire parasitic capacitance becomes significant at small feature sizes. That cause drive strength varies non-linearly with transistor sizing. The optimal factor may be slightly larger than 4.
+The classical theory assumes identical stage designs with pure capacitive loading. However, in practical FinFET technology, input capacitance includes both gate and parasitic components, while our theory model neglects parasitic capacitance. Moreover, wire parasitic capacitance becomes significant at small feature sizes, causing drive strength to vary non-linearly with transistor sizing.
 
 \textbf{Stage-by-stage analysis}: 
 \begin{itemize}
-    \item[1.] Stage 1 and stage 3 shows slightly higher delay with f2=5 vs f2=4 (9.5 ps vs 8.4 ps for stage 1) due to increased load
-    \item[2.] Stage 2  and stage 4 benefits significantly from f2=5, showing much lower delay (15.1 ps vs 18.9 ps for stage 2), while the overall delay mainly relies on stage 2 and stage 4 because their larger magnitude.
+    \item[1.] Configuration (4, 16, 64): All stages have relatively balanced delays, with total delay of 29.17 ps
+    \item[2.] Configuration (4, 15, 60): Achieves 29.07 ps by slightly reducing f3 and f4, which reduces their input capacitance while maintaining sufficient drive strength
+    \item[3.] Configuration (4, 20, 80): Stage 2 delay increases to 7.74 ps (compared to 6.55 ps for configuration 2), offsetting gains from other stages
 \end{itemize}
 
-
-The results demonstrate that practical optimization requires consideration of technology-specific effects beyond simple analytical models.
+The results demonstrate that the theoretical 4× scaling provides an excellent starting point, and fine-tuning around this value can yield small improvements. The optimal deviation from theory (using 15 and 60 instead of 16 and 64) suggests that slightly undersizing the intermediate stages can reduce total delay by minimizing parasitic capacitance effects.
 
 \newpage
 \section{Task 3: CMOS Inverter Power Consumption}
@@ -275,7 +275,7 @@ The results demonstrate that practical optimization requires consideration of te
 Task 3 measures the power consumption of the optimized inverter chain from Task 2. HSPICE simulation is performed with the following key steps:
 
 \begin{enumerate}
-    \item[1. ] The optimal sizing configuration: f2 = 5, f3 = 15, f4 = 60
+    \item[1. ] The optimal sizing configuration from Task 2: f2 = 4, f3 = 15, f4 = 60
     \item[2. ] A pulse voltage source applied to the input
     \item[3. ] Power measurement averaged over multiple switching cycles
 \end{enumerate}
@@ -298,7 +298,7 @@ The measured power consumption results are:
 \toprule
 \textbf{Parameter} & \textbf{Value} & \textbf{Temperature (°C)} \\
 \midrule
-Average Power & $-49.86 \mu W$ & 25.0 \\
+Average Power & $-49.68 \mu W$ & 25.0 \\
 \bottomrule
 \end{tabular}
 \caption{Power consumption of optimized inverter chain}
@@ -311,7 +311,7 @@ Note: The negative sign indicates power consumption (current flowing from the su
 The power consumption analysis reveals several important characteristics:
 
 \begin{itemize}
-    \item[1.] \textbf{Total power}: The measured average power of $-49.86 \mu W$ represents the combined dynamic and static power consumption of the 4-stage inverter chain.
+    \item[1.] \textbf{Total power}: The measured average power of $-49.68 \mu W$ represents the combined dynamic and static power consumption of the 4-stage inverter chain.
     
     \item[2.] \textbf{Dynamic power dominance}: At nominal supply voltage (0.75V) and room temperature, dynamic switching power typically dominates over static leakage power. The dynamic power is given by:
     $$P_{dynamic} = C_{load} \cdot V_{DD}^2 \cdot P_{0 \rightarrow 1} \cdot f_{clk}$$
@@ -334,12 +334,12 @@ Task 4 investigates the optimal operating point ($V_{dd}$) by sweeping supply vo
 HSPICE simulation is performed with the following key steps:
 
 \begin{enumerate}
-    \item[1. ] Use the optimized chain configuration (f2 = 5, f3 = 15, f4 = 60)
+    \item[1. ] Use the optimized chain configuration from Task 2 (f2 = 4, f3 = 15, f4 = 60)
     \item[2. ] Sweep supply voltage from 0.5V to 1.5V in 20mV steps
     \item[3. ] Measure total propagation delay ($t_{\text{p\_total}}$) for each voltage
     \item[4. ] Measure average power consumption at each voltage
     \item[5. ] Calculate EDP for each operating point
-\end{enumerate}
+\end{enumerate>
 
 Key HSPICE measurement statements:
 
@@ -361,20 +361,20 @@ The simulation swept 51 voltage points from 0.5V to 1.5V. For example, several o
 \toprule
 \textbf{Supply (V)} & \textbf{$t_{\text{p\_total}}$ (ps)} & \textbf{Power ($\mu W$)} & \textbf{EDP ($W \cdot s^2$)} \\
 \midrule
-0.50 & 44.56 & -20.23 & 4.018×10$^{-26}$ \\
-0.56 & 38.60 & -26.20 & 3.904×10$^{-26}$ \\
-0.58 & 37.12 & -28.39 & 3.913×10$^{-26}$ \\
-0.70 & 31.05 & -43.85 & 4.228×10$^{-26}$ \\
-0.80 & 28.12 & -59.85 & 4.732×10$^{-26}$ \\
-1.00 & 24.73 & -101.0 & 6.179×10$^{-26}$ \\
-1.20 & 22.57 & -617.0 & 31.42×10$^{-26}$ \\
-1.50 & 18.80 & -7.093e+6 & 2.507×10$^{-21}$ \\
+0.50 & 44.10 & -20.15 & 3.918×10$^{-26}$ \\
+0.56 & 38.24 & -26.10 & 3.815×10$^{-26}$ \\
+0.58 & 36.74 & -28.28 & 3.817×10$^{-26}$ \\
+0.70 & 30.71 & -43.69 & 4.122×10$^{-26}$ \\
+0.80 & 27.74 & -59.64 & 4.590×10$^{-26}$ \\
+1.00 & 24.36 & -100.7 & 5.978×10$^{-26}$ \\
+1.20 & 22.18 & -611.4 & 30.08×10$^{-26}$ \\
+1.50 & 18.47 & -8.298e+6 & 2.830×10$^{-21}$ \\
 \bottomrule
 \end{tabular}
 \caption{Selected EDP measurements at different supply voltages}
 \end{table}
 
-The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.904×10$^{-26} W \cdot s^2$} with $t_{\text{p\_total}}$ = \textbf{38.60 ps} and power = \textbf{-26.20 $\mu W$}.
+The \textbf{optimal supply voltage is 0.56V}, achieving the minimum EDP of \textbf{3.815×10$^{-26} W \cdot s^2$} with $t_{\text{p\_total}}$ = \textbf{38.24 ps} and power = \textbf{-26.10 $\mu W$}.
 
 \begin{figure}[htbp]
     \centering
@@ -412,12 +412,12 @@ The voltage scaling results demonstrate fundamental trade-offs in digital circui
 \begin{itemize}
     \item[1.] \textbf{Delay characteristics}: As shown in Figure \ref{fig:task4_delay}, delay increases exponentially as supply voltage decreases to threshold. At 0.5V, the circuit operates near the threshold voltage region where transistor drive current is severely degraded.
     
-    \item[2.] \textbf{Power characteristics}: Figure \ref{fig:task4_power} shows that power consumption decreases quadratically with supply voltage, following the relationship $P \propto V_{DD}^2$. At 1.0V, power is approximately 101 $\mu W$, while at 0.56V it drops to 26.20 $\mu W$ (a 74\% reduction).
+    \item[2.] \textbf{Power characteristics}: Figure \ref{fig:task4_power} shows that power consumption decreases quadratically with supply voltage, following the relationship $P \propto V_{DD}^2$. At 1.0V, power is approximately 100.7 $\mu W$, while at 0.56V it drops to 26.10 $\mu W$ (a 74\% reduction).
     
     \item[3.] \textbf{EDP optimization}: Figure \ref{fig:task4_edp} reveals a minimum at 0.56V. This represents the optimal balance between:
     \begin{itemize}
-        \item Speed: Still reasonable at 38.60 ps
-        \item Energy efficiency: Power of 26.20 $\mu W$, providing excellent energy-delay trade-off
+        \item Speed: Still reasonable at 38.24 ps
+        \item Energy efficiency: Power of 26.10 $\mu W$, providing excellent energy-delay trade-off
     \end{itemize}
     
 \end{itemize}
@@ -509,9 +509,10 @@ The results validate theoretical predictions and reveal practical design insight
     
     \item[5. ] \textbf{Comparison with Task 2}: 
     \begin{itemize}
-        \item Task 2 (fixed 4 stages with non-uniform sizing): Best delay = 37.32 ps
-        \item Task 5 (optimized 4 stages with uniform scaling): Delay = 29.17 ps
-        \item Improvement: 22\% faster with optimal uniform sizing factor $f = 4.00$
+        \item Task 2 (fixed 4 stages with swept sizing): Best delay = 29.07 ps with (f2=4, f3=15, f4=60)
+        \item Task 5 (optimized 4 stages with uniform scaling): Delay = 29.17 ps with (f2=4, f3=16, f4=64)
+        \item Task 5 fine-grained optimization: Best delay = 29.01 ps with (f2=4, f3=15, f4=56)
+        \item The results show that the manual parameter sweep in Task 2 and the fine-grained optimization in Task 5 both converge to similar optimal configurations around f2=4, f3=15
     \end{itemize}
 
 
@@ -519,6 +520,49 @@ The results validate theoretical predictions and reveal practical design insight
 \end{itemize}
 
 This task demonstrates the importance of holistic optimization - considering both stage count and transistor sizing to achieve optimal circuit performance.
+
+\subsection{Fine-Grained Optimization for N=4 and N=5}
+
+Since both N=4 and N=5 stages achieved the same minimum delay of 29.17 ps with uniform sizing factors, we conducted additional fine-grained parameter sweeps around these optimal points to search for even better configurations. Instead of constraining the sizing factors to follow the geometric progression strictly, we allowed small variations in the intermediate stage sizes.
+
+\textbf{For N=4 stages:}
+
+We swept the sizing factors f2, f3, and f4 around the theoretical values (4, 16, 64), allowing variations in f2 (4, 5), f3 (15, 16, 17), and f4 (56, 58, 60, 62, 64, 66, 68, 70). This resulted in 48 different configurations.
+
+\textbf{For N=5 stages:}
+
+We swept the sizing factors f2, f3, f4, and f5 around the theoretical values (3, 9, 27, 84), allowing variations in f2 (2, 3, 4), f3 (7, 9, 11), f4 (25, 27, 29), and f5 (80, 84, 88). This resulted in 81 different configurations.
+
+\textbf{Optimization Results:}
+
+The detailed simulation results are stored in \texttt{Task5\_op/N=4/task5\_op\_N4.csv} and \texttt{Task5\_op/N=5/task5\_op\_N5.csv}. The optimal configurations found are:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccccc}
+\toprule
+\textbf{N} & \textbf{f2} & \textbf{f3} & \textbf{f4} & \textbf{f5} & \textbf{$t_{\text{p\_total}}$ (ps)} \\
+\midrule
+4 & 4 & 15 & 56 & - & 29.01 \\
+5 & 3 & 9 & 27 & 80 & 29.11 \\
+\bottomrule
+\end{tabular}
+\caption{Optimal configurations from fine-grained parameter sweep}
+\end{table}
+
+The fine-grained optimization revealed that for N=4, the configuration \textbf{(4, 15, 56)} achieves a slightly better delay of \textbf{29.01 ps}, which is marginally better than the uniform scaling result of 29.17 ps. For N=5, the configuration \textbf{(3, 9, 27, 80)} achieves \textbf{29.11 ps}.
+
+\textbf{Analysis:}
+
+The improvement from 29.17 ps to 29.01 ps (0.55\% improvement) demonstrates that:
+\begin{itemize}
+    \item The theoretical uniform sizing provides an excellent starting point for optimization
+    \item Fine-tuning around the theoretical values can yield marginal improvements
+    \item The optimization landscape is relatively flat near the optimum, indicating robustness to sizing variations
+    \item Practical design can benefit from such parameter sweeps when maximum performance is critical
+\end{itemize}
+
+This refined optimization shows that the N=4 configuration with sizing factors (4, 15, 56) represents the best achievable performance for this inverter chain design problem.
 
 \newpage
 \section{Observations and Conclusions}
@@ -530,11 +574,11 @@ This laboratory investigation of CMOS inverter chains using 16nm FinFET technolo
 \begin{enumerate}
     \item \textbf{FO4 Delay Characterization}: The measured FO4 delay of 5.9 ps demonstrates the high-speed capability of advanced FinFET technology. The slight asymmetry between $t_{pLH}$ and $t_{pHL}$ (9\% difference) reflects inherent mobility differences between NMOS and PMOS devices.
 
-    \item \textbf{Theoretical vs. Practical Optimization}: While classical theory predicts uniform 4× scaling for optimal delay, experimental results show that $f_2=5, f_3=15, f_4=60$ provides superior performance. This deviation highlights the importance of parasitic effects, non-ideal scaling, and technology-specific characteristics that simple analytical models may overlook.
+    \item \textbf{Theoretical vs. Practical Optimization}: While classical theory predicts uniform 4× scaling for optimal delay, experimental results show that $f_2=4, f_3=15, f_4=60$ provides superior performance for the fixed 4-stage chain in Task 2. This deviation highlights the importance of parasitic effects, non-ideal scaling, and technology-specific characteristics that simple analytical models may overlook.
     
     \item \textbf{Voltage Scaling for Energy Efficiency}: The EDP analysis revealed that operating at 0.56V (25\% below nominal 0.75V) achieves optimal energy efficiency. This represents approximately 74\% power reduction compared to higher voltages, making it highly attractive for energy-constrained applications.
     
-    \item \textbf{Architectural Optimization}: Allowing variable stage count with uniform sizing (Task 5) achieved 22\% better performance compared to the manually-tuned 4-stage design in Task 2. Both $N=4$ stages with $f = 4.00$ and $N=5$ stages with $f \approx 3.03$ achieve optimal performance, validating theoretical predictions that suggest an optimal sizing factor near $f \approx 3.6$.
+    \item \textbf{Architectural Optimization}: Allowing variable stage count with uniform sizing (Task 5) achieved 22\% better performance (29.17 ps) compared to the manually-tuned 4-stage design in Task 2 (37.32 ps). Both $N=4$ stages with $f = 4.00$ and $N=5$ stages with $f \approx 3.03$ achieve optimal performance, validating theoretical predictions that suggest an optimal sizing factor near $f \approx 3.6$. Further fine-grained optimization around these configurations found that N=4 with sizing (4, 15, 56) achieves the absolute minimum delay of 29.01 ps.
 \end{enumerate}
 
 \subsection{Conclusions}

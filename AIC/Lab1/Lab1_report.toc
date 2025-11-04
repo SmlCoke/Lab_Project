@@ -1,0 +1,62 @@
+\contentsline {section}{\numberline {1}任务一：NMOS ID vs. VGS特性分析}{4}{section.1}%
+\contentsline {subsection}{\numberline {1.1}任务要求}{4}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}实验结果}{4}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}理论分析}{4}{subsection.1.3}%
+\contentsline {section}{\numberline {2}任务二：跨导gm vs. VGS特性分析}{6}{section.2}%
+\contentsline {subsection}{\numberline {2.1}任务要求}{6}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}实验结果}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}理论分析}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}任务三：gm/ID特性分析与最佳工作点}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}任务要求}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}实验结果}{8}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}理论分析}{8}{subsection.3.3}%
+\contentsline {section}{\numberline {4}任务四：ID vs. VGS and VDS三维特性分析}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}任务要求}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}实验结果}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}理论分析}{10}{subsection.4.3}%
+\contentsline {section}{\numberline {5}任务五：NMOS关键参数提取与计算}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}任务要求}{12}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}实验数据与计算过程}{12}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}输出电阻$r_o$的提取}{12}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}阈值电压$V_{th}$的提取}{12}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}沟道长度调制参数$\lambda $的提取}{13}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}迁移率与栅氧化层电容乘积$\mu C_{ox}$的提取}{13}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}输出电阻$r_o$的另一种计算方法}{14}{subsubsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.3}理论分析}{14}{subsection.5.3}%
+\contentsline {section}{\numberline {6}任务六：输出电阻ro的分析}{15}{section.6}%
+\contentsline {subsection}{\numberline {6.1}任务要求}{15}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}实验结果}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}理论分析}{15}{subsection.6.3}%
+\contentsline {section}{\numberline {7}任务七：本征增益与尺寸优化分析}{17}{section.7}%
+\contentsline {subsection}{\numberline {7.1}任务要求}{17}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}实验结果}{17}{subsection.7.2}%
+\contentsline {subsubsection}{\numberline {7.2.1}gm/id性能优化}{17}{subsubsection.7.2.1}%
+\contentsline {subsubsection}{\numberline {7.2.2}本征增益分析}{17}{subsubsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.3}理论分析}{18}{subsection.7.3}%
+\contentsline {subsubsection}{\numberline {7.3.1}本征增益的理论推导}{18}{subsubsection.7.3.1}%
+\contentsline {section}{\numberline {8}任务八：CMOS反相器DC特性分析}{20}{section.8}%
+\contentsline {subsection}{\numberline {8.1}任务要求}{20}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}实验结果}{20}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}理论分析}{20}{subsection.8.3}%
+\contentsline {section}{\numberline {9}任务九：CMOS反相器尺寸优化}{22}{section.9}%
+\contentsline {subsection}{\numberline {9.1}任务要求}{22}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}实验结果}{22}{subsection.9.2}%
+\contentsline {subsubsection}{\numberline {9.2.1}PMOS宽度优化}{22}{subsubsection.9.2.1}%
+\contentsline {subsubsection}{\numberline {9.2.2}Finger数量影响分析}{24}{subsubsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.3}理论分析}{24}{subsection.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.1}开关阈值的理论计算}{24}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}Finger结构的影响}{26}{subsubsection.9.3.2}%
+\contentsline {section}{\numberline {10}任务十：CMOS反相器交直流与时域特性综合分析}{27}{section.10}%
+\contentsline {subsection}{\numberline {10.1}任务要求}{27}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}实验参数}{27}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}AC小信号分析}{27}{subsection.10.3}%
+\contentsline {subsubsection}{\numberline {10.3.1}幅频响应特性}{27}{subsubsection.10.3.1}%
+\contentsline {subsubsection}{\numberline {10.3.2}DC验证}{28}{subsubsection.10.3.2}%
+\contentsline {subsubsection}{\numberline {10.3.3}不同偏置点的AC特性}{28}{subsubsection.10.3.3}%
+\contentsline {subsection}{\numberline {10.4}时域瞬态分析（TRAN）}{29}{subsection.10.4}%
+\contentsline {subsubsection}{\numberline {10.4.1}小信号时域响应}{29}{subsubsection.10.4.1}%
+\contentsline {subsection}{\numberline {10.5}综合理论分析}{30}{subsection.10.5}%
+\contentsline {subsubsection}{\numberline {10.5.1}小信号增益的理论计算}{30}{subsubsection.10.5.1}%
+\contentsline {subsubsection}{\numberline {10.5.2}偏置点对增益的影响}{30}{subsubsection.10.5.2}%
+\contentsline {subsubsection}{\numberline {10.5.3}小信号条件与大信号失真}{31}{subsubsection.10.5.3}%
+\contentsline {subsubsection}{\numberline {10.5.4}三种仿真方法的关系}{32}{subsubsection.10.5.4}%

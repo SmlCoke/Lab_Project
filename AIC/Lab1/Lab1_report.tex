@@ -38,7 +38,7 @@
 \author{
 	姓名：\underline{冯峻}~~~~~~
 	学号：\underline{523031910148}~~~~~~}
-\date{\today}
+\date{2025年10月22日}
 \pagenumbering{arabic}
 
 \begin{document}
@@ -65,7 +65,7 @@
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-43.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-43.png}
 \caption{NMOS $I_D$ vs. $V_{GS}$特性曲线}
 \label{fig:task1}
 \end{figure}
@@ -110,7 +110,7 @@ I_D = \frac{W}{L} \mu_n C_{ox}\left[(V_{GS}-V_{TH})V_{DS} - \frac{V_{DS}^2}{2}\r
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-44.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-44.png}
 \caption{NMOS $g_m$ vs. $V_{GS}$特性曲线}
 \label{fig:task2}
 \end{figure}
@@ -161,7 +161,7 @@ g_m = \frac{\partial I_D}{\partial V_{GS}}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image.png}
+\includegraphics[width=0.8\textwidth]{Figures/image.png}
 \caption{NMOS $g_m/I_D$ vs. $V_{GS}$特性曲线}
 \label{fig:task3}
 \end{figure}
@@ -208,14 +208,14 @@ $g_m/I_D$比值是模拟集成电路设计中的一个重要参数，它反映�
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-1.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-1.png}
 \caption{NMOS $I_D$ vs. $V_{GS}$ 特性曲线}
 \label{fig:task4a}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-2.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-2.png}
 \caption{NMOS $I_D$ vs.$V_{DS}$特性曲线}
 \label{fig:task4b}
 \end{figure}
@@ -262,7 +262,7 @@ I_D = \frac{1}{2}\mu_n C_{ox}\frac{W}{L}(V_{GS}-V_{TH})^2(1+\lambda V_{DS})
 \end{equation}
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-3.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-3.png}
 \caption{阈值电压测量点选取}
 \label{fig:task5a}
 \end{figure}
@@ -277,7 +277,7 @@ V_{th} = 308.096\text{ mV}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{image-7.png}
+\includegraphics[width=0.6\textwidth]{Figures/image-7.png}
 \caption{阈值电压$V_{th}$计算结果}
 \label{fig:task5b}
 \end{figure}
@@ -291,7 +291,7 @@ $I_{DS}=90.57\mu A$
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{image-5.png}
+\includegraphics[width=0.6\textwidth]{Figures/image-5.png}
 \caption{$V_{GS}=800\text{mV}$, $V_{DS}=600.14\text{mV}$时的$I_{DS}$}
 \label{fig:task5d}
 \end{figure}
@@ -338,7 +338,7 @@ r_o = \frac{1}{g_{ds}}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{image-10.png}
+\includegraphics[width=0.7\textwidth]{Figures/image-10.png}
 \caption{$g_{ds}$测量结果}
 \label{fig:task5h}
 \end{figure}
@@ -368,14 +368,14 @@ r_o = \frac{1}{g_{ds}} = \frac{1}{42.2342\mu\text{S}} = 23677.493\Omega
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-12.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-12.png}
 \caption{输出电阻$r_o$特性曲线（图1）}
 \label{fig:task6a}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-13.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-13.png}
 \caption{输出电阻$r_o$特性曲线（图2）}
 \label{fig:task6b}
 \end{figure}
@@ -413,19 +413,20 @@ r_o = \frac{1}{\lambda I_D}
 
 \subsubsection{gm/id性能优化}
 
-仿真命令设置如图\ref{fig:task7a}所示：
+% 仿真命令设置如图\ref{fig:task7a}所示，
+仿真时选取的扫描参数为：$V_{DS} \in [400\text{mV}, 600\text{mV}, 800\text{mV}], W \in [200\text{nm}, 500\text{nm}, 1\mu\text{m}], L \in [60\text{nm}, 200\text{nm}, 1\mu\text{m}]$
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.7\textwidth]{Figures/image-15.png}
+% \caption{仿真命令设置}
+% \label{fig:task7a}
+% \end{figure}
+
+仿真结果如图\ref{fig:task7b}所示。可以看出，当$V_{DS}=400\text{mV}$，$W=1\mu\text{m}, L=200\text{nm}$时，$g_m/I_D$在整体$V_{GS}$范围内达到了最大值。原因为：当$W$较大，$L$较小，$V_{DS}$较低时，器件工作在中等反型区，既保证了较高的$g_m$，又有足够的电流驱动能力（$I_{DS}$）。
+
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{image-15.png}
-\caption{仿真命令设置}
-\label{fig:task7a}
-\end{figure}
-
-仿真结果如图\ref{fig:task7b}所示。可以看出，当$V_{DS}=400$mV，$W=1\mu m, L=200nm$时，$g_m/I_D$在整体$V_{GS}$范围内达到了最大值。原因为：当$W$较大，$L$较小，$V_{DS}$较低时，器件工作在中等反型区，既保证了较高的$g_m$，又有足够的电流驱动能力（$I_{DS}$）。
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{image-14.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-14.png}
 \caption{$g_m/I_D$性能测试结果}
 \label{fig:task7b}
 \end{figure}
@@ -436,25 +437,27 @@ r_o = \frac{1}{\lambda I_D}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-16.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-16.png}
 \caption{本征增益vs. $V_{DS}$（$W=500$nm, $L=60$nm）}
 \label{fig:task7c}
 \end{figure}
 
-然后进行参数扫描，扫描参数设置如图\ref{fig:task7d}所示：
+然后进行参数扫描，
+% 扫描参数设置如图\ref{fig:task7d}所示，
+为$V_{DS}$从0V增长到1V，步长为20。$W \in [200\text{nm}, 500\text{nm}, 1\mu\text{m}], L \in [60\text{nm}, 220\text{nm}, 1\mu\text{m}]$
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.7\textwidth]{image-18.png}
-\caption{本征增益扫描参数设置}
-\label{fig:task7d}
-\end{figure}
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=0.7\textwidth]{Figures/image-18.png}
+% \caption{本征增益扫描参数设置}
+% \label{fig:task7d}
+% \end{figure}
 
 扫描结果如图\ref{fig:task7e}所示。可知，在$W$， $L$均为设置的最大值：$1\mu m$时，本征增益达到了最大值。
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-17.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-17.png}
 \caption{本征增益参数扫描结果}
 \label{fig:task7e}
 \end{figure}
@@ -512,7 +515,7 @@ A_0 = \frac{2}{\lambda(V_{GS}-V_{TH})}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-19.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-19.png}
 \caption{CMOS反相器DC传输特性}
 \label{fig:task8}
 \end{figure}
@@ -535,7 +538,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
 \textbf{区域III：转换区（两管都在饱和区）}
 \begin{itemize}
 \item NMOS和PMOS都工作在饱和区
-\item 此时增益最大：$A_v = -(g_{mn} + g_{mp})/(g_{dsn} + g_{dsp})$
+\item 此时增益最大：$A_v = -(g_{mn} + g_{mp})(r_{on}//r_{op})$
 \item $V_{out}$随$V_{in}$快速下降，曲线斜率最大
 \end{itemize}
 
@@ -583,7 +586,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-20.png} 
+        \includegraphics[width=\textwidth]{Figures/image-20.png} 
         \caption{$W_P = 2\mu$m，$V_{out} = 112.304$mV}
         \label{fig:task9a}
     \end{subfigure}
@@ -591,7 +594,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-21.png} 
+        \includegraphics[width=\textwidth]{Figures/image-21.png} 
         \caption{$W_P = 4\mu$m，$V_{out} = 988.216$mV}
         \label{fig:task9b}
     \end{subfigure}
@@ -605,7 +608,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-22.png} 
+        \includegraphics[width=\textwidth]{Figures/image-22.png} 
         \caption{$W_P = 3\mu$m，$V_{out} = 519.076$mV}
         \label{fig:task9c}
     \end{subfigure}
@@ -613,7 +616,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-23.png} 
+        \includegraphics[width=\textwidth]{Figures/image-23.png} 
         \caption{$W_P = 3.5\mu$m，$V_{out} = 795.958$mV}
         \label{fig:task9d}
     \end{subfigure}
@@ -627,7 +630,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-24.png} 
+        \includegraphics[width=\textwidth]{Figures/image-24.png} 
         \caption{$W_P = 3.25\mu$m，$V_{out} = 664.743$mV}
         \label{fig:task9e}
     \end{subfigure}
@@ -635,7 +638,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-26.png} 
+        \includegraphics[width=\textwidth]{Figures/image-26.png} 
         \caption{$W_P = 3.125\mu$m，$V_{out} = 593.273$mV}
         \label{fig:task9f}
     \end{subfigure}
@@ -649,7 +652,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-27.png} 
+        \includegraphics[width=\textwidth]{Figures/image-27.png} 
         \caption{$W_P = 3.15\mu$m，$V_{out} = 607.824$mV}
         \label{fig:task9g}
     \end{subfigure}
@@ -657,7 +660,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-28.png} 
+        \includegraphics[width=\textwidth]{Figures/image-28.png} 
         \caption{$W_P = 3.135\mu$m，$V_{out} = 599.109$mV}
         \label{fig:task9h}
     \end{subfigure}
@@ -683,7 +686,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-30.png} 
+        \includegraphics[width=\textwidth]{Figures/image-30.png} 
         \caption{Fingers = 1，Finger Width = $3.13\mu$m}
         \label{fig:task9i}
     \end{subfigure}
@@ -691,7 +694,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-29.png} 
+        \includegraphics[width=\textwidth]{Figures/image-29.png} 
         \caption{Fingers = 2，Finger Width = $1.565\mu$m}
         \label{fig:task9j}
     \end{subfigure}
@@ -706,7 +709,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-31.png} 
+        \includegraphics[width=\textwidth]{Figures/image-31.png} 
         \caption{Fingers = 3，Finger Width = $1.045\mu$m}
         \label{fig:task9k}
     \end{subfigure}
@@ -714,7 +717,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-32.png} 
+        \includegraphics[width=\textwidth]{Figures/image-32.png} 
         \caption{Fingers = 4，Finger Width = $780$nm}
         \label{fig:task9l}
     \end{subfigure}
@@ -725,7 +728,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{image-33.png}
+\includegraphics[width=0.7\textwidth]{Figures/image-33.png}
 \caption{Fingers = 5，Finger Width = $625$nm}
 \label{fig:task9m}
 \end{figure}
@@ -743,7 +746,7 @@ CMOS反相器是最基本的数字逻辑门，也是模拟电路中常用的放�
 \mu_n C_{ox}\frac{W_n}{L_n} = \mu_p C_{ox}\frac{W_p}{L_p}
 \end{equation}
 
-由于PMOS的载流子迁移率$\mu_p$约为NMOS的$\mu_n$的1/2到1/3，因此需要：
+我们假设NMOS和PMOS的栅极长度$L$相同，栅极氧化层电容$C_{ox}$相同。由于PMOS的载流子迁移率$\mu_p$约为NMOS的$\mu_n$的1/2到1/3，因此需要：
 \begin{equation}
 \frac{W_p}{W_n} = \frac{\mu_n}{\mu_p} \approx 2 \sim 3
 \end{equation}
@@ -791,7 +794,7 @@ W_{total} = N_{fingers} \times W_{finger}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-34.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-34.png}
 \caption{CMOS反相器幅频响应（$V_{in} = 600$mV）}
 \label{fig:task10a}
 \end{figure}
@@ -811,7 +814,7 @@ A_v = 10^{30.9741/20} = 35.37\text{ V/V}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{image-35.png}
+\includegraphics[width=0.7\textwidth]{Figures/image-35.png}
 \caption{DC工作点验证（$V_{in}$从600mV变为599mV）}
 \label{fig:task10b}
 \end{figure}
@@ -833,7 +836,7 @@ DC仿真得到的增益35.37倍与AC仿真的30.9741dB（35.37倍）\textbf{完�
     % 第一张子图
     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
         \centering
-        \includegraphics[width=\textwidth]{image-37.png} 
+        \includegraphics[width=\textwidth]{Figures/image-37.png} 
         \caption{CMOS反相器幅频响应（$V_{in} = 0.4$V）}
         \label{fig:task10d}
     \end{subfigure}
@@ -841,7 +844,7 @@ DC仿真得到的增益35.37倍与AC仿真的30.9741dB（35.37倍）\textbf{完�
     % 第二张子图
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{image-38.png} 
+        \includegraphics[width=\textwidth]{Figures/image-38.png} 
         \caption{CMOS反相器幅频响应（$V_{in} = 0.8$V）}
         \label{fig:task10e}
     \end{subfigure}
@@ -873,7 +876,7 @@ DC仿真得到的增益35.37倍与AC仿真的30.9741dB（35.37倍）\textbf{完�
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-39.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-39.png}
 \caption{时域响应（$V_{in} = 600$mV，$A = 100$mV）}
 \label{fig:task10f}
 \end{figure}
@@ -887,14 +890,14 @@ DC仿真得到的增益35.37倍与AC仿真的30.9741dB（35.37倍）\textbf{完�
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-41.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-41.png}
 \caption{时域响应（$V_{in} = 600$mV，$A = 300$mV）- 图1}
 \label{fig:task10g}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{image-42.png}
+\includegraphics[width=0.8\textwidth]{Figures/image-42.png}
 \caption{时域响应（$V_{in} = 600$mV，$A = 300$mV）- 图2}
 \label{fig:task10h}
 \end{figure}

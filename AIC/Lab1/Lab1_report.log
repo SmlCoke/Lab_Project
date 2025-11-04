@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.7.1)  22 OCT 2025 00:06
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.7.1)  4 NOV 2025 19:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -746,8 +746,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [3]
-File: image-43.png Graphic file (type bmp)
-<image-43.png>
+File: Figures/image-43.png Graphic file (type bmp)
+<Figures/image-43.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -767,8 +767,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [5]
-File: image-44.png Graphic file (type bmp)
-<image-44.png>
+File: Figures/image-44.png Graphic file (type bmp)
+<Figures/image-44.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -788,8 +788,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [7]
-File: image.png Graphic file (type bmp)
-<image.png>
+File: Figures/image.png Graphic file (type bmp)
+<Figures/image.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -809,10 +809,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [9]
-File: image-1.png Graphic file (type bmp)
-<image-1.png>
-File: image-2.png Graphic file (type bmp)
-<image-2.png>
+File: Figures/image-1.png Graphic file (type bmp)
+<Figures/image-1.png>
+File: Figures/image-2.png Graphic file (type bmp)
+<Figures/image-2.png>
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -847,8 +847,8 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 252.
 
-File: image-3.png Graphic file (type bmp)
-<image-3.png>
+File: Figures/image-3.png Graphic file (type bmp)
+<Figures/image-3.png>
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 271.
@@ -861,8 +861,8 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 271.
 
-File: image-7.png Graphic file (type bmp)
-<image-7.png>
+File: Figures/image-7.png Graphic file (type bmp)
+<Figures/image-7.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
@@ -887,8 +887,8 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [12]
-File: image-5.png Graphic file (type bmp)
-<image-5.png>
+File: Figures/image-5.png Graphic file (type bmp)
+<Figures/image-5.png>
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
@@ -927,8 +927,8 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 330.
 
-File: image-10.png Graphic file (type bmp)
-<image-10.png>
+File: Figures/image-10.png Graphic file (type bmp)
+<Figures/image-10.png>
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -938,10 +938,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [14]
-File: image-12.png Graphic file (type bmp)
-<image-12.png>
-File: image-13.png Graphic file (type bmp)
-<image-13.png>
+File: Figures/image-12.png Graphic file (type bmp)
+<Figures/image-12.png>
+File: Figures/image-13.png Graphic file (type bmp)
+<Figures/image-13.png>
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -964,26 +964,34 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [16]
-File: image-15.png Graphic file (type bmp)
-<image-15.png>
-File: image-14.png Graphic file (type bmp)
-<image-14.png>
+Overfull \hbox (30.31516pt too wide) in paragraph at lines 417--424
+[]\TU/SimSun(0)/m/n/12 仿 真 时 选 取 的 扫 描 参 数 为：| $\OML/cmm/m/it/12 V[] \OMS/cmsy/
+m/n/12 2 \OT1/cmr/m/n/12 [400[]\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 600[]\OML/cmm
+/m/it/12 ; \OT1/cmr/m/n/12 800[]]\OML/cmm/m/it/12 ; W \OMS/cmsy/m/n/12 2 \OT1/c
+mr/m/n/12 [200[]\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 500[]\OML/cmm/m/it/12 ; \OT1
+/cmr/m/n/12 1\OML/cmm/m/it/12 ^^V[]\OT1/cmr/m/n/12 ]\OML/cmm/m/it/12 ; L \OMS/c
+msy/m/n/12 2
+ []
 
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: image-16.png Graphic file (type bmp)
-<image-16.png>
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: image-18.png Graphic file (type bmp)
-<image-18.png>
+File: Figures/image-14.png Graphic file (type bmp)
+<Figures/image-14.png>
+File: Figures/image-16.png Graphic file (type bmp)
+<Figures/image-16.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-File: image-17.png Graphic file (type bmp)
-<image-17.png>
+
+Overfull \hbox (15.12534pt too wide) in paragraph at lines 445--448
+[]\TU/SimSun(0)/m/n/12 然 后 进 行 参 数 扫 描，|  为 $\OML/cmm/m/it/12 V[]$ \TU/SimSun(0
+)/m/n/12 从 \TU/lmr/m/n/12 0V \TU/SimSun(0)/m/n/12 增 长 到 \TU/lmr/m/n/12 1V\TU/Si
+mSun(0)/m/n/12 ，|  步 长 为 \TU/lmr/m/n/12 20\TU/SimSun(0)/m/n/12 。| $\OML/cmm/m/i
+t/12 W \OMS/cmsy/m/n/12 2 \OT1/cmr/m/n/12 [200[]\OML/cmm/m/it/12 ; \OT1/cmr/m/n
+/12 500[]\OML/cmm/m/it/12 ; \OT1/cmr/m/n/12 1\OML/cmm/m/it/12 ^^V[]\OT1/cmr/m/n
+/12 ]\OML/cmm/m/it/12 ; L \OMS/cmsy/m/n/12 2
+ []
+
+File: Figures/image-17.png Graphic file (type bmp)
+<Figures/image-17.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
@@ -1005,12 +1013,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [18]
-File: image-19.png Graphic file (type bmp)
-<image-19.png>
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1020,6 +1022,9 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [19]
+File: Figures/image-19.png Graphic file (type bmp)
+<Figures/image-19.png>
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1038,22 +1043,22 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [21]
-File: image-20.png Graphic file (type bmp)
-<image-20.png>
-File: image-21.png Graphic file (type bmp)
-<image-21.png>
-File: image-22.png Graphic file (type bmp)
-<image-22.png>
-File: image-23.png Graphic file (type bmp)
-<image-23.png>
-File: image-24.png Graphic file (type bmp)
-<image-24.png>
-File: image-26.png Graphic file (type bmp)
-<image-26.png>
-File: image-27.png Graphic file (type bmp)
-<image-27.png>
-File: image-28.png Graphic file (type bmp)
-<image-28.png>
+File: Figures/image-20.png Graphic file (type bmp)
+<Figures/image-20.png>
+File: Figures/image-21.png Graphic file (type bmp)
+<Figures/image-21.png>
+File: Figures/image-22.png Graphic file (type bmp)
+<Figures/image-22.png>
+File: Figures/image-23.png Graphic file (type bmp)
+<Figures/image-23.png>
+File: Figures/image-24.png Graphic file (type bmp)
+<Figures/image-24.png>
+File: Figures/image-26.png Graphic file (type bmp)
+<Figures/image-26.png>
+File: Figures/image-27.png Graphic file (type bmp)
+<Figures/image-27.png>
+File: Figures/image-28.png Graphic file (type bmp)
+<Figures/image-28.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1073,16 +1078,16 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [23]
-File: image-30.png Graphic file (type bmp)
-<image-30.png>
-File: image-29.png Graphic file (type bmp)
-<image-29.png>
-File: image-31.png Graphic file (type bmp)
-<image-31.png>
-File: image-32.png Graphic file (type bmp)
-<image-32.png>
-File: image-33.png Graphic file (type bmp)
-<image-33.png>
+File: Figures/image-30.png Graphic file (type bmp)
+<Figures/image-30.png>
+File: Figures/image-29.png Graphic file (type bmp)
+<Figures/image-29.png>
+File: Figures/image-31.png Graphic file (type bmp)
+<Figures/image-31.png>
+File: Figures/image-32.png Graphic file (type bmp)
+<Figures/image-32.png>
+File: Figures/image-33.png Graphic file (type bmp)
+<Figures/image-33.png>
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1114,10 +1119,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [26]
-File: image-34.png Graphic file (type bmp)
-<image-34.png>
-File: image-35.png Graphic file (type bmp)
-<image-35.png>
+File: Figures/image-34.png Graphic file (type bmp)
+<Figures/image-34.png>
+File: Figures/image-35.png Graphic file (type bmp)
+<Figures/image-35.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1128,10 +1133,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [27]
-File: image-37.png Graphic file (type bmp)
-<image-37.png>
-File: image-38.png Graphic file (type bmp)
-<image-38.png>
+File: Figures/image-37.png Graphic file (type bmp)
+<Figures/image-37.png>
+File: Figures/image-38.png Graphic file (type bmp)
+<Figures/image-38.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1142,19 +1147,19 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [28]
-File: image-39.png Graphic file (type bmp)
-<image-39.png>
+File: Figures/image-39.png Graphic file (type bmp)
+<Figures/image-39.png>
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-File: image-41.png Graphic file (type bmp)
-<image-41.png>
+File: Figures/image-41.png Graphic file (type bmp)
+<Figures/image-41.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-File: image-42.png Graphic file (type bmp)
-<image-42.png>
+File: Figures/image-42.png Graphic file (type bmp)
+<Figures/image-42.png>
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
@@ -1202,10 +1207,10 @@ Package rerunfilecheck Info: File `Lab1_report.out' has not changed.
 (rerunfilecheck)             Checksum: EDC374A132E69D5E9DA906A8D1A8B114;7598.
  ) 
 Here is how much of TeX's memory you used:
- 19487 strings out of 476720
- 420135 string characters out of 5801445
+ 19468 strings out of 476720
+ 422047 string characters out of 5801445
  1940842 words of memory out of 5000000
- 41228 multiletter control sequences out of 15000+600000
+ 41210 multiletter control sequences out of 15000+600000
  566209 words of font info for 88 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  93i,12n,97p,1197b,633s stack positions out of 10000i,1000n,20000p,200000b,200000s

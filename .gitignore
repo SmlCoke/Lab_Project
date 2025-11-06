@@ -15,8 +15,18 @@
 *.a
 *.exe
 *.out
+Algorithm/HW4/code/subset_partition
+Algorithm/HW4/code/lcs_dp
+Algorithm/HW4/code/lcs_non_dp
 
 # OS files
 .DS_Store
 Thumbs.db
 _codeql_detected_source_root
+
+# LaTeX temporary files
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz

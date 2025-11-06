@@ -180,39 +180,63 @@
 
 	\textbf{算法设计思路：}
 
-	采用\textbf{滑动窗口法}（Two Pointers），直接在两个字符串上进行匹配比较。
+	采用\textbf{对角线扫描法}，通过沿着字符串比较矩阵的所有对角线进行一次性扫描来寻找最长公共子串。
 
 	\textbf{核心思想：}
+
+	将两个字符串$X$和$Y$想象为一个$n \times m$的比较矩阵，其中第$(i,j)$个位置表示$X[i]$与$Y[j]$的比较。最长公共子串对应于矩阵中某条对角线上的一段连续的匹配。
+
+	算法分两个阶段扫描所有可能的对角线：
 	\begin{itemize}
-		\item 枚举$X$中的每个起始位置$i$
-		\item 枚举$Y$中的每个起始位置$j$
-		\item 从位置$(i, j)$开始，尽可能向后匹配更长的公共子串
-		\item 记录所有匹配过程中的最长子串
+		\item \textbf{阶段1}：扫描从$X$的每个位置开始（$i=0, 1, \ldots, n-1$），$Y$从位置0开始的对角线，覆盖矩阵的下三角及主对角线部分
+		\item \textbf{阶段2}：扫描从$Y$的每个位置开始（$j=1, 2, \ldots, m-1$），$X$从位置0开始的对角线，覆盖矩阵的上三角部分
 	\end{itemize}
+
+	在每条对角线上，维护一个连续匹配长度计数器。遇到匹配字符时递增计数器，遇到不匹配字符时重置为0（因为子串必须连续）。
 
 	\textbf{算法正确性：}
 
-	该算法遍历了所有可能的子串起始位置组合，对于任意最长公共子串，必然存在某个$(i, j)$组合，使得从该位置开始的匹配能够覆盖到它。因此算法能够正确找到最长公共子串。
+	任意公共子串都对应于比较矩阵中某条对角线上的一段连续匹配。由于算法遍历了所有可能的对角线，因此一定能找到最长的公共子串。
 
 	\textbf{非动态规划算法伪代码：}
 	\begin{algorithm}[H]%
-		\caption{LCS-SUBSTRING-SLIDING($X, Y$)}
+		\caption{LCS-SUBSTRING-DIAGONAL($X, Y$)}
 		\begin{algorithmic}[1]
 			\State $n \gets |X|$, $m \gets |Y|$
 			\State $maxLength \gets 0$, $endIndex \gets 0$
-			\For{$i = 0$ to $n-1$} \Comment{枚举$X$的起始位置}
-				\For{$j = 0$ to $m-1$} \Comment{枚举$Y$的起始位置}
-					\State $length \gets 0$
-					\State $x \gets i$, $y \gets j$
-					\While{$x < n$ AND $y < m$ AND $X[x] = Y[y]$}
+			\State \Comment{阶段1：扫描下三角及主对角线}
+			\For{$startX = 0$ to $n-1$}
+				\State $length \gets 0$
+				\State $i \gets startX$, $j \gets 0$
+				\While{$i < n$ AND $j < m$}
+					\If{$X[i] = Y[j]$}
 						\State $length \gets length + 1$
-						\State $x \gets x + 1$, $y \gets y + 1$
-					\EndWhile
-					\If{$length > maxLength$}
-						\State $maxLength \gets length$
-						\State $endIndex \gets i + length - 1$
+						\If{$length > maxLength$}
+							\State $maxLength \gets length$
+							\State $endIndex \gets i$
+						\EndIf
+					\Else
+						\State $length \gets 0$ \Comment{子串必须连续}
 					\EndIf
-				\EndFor
+					\State $i \gets i + 1$, $j \gets j + 1$
+				\EndWhile
+			\EndFor
+			\State \Comment{阶段2：扫描上三角（跳过主对角线）}
+			\For{$startY = 1$ to $m-1$}
+				\State $length \gets 0$
+				\State $i \gets 0$, $j \gets startY$
+				\While{$i < n$ AND $j < m$}
+					\If{$X[i] = Y[j]$}
+						\State $length \gets length + 1$
+						\If{$length > maxLength$}
+							\State $maxLength \gets length$
+							\State $endIndex \gets i$
+						\EndIf
+					\Else
+						\State $length \gets 0$ \Comment{子串必须连续}
+					\EndIf
+					\State $i \gets i + 1$, $j \gets j + 1$
+				\EndWhile
 			\EndFor
 			\State 从$X[endIndex - maxLength + 1..endIndex]$提取最长公共子串
 			\State \Return{最长公共子串及其长度$maxLength$}
@@ -221,13 +245,18 @@
 
 	\textbf{时间复杂度分析：}
 
-	外层两个循环分别遍历$X$和$Y$的所有起始位置，时间复杂度为$O(nm)$。内层while循环最多执行$\min(n, m)$次。
+	\textbf{关键观察}：每个字符对$(X[i], Y[j])$在整个算法执行过程中\textbf{恰好被访问一次}。
 
-	在最坏情况下（如两个完全相同的字符串），时间复杂度为$O(nm \cdot \min(n, m))$，这似乎超过了$\Theta(nm)$的要求。
+	\textbf{详细分析}：
+	\begin{itemize}
+		\item 阶段1有$n$条对角线。第$k$条对角线（从$X[k]$开始）的长度为$\min(n-k, m)$。所有对角线的总长度为：
+		$$\sum_{k=0}^{n-1}\min(n-k, m)$$
+		\item 阶段2有$m-1$条对角线。第$k$条对角线（从$Y[k]$开始，$k \geq 1$）的长度为$\min(n, m-k)$。所有对角线的总长度为：
+		$$\sum_{k=1}^{m-1}\min(n, m-k)$$
+		\item 两阶段的对角线长度之和恰好等于矩阵中所有位置的数量，即$nm$
+	\end{itemize}
 
-	但我们注意到，所有内层while循环的总执行次数实际上是有界的。每次while循环会在字符串上"滑动"，对于任意一对字符$(X[x], Y[y])$，它最多被比较常数次。更精确的分析表明，总的字符比较次数为$O(nm)$。
-
-	因此，该算法的时间复杂度为$\Theta(nm)$。
+	因此，算法的字符比较次数恰好为$\Theta(nm)$，每次比较的时间复杂度为$O(1)$，总时间复杂度为$\Theta(nm)$。
 
 	\textbf{空间复杂度：}$O(1)$，只使用常数个变量。
 

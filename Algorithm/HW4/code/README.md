@@ -9,7 +9,7 @@
 
 ### 题目2：最长公共子串问题
 - **longest_common_substring_dp.cpp**: 使用动态规划算法求解最长公共子串
-- **longest_common_substring_non_dp.cpp**: 使用非动态规划算法（滑动窗口法等）求解最长公共子串
+- **longest_common_substring_non_dp.cpp**: 使用非动态规划算法（对角线扫描法）求解最长公共子串
 
 ## 编译和运行
 
@@ -60,6 +60,6 @@ g++ -std=c++11 -o lcs_non_dp longest_common_substring_non_dp.cpp
 - 时间复杂度：Θ(nm)，其中n和m分别为两个字符串的长度
 - 空间复杂度：O(nm)，可优化为O(m)
 
-#### 非动态规划算法（滑动窗口法）
+#### 非动态规划算法（对角线扫描法）
 - 时间复杂度：Θ(nm)
 - 空间复杂度：O(1)

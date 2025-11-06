@@ -57,7 +57,7 @@
 
 \maketitle
 \tableofcontents
-\newpage
+% \newpage
 
 \begin{enumerate}[1.]
 	\item \textbf{题目：}给定正整数集合 $S=\{a_1, a_2,\cdots, a_n\}$，设计动态规划算法求解该集合的划分问题，即判断是否存在集合 $A\subseteq S$，使得$\sum_{a_i\in A}a_i=\sum_{a_i\in S-A}a_i$。分析该问题的优化子结构、重叠子问题，给出动态规划算法伪代码并分析算法的复杂度。
@@ -66,7 +66,7 @@
 
 	\textbf{问题分析：}
 
-	该问题等价于判断是否存在子集$A$，使得其元素之和等于集合总和的一半。设集合$S$的总和为$sum$，若$sum$为奇数，则显然无解；若$sum$为偶数，问题转化为：是否存在子集，其元素之和等于$target = sum/2$。这是经典的\textbf{0-1背包问题}的判定版本。
+	该问题等价于判断是否存在子集$A$，使得其元素之和等于集合总和的一半。设集合$S$的总和为$sum$，若$sum$为奇数，则显然无解；若$sum$为偶数，问题转化为：是否存在子集，其元素之和等于$target = sum/2$。
 
 	\textbf{优化子结构：}
 
@@ -86,34 +86,32 @@
 	\begin{algorithm}[H]%
 		\caption{SUBSET-PARTITION($S$)}
 		\begin{algorithmic}[1]
-			\State $sum \gets \sum_{i=1}^{n} S[i]$
-			\If{$sum \bmod 2 \neq 0$}
+			\State $\text{sum} \gets \sum_{i=1}^{n} S[i]$
+			\If{$\text{sum} \bmod 2 \neq 0$}
 				\State \Return{False}
 			\EndIf
-			\State $target \gets sum / 2$
-			\State 初始化二维数组$dp[0..n][0..target]$，全部置为False
+			\State $target \gets \text{sum} / 2$
+			\State 初始化二维数组$dp[0..\text{n}][0..\text{target}]$，全部置为False
 			\State $dp[i][0] \gets$ True, $\forall i \in [0, n]$ \Comment{和为0总是可以达到}
 			\For{$i = 1$ to $n$}
-				\For{$j = 1$ to $target$}
+				\For{$j = 1$ to target}
 					\State $dp[i][j] \gets dp[i-1][j]$ \Comment{不选第$i$个元素}
 					\If{$j \geq S[i]$}
-						\State $dp[i][j] \gets dp[i][j]$ OR $dp[i-1][j-S[i]]$ \Comment{选第$i$个元素}
+						\State $dp[i][j] \gets dp[i][j]$ | $dp[i-1][j-S[i]]$ \Comment{选第$i$个元素}
 					\EndIf
 				\EndFor
 			\EndFor
-			\State \Return{$dp[n][target]$}
+			\State \Return{dp[n][target]}
 		\end{algorithmic}
 	\end{algorithm}
 
 	\textbf{时间复杂度分析：}
 
-	算法需要填充一个$n \times target$的二维表，其中$target = sum/2$。每个状态的计算时间为$O(1)$。因此，总时间复杂度为$O(n \cdot target) = O(n \cdot sum)$，其中$sum$为集合总和。
+	算法需要填充一个$n \times \text{sum}/2$的动态规划表。每个状态的计算时间为$O(1)$。因此，总时间复杂度为$O(n \cdot \text{sum}/2)$。
 
 	\textbf{空间复杂度分析：}
 
-	使用二维数组的空间复杂度为$O(n \cdot target)$。可以优化为一维数组（滚动数组），空间复杂度降为$O(target) = O(sum)$。
-
-	\textbf{C++代码实现见：}code/subset\_partition.cpp
+	需要维护一个维度为$n \times \text{sum}/2$的动态规划表，因此空间复杂度为$O(n \cdot \text{sum}/2)$。
 
 	\newpage
 
@@ -126,16 +124,6 @@
 	需给出相应的算法设计和分析过程，不能仅仅只给出伪代码。
 
 	\textbf{解：}
-
-	\textbf{问题理解：}
-
-	首先明确\textbf{子串}和\textbf{子序列}的区别：
-	\begin{itemize}
-		\item \textbf{子串}：必须是连续的字符序列
-		\item \textbf{子序列}：可以不连续，但必须保持相对顺序
-	\end{itemize}
-
-	本题求解的是\textbf{最长公共子串}（Longest Common Substring），要求字符必须连续出现。
 
 	\subsection*{1) 动态规划算法}
 
@@ -151,7 +139,7 @@
 
 	当$X[i-1] = Y[j-1]$时，以它们结尾的最长公共子串长度等于以$X[i-2]$和$Y[j-2]$结尾的最长公共子串长度加1。当字符不相等时，由于子串必须连续，长度为0。
 
-	这与最长公共\textbf{子序列}不同。在子序列问题中，当字符不相等时，状态转移为$dp[i][j] = \max(dp[i-1][j], dp[i][j-1])$；而在子串问题中，由于连续性要求，状态直接置为0。
+	这与最长公共\textbf{子序列}不同。在子序列问题中，当字符不相等时，状态转移为$dp[i][j] = \max(dp[i-1][j], dp[i][j-1])$；而在最长公共子串问题中，由于连续性要求，状态直接置为0。
 
 	\textbf{重叠子问题：}
 
@@ -163,28 +151,28 @@
 		\begin{algorithmic}[1]
 			\State $n \gets |X|$, $m \gets |Y|$
 			\State 初始化二维数组$dp[0..n][0..m]$，全部置为0
-			\State $maxLength \gets 0$, $endIndex \gets 0$
+			\State $\text{maxLength} \gets 0$, $\text{endIndex} \gets 0$
 			\For{$i = 1$ to $n$}
 				\For{$j = 1$ to $m$}
 					\If{$X[i-1] = Y[j-1]$}
 						\State $dp[i][j] \gets dp[i-1][j-1] + 1$
-						\If{$dp[i][j] > maxLength$}
-							\State $maxLength \gets dp[i][j]$
-							\State $endIndex \gets i-1$ \Comment{记录在$X$中的结束位置}
+						\If{$dp[i][j] > \text{maxLength}$}
+							\State $\text{maxLength} \gets dp[i][j]$
+							\State $\text{endIndex} \gets i-1$ \Comment{记录在$X$中的结束位置}
 						\EndIf
 					\Else
 						\State $dp[i][j] \gets 0$
 					\EndIf
 				\EndFor
 			\EndFor
-			\State 从$X[endIndex - maxLength + 1..endIndex]$提取最长公共子串
-			\State \Return{最长公共子串及其长度$maxLength$}
+			\State 从$X[\text{endIndex} - \text{maxLength} + 1..\text{endIndex}]$提取最长公共子串
+			\State \Return{最长公共子串及其长度$\text{maxLength}$}
 		\end{algorithmic}
 	\end{algorithm}
 
-	\textbf{时间复杂度：}$\Theta(nm)$，需要填充$n \times m$的二维表，每个状态计算为$O(1)$。
+	\textbf{时间复杂度：}需要填充$n \times m$的动态规划表，每个状态计算为$O(1)$，因此总时间复杂度为$\Theta(nm)$。
 
-	\textbf{空间复杂度：}$O(nm)$，可优化至$O(m)$（使用滚动数组）。
+	\textbf{空间复杂度：}需要维护一个维度为$n \times m$的动态规划表，因此空间复杂度为$\Theta(nm)$。
 
 	\textbf{C++代码实现见：}code/longest\_common\_substring\_dp.cpp
 

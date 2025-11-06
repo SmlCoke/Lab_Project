@@ -1,0 +1,107 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption} %\caption*需要
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	breaklines,
+	tabsize=4,
+	extendedchars=false,
+	columns=fixed,
+	%numbers=left,                                        % 在左侧显示行号
+	numbers=none,
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	xleftmargin=1em,
+	%xrightmargin=1em,
+	%aboveskip=-0.5em
+	language=c++,                                        % 设置语言
+}
+
+\title{算法原理 HW4 作业}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+% 如下两行请按实际情况修改
+\fancyhead[L]{冯峻}
+\fancyhead[C]{动态规划}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\emph{以下内容仅针对作业，按照作业题目编号，将题目誊写过来，然后依次予以回答}
+\begin{enumerate}[1.]
+	\item 请简述下勾股定理？
+
+	答：勾三股四弦五！
+	\item 求解3+5=？
+
+	解：3+5=8。
+\end{enumerate}
+
+% ----------------------- 伪代码书写示例，正式作业/报告请修改 -----------------------
+XXX算法通过XXX实现求解XXX，其伪代码如下：
+\begin{algorithm}[H]%
+	\caption{RAND-MIN-CUT($G=(V,E)$)}
+	\begin{algorithmic}[1]
+		\State 为图$G$的所有边都随机赋予一个正权值
+		\State 找出$G$的最小生成树$T$
+		\State 删除$T$中权值最大的一条边得到两棵子树$T_1,~T_2$
+		\State 令$T_1$的顶点集为$V_1$，则$T_2$的顶点集为$V_2=V-V_1$
+		\State $C=\{ uv|uv\in E, u\in V_1, v\in V_2 \}$
+		\State \Return{$C$}
+	\end{algorithmic}
+\end{algorithm}
+
+% ----------------------- 代码展示示例，正式作业/报告请修改 -----------------------
+Complete by yourself!
+e.g.，算法的C++代码如下：
+\begin{lstlisting}[language={C++}, basicstyle=\ttfamily\small]
+	main() {
+		int n, total, x, y, z;
+		scanf("%d",&n);
+		total = 3;
+		while(1){
+			for(x=1; x<=total-2; x++)
+			for(y=1; y<=total-x-1; y++){
+				z = total - x - y;
+				if( exp(x,n) + exp(y,n) == exp(z,n))
+				printf("hello, world\n");
+			}
+			total++;
+		}
+	}
+\end{lstlisting}
+
+
+\end{document}

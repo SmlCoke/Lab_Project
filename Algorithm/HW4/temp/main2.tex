@@ -1,0 +1,222 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption} %\caption*需要
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	breaklines,
+	tabsize=4,
+	extendedchars=false,
+	columns=fixed,
+	%numbers=left,                                        % 在左侧显示行号
+	numbers=none,
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	xleftmargin=1em,
+	%xrightmargin=1em,
+	%aboveskip=-0.5em
+	language=c++,                                        % 设置语言
+}
+
+\title{算法原理 HW4 作业}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+% 如下两行请按实际情况修改
+\fancyhead[L]{冯峻}
+\fancyhead[C]{动态规划}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+\tableofcontents
+% \newpage
+
+\begin{enumerate}[1.]
+	\item \textbf{题目：}给定正整数集合 $S=\{a_1, a_2,\cdots, a_n\}$，设计动态规划算法求解该集合的划分问题，即判断是否存在集合 $A\subseteq S$，使得$\sum_{a_i\in A}a_i=\sum_{a_i\in S-A}a_i$。分析该问题的优化子结构、重叠子问题，给出动态规划算法伪代码并分析算法的复杂度。
+
+	\textbf{解：}
+
+	\textbf{设计过程：}
+
+	该问题等价于判断是否存在子集$A$，使得其元素之和等于集合总和的一半。设集合$S$的总和为sum，若sum为奇数，则显然无解，因为划分后的两组数之和相同的话，这必然意味着原数组总和一定是偶数，因为原数组中的每个树都是正整数；若sum为偶数，这才是我们需要考虑的问题，这样的话问题就直接转化为：是否存在子集，其元素之和等于target = sum/2。
+
+	\textbf{优化子结构：}
+
+	定义子问题：$dp[i][j]$表示使用前$i$个元素能否凑出和为$j$。对于第$i$个元素$a_i$，有两种选择：
+	\begin{itemize}
+		\item 不选$a_i$：问题变为前$i-1$个元素能否凑出和为$j$，即$dp[i][j] = dp[i-1][j]$
+		\item 选$a_i$：问题变为前$i-1$个元素能否凑出和为$j-a_i$，即$dp[i][j] = dp[i-1][j-a_i]$
+	\end{itemize}
+	
+	因此，原问题的最优解包含子问题的最优解，具有\textbf{优化子结构}性质。
+
+	\textbf{重叠子问题：}
+
+	在计算$dp[i][j]$时，可能需要多次计算相同的子问题$dp[i-1][j']$。例如，计算$dp[3][10]$和$dp[3][12]$时，都可能需要$dp[2][8]$的结果。这种重复计算的子问题体现了\textbf{重叠子问题}性质。
+
+	\textbf{动态规划算法伪代码：}
+	\begin{algorithm}[H]%
+		\caption{SUBSET-PARTITION($S$)}
+		\begin{algorithmic}[1]
+			\State $\text{sum} \gets \sum_{i=1}^{n} S[i]$
+			\If{$\text{sum} \bmod 2 \neq 0$}
+				\State \Return{False}
+			\EndIf
+			\State $\text{target} \gets \text{sum} / 2$
+			\State 初始化二维数组$dp[0..\text{n}][0..\text{target}]$，全部置为False
+			\State $dp[i][0] \gets$ True, $\forall i \in [0, n]$ \Comment{和为0总是可以达到}
+			\For{$i = 1$ to $n$}
+				\For{$j = 1$ to target}
+					\State $dp[i][j] \gets dp[i-1][j]$ \Comment{不选第$i$个元素}
+					\If{$j \geq S[i]$}
+						\State $dp[i][j] \gets dp[i][j]$ | $dp[i-1][j-S[i]]$ \Comment{选第$i$个元素}
+					\EndIf
+				\EndFor
+			\EndFor
+			\State \Return{dp[n][target]}
+		\end{algorithmic}
+	\end{algorithm}
+
+	\textbf{时间复杂度分析：}
+
+	算法需要填充一个$n \times \text{sum}/2$的动态规划表。每个状态的计算时间为$O(1)$。因此，总时间复杂度为$O(n \cdot \text{sum}/2)$。
+
+	\textbf{空间复杂度分析：}
+
+	需要维护一个维度为$n \times \text{sum}/2$的动态规划表，因此空间复杂度为$O(n \cdot \text{sum}/2)$。
+
+	\newpage
+
+	\item \textbf{题目：}课上讲过了子串和子序列的区别。现考虑两个字符串$X$和$Y$，求解其最长的公共子串。比如$X=$'photograph'，$Y=$'tomography'，则其最长公共子串为'ograph'。
+	
+	1) 已知$n=|X|$，$m=|Y|$，请设计一个时间复杂度$\Theta(nm)$的动态规划算法求解$X$和$Y$的最长公共子串。
+
+	2) 设计一个时间复杂度$\Theta(nm)$的非动态规划算法求解$X$和$Y$的最长公共子串。
+
+	需给出相应的算法设计和分析过程，不能仅仅只给出伪代码。
+
+	\textbf{解：}
+
+	\subsection*{1) 动态规划算法}
+
+	\textbf{优化子结构分析：}
+
+	定义状态$dp[i][j]$表示\textbf{以$X[i-1]$和$Y[j-1]$结尾}的最长公共子串的长度。
+
+	状态转移方程：
+	$$dp[i][j] = \begin{cases}
+		dp[i-1][j-1] + 1, & \text{if } X[i-1] = Y[j-1] \\
+		0, & \text{if } X[i-1] \neq Y[j-1]
+	\end{cases}$$
+
+	当$X[i-1] = Y[j-1]$时，以它们结尾的最长公共子串长度等于以$X[i-2]$和$Y[j-2]$结尾的最长公共子串长度加1。当字符不相等时，由于子串必须连续，长度为0。
+
+	这与最长公共\textbf{子序列}不同。在子序列问题中，当字符不相等时，状态转移为$dp[i][j] = \max(dp[i-1][j], dp[i][j-1])$，因为我们没有当前位置的字符串匹配失败了，不代表当前记录的信息无法再使用，可能可以在后续匹配时用到。但是如果我们考虑的是连续的字符串，情况就有所不同了，由于连续性要求，我们一旦发现当前字符不再匹配，就只能立刻终止匹配，记录的信息也无法被后面利用。
+
+	\textbf{重叠子问题：}
+
+	在计算$dp[i][j]$时，需要用到$dp[i-1][j-1]$的结果。多个状态的计算会重复使用相同的子问题结果，体现了重叠子问题性质。
+
+	\textbf{动态规划算法伪代码：}
+	\begin{algorithm}[H]%
+		\caption{LCS-DP($X, Y$)}
+		\begin{algorithmic}[1]
+			\State $n \gets |X|$, $m \gets |Y|$
+			\State 初始化二维数组$dp[0..n][0..m]$，全部置为0
+			\State $\text{maxLength} \gets 0$, $\text{endIndex} \gets 0$
+			\For{$i = 1$ to $n$}
+				\For{$j = 1$ to $m$}
+					\If{$X[i-1] = Y[j-1]$}
+						\State $dp[i][j] \gets dp[i-1][j-1] + 1$
+						\If{$dp[i][j] > \text{maxLength}$}
+							\State $\text{maxLength} \gets dp[i][j]$
+							\State $\text{endIndex} \gets i-1$ 
+						\EndIf
+					\Else
+						\State $dp[i][j] \gets 0$
+					\EndIf
+				\EndFor
+			\EndFor
+			\State 从$X[\text{endIndex} - \text{maxLength} + 1..\text{endIndex}]$提取最长公共子串
+			\State \Return{最长公共子串及其长度$\text{maxLength}$}
+		\end{algorithmic}
+	\end{algorithm}
+
+	\textbf{时间复杂度：}需要填充$n \times m$的动态规划表，每个状态计算为$O(1)$，因此总时间复杂度为$\Theta(nm)$。
+
+	\textbf{空间复杂度：}需要维护一个维度为$n \times m$的动态规划表，因此空间复杂度为$\Theta(nm)$。
+
+	\subsection*{2) 非动态规划算法}
+
+	\textbf{设计过程：}
+    
+    枚举所有有序点对$(i, j)$($i \in [0, n-1], j \in  [0, m-1]$)，开始向后匹配，直到遇到不相等的字符为止。记录匹配的最大长度及其结束位置。这种方法其实就是枚举，会考虑全部可能的子串起点组合，因此一定能够找到所有公共子串，进而可以确定出最长的公共子串。
+	
+    \textbf{时间复杂度分析：}
+
+	枚举所有有序点对$(i, j)$($i \in [0, n-1], j \in  [0, m-1]$)，开始向后匹配，这是一个二重循环，时间复杂度为$O(nm)$。每一次操作内部同样会在进行一次循环（向后匹配）。在最坏情况下，比如两个完全相同的字符串，每次匹配都需要进行$\min(n-i, m-j)$次比较，因此时间复杂度为: $O(n^3)$或者说$O(mn \min(m, n))$
+
+	但这只是极端情况，对于实际过程中，大部分情况下可以认为这种向后匹配的操作进行不了几次就会终止，因此我们可以认为向后匹配的操作次数是常数时间的，因此我们可以近似认为该算法的时间复杂度是$O(nm)$。
+
+	\textbf{空间复杂度：}$O(1)$，只使用常数个变量，因为我们不需要像之前一样维护一个维度与输入数据长度挂钩的动态规划表。
+	
+	\textbf{非动态规划算法伪代码：}
+	\begin{algorithm}[H]%
+		\caption{LCS-NOT-DP($X, Y$)}
+		\begin{algorithmic}[1]
+			\State $n \gets |X|$, $m \gets |Y|$
+			\State $\text{maxLength} \gets 0$, $\text{endIndex} \gets 0$
+			\For{$i = 0$ to $n-1$} \Comment{枚举$X$的起始位置}
+				\For{$j = 0$ to $m-1$} \Comment{枚举$Y$的起始位置}
+					\State $\text{length} \gets 0$
+					\State $x \gets i$, $y \gets j$
+					\While{$x < n$ AND $y < m$ AND $X[x] = Y[y]$}
+						\State $\text{length} \gets \text{length} + 1$
+						\State $x \gets x + 1$, $y \gets y + 1$
+					\EndWhile
+					\If{length > maxLength}
+						\State maxLength $\gets$ length
+						\State endIndex $\gets i$ + length - 1
+					\EndIf
+				\EndFor
+			\EndFor
+			\State 从X[endIndex - maxLength + 1..endIndex]提取最长公共子串
+			\State \Return{最长公共子串及其长度maxLength}
+		\end{algorithmic}
+	\end{algorithm}
+
+	
+
+
+\end{enumerate}
+
+
+\end{document}

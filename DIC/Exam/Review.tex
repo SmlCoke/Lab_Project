@@ -85,4 +85,384 @@
 
 \maketitle
 
+\section*{一、概念题}
+
+\subsection*{1. 解释什么是MOS管的强反型？解释什么是MOS管的可重建性和阈值电压}
+
+\textbf{强反型（Strong Inversion）：}
+
+当栅极电压$V_{GS}$足够大，使得栅极下方的半导体表面反型层中的载流子浓度远大于衬底的掺杂浓度时，MOS管处于强反型状态。在强反型区，沟道已经形成，MOS管可以导通电流。
+
+\textbf{可重建性（Reproducibility）：}
+
+MOS管的可重建性是指在相同的制造工艺条件下，能够重复制造出具有相同电学特性的器件。这是大规模集成电路制造的基础，要求工艺参数（如氧化层厚度、掺杂浓度等）具有良好的一致性和可控性。
+
+\textbf{阈值电压（Threshold Voltage）$V_t$：}
+
+阈值电压是使MOS管表面刚好形成反型层所需的最小栅源电压。当$V_{GS} < V_t$时，MOS管处于截止状态；当$V_{GS} \geq V_t$时，MOS管开始导通。阈值电压取决于栅氧化层电容、衬底掺杂浓度、栅极材料功函数等因素。
+
+\subsection*{2. 写出CMOS总的功率表达式}
+
+CMOS电路的总功耗包括三个主要部分：
+
+\begin{equation}
+P_{total} = P_{dynamic} + P_{short-circuit} + P_{leakage}
+\end{equation}
+
+其中：
+
+\begin{itemize}
+    \item \textbf{动态功耗}：$P_{dynamic} = \alpha C_L V_{DD}^2 f$
+    \begin{itemize}
+        \item $\alpha$：开关活动因子（switching activity factor）
+        \item $C_L$：负载电容
+        \item $V_{DD}$：电源电压
+        \item $f$：时钟频率
+    \end{itemize}
+    
+    \item \textbf{短路功耗}：$P_{short-circuit} = I_{short} V_{DD}$
+    \begin{itemize}
+        \item 在PMOS和NMOS同时导通的短暂时间内产生
+    \end{itemize}
+    
+    \item \textbf{漏电流功耗}：$P_{leakage} = I_{leakage} V_{DD}$
+    \begin{itemize}
+        \item 由亚阈值漏电流、栅极漏电流等引起
+    \end{itemize}
+\end{itemize}
+
+\subsection*{3. 写出为什么VLSI can benefit from both high k and low k}
+
+\textbf{高介电常数（High k）材料的优势：}
+
+\begin{itemize}
+    \item 用于栅氧化层：高k材料可以在保持相同电容的情况下增加物理厚度，从而减少栅极漏电流
+    \item 提高栅极控制能力，改善器件性能
+    \item 减少量子隧穿效应
+\end{itemize}
+
+\textbf{低介电常数（Low k）材料的优势：}
+
+\begin{itemize}
+    \item 用于互连线间的介质：低k材料可以减少互连线之间的寄生电容
+    \item 降低RC延迟，提高电路速度
+    \item 减少互连线之间的串扰（crosstalk）
+    \item 降低动态功耗
+\end{itemize}
+
+因此，VLSI设计中，在栅极使用高k材料，在互连层使用低k材料，可以同时优化器件性能和互连性能。
+
+\subsection*{4. 写出MOS管在尺寸电压同时缩放s倍下，饱和电流的变化}
+
+MOS管的饱和电流基本表达式：
+\begin{equation}
+I_{D,sat} = \frac{1}{2} \mu_n C_{ox} \frac{W}{L} (V_{GS} - V_t)^2
+\end{equation}
+
+\textbf{情况1：尺寸和电压同时缩放s倍（恒定电场缩放）}
+
+\begin{itemize}
+    \item $W' = W/s$，$L' = L/s$
+    \item $V_{DD}' = V_{DD}/s$，$V_t' = V_t/s$
+    \item $t_{ox}' = t_{ox}/s$，因此$C_{ox}' = s \cdot C_{ox}$
+\end{itemize}
+
+饱和电流变化：
+\begin{equation}
+I_{D,sat}' = \frac{1}{2} \mu_n (s \cdot C_{ox}) \frac{W/s}{L/s} \left(\frac{V_{GS} - V_t}{s}\right)^2 = \frac{I_{D,sat}}{s}
+\end{equation}
+
+结论：饱和电流缩小s倍。
+
+\textbf{情况2：尺寸缩放s1倍，电压缩放s2倍}
+
+\begin{equation}
+I_{D,sat}' = \frac{1}{2} \mu_n (s_1 \cdot C_{ox}) \frac{W/s_1}{L/s_1} \left(\frac{V_{GS} - V_t}{s_2}\right)^2 = \frac{s_1}{s_2^2} I_{D,sat}
+\end{equation}
+
+结论：饱和电流变为原来的$\frac{s_1}{s_2^2}$倍。
+
+\textbf{情况3：尺寸缩放s倍，电压保持不变}
+
+\begin{equation}
+I_{D,sat}' = \frac{1}{2} \mu_n (s \cdot C_{ox}) \frac{W/s}{L/s} (V_{GS} - V_t)^2 = s \cdot I_{D,sat}
+\end{equation}
+
+结论：饱和电流增大s倍。
+
+\subsection*{5. 写出为什么当$V_{DD} < V_{tn} + |V_{tp}|$，短路功耗可以忽略}
+
+在CMOS反相器中，短路功耗发生在输入信号转换期间，PMOS和NMOS同时导通的短暂时间内。
+
+当$V_{DD} < V_{tn} + |V_{tp}|$时：
+
+\begin{itemize}
+    \item 对于NMOS导通：需要$V_{in} > V_{tn}$
+    \item 对于PMOS导通：需要$V_{in} < V_{DD} - |V_{tp}|$
+    \item 如果$V_{DD} < V_{tn} + |V_{tp}|$，则$V_{DD} - |V_{tp}| < V_{tn}$
+    \item 这意味着不存在任何输入电压$V_{in}$能同时满足两个条件
+    \item 因此，PMOS和NMOS不会同时导通，短路电流路径不存在
+\end{itemize}
+
+结论：当电源电压低于两个阈值电压之和时，两个管子不会同时处于导通状态，短路功耗可以忽略。
+
+\subsection*{6. 写出为什么输入电阻越大越好，输出电阻越小越好}
+
+\textbf{输入电阻越大越好：}
+
+\begin{itemize}
+    \item 减小对前级电路的负载效应，避免过度消耗前级的驱动能力
+    \item 降低输入电流，减少功耗
+    \item 提高输入阻抗，改善信号完整性
+    \item MOS管栅极的高输入阻抗是其重要优势
+\end{itemize}
+
+\textbf{输出电阻越小越好：}
+
+\begin{itemize}
+    \item 提高驱动能力，能够驱动更大的负载
+    \item 减小RC延迟，提高电路速度
+    \item 降低输出电压对负载变化的敏感度，保持稳定的输出电压
+    \item 减少由负载电流变化引起的电压降
+\end{itemize}
+
+\subsection*{7. 减小阈值电压能否增大饱和电流，若能的话，是否可以通过足够减小阈值电压来获得任意大的电流}
+
+\textbf{阈值电压对饱和电流的影响：}
+
+从饱和电流公式：
+\begin{equation}
+I_{D,sat} = \frac{1}{2} \mu_n C_{ox} \frac{W}{L} (V_{GS} - V_t)^2
+\end{equation}
+
+可见，减小$V_t$会增大$(V_{GS} - V_t)$，从而增大饱和电流。
+
+\textbf{但是，不能无限减小阈值电压：}
+
+\begin{itemize}
+    \item \textbf{亚阈值漏电流急剧增加}：当$V_t$很小时，关断状态下的漏电流会显著增大，导致静态功耗急剧上升
+    \item \textbf{噪声容限降低}：小的$V_t$会使电路对噪声更敏感，降低电路的抗干扰能力
+    \item \textbf{工艺变化敏感性增加}：$V_t$越小，工艺偏差对器件性能的影响越大
+    \item \textbf{关断特性恶化}：难以完全关断器件，影响逻辑功能
+\end{itemize}
+
+结论：虽然减小阈值电压可以增大饱和电流，但不能通过无限减小$V_t$来获得任意大的电流，必须在性能和功耗之间进行权衡。
+
+\subsection*{8. 解释为什么$V_m$随尺寸的变化幅度不大，也就是insensitive}
+
+$V_m$是反相器的转换电压（switching threshold），即输入输出电压相等时的电压值（$V_{in} = V_{out}$）。
+
+在$V_m$点，NMOS和PMOS都处于饱和区，且两者电流相等：
+
+\begin{equation}
+\frac{1}{2} \mu_n C_{ox} \frac{W_n}{L_n} (V_m - V_{tn})^2 = \frac{1}{2} \mu_p C_{ox} \frac{W_p}{L_p} (V_{DD} - V_m - |V_{tp}|)^2
+\end{equation}
+
+定义尺寸比：$\beta = \frac{\mu_p (W/L)_p}{\mu_n (W/L)_n}$
+
+可以得到：
+\begin{equation}
+V_m = \frac{V_{tn} + \sqrt{\beta}(V_{DD} - |V_{tp}|)}{1 + \sqrt{\beta}}
+\end{equation}
+
+\textbf{为什么$V_m$对尺寸不敏感：}
+
+\begin{itemize}
+    \item 当改变$W_n$或$W_p$时，$\beta$的变化会同时影响分子和分母
+    \item 由于平方根关系，$\sqrt{\beta}$的变化比$\beta$的变化要平缓
+    \item 在分数形式中，分子分母的同步变化使得$V_m$的变化被抑制
+    \item 例如，当$\beta$从1变化到4时，$V_m$只在$V_{tn}$到$V_{DD} - |V_{tp}|$之间的一个较窄范围内变化
+\end{itemize}
+
+结论：由于上述数学关系，$V_m$对尺寸比的变化相对不敏感，这使得CMOS电路设计具有一定的鲁棒性。
+
+\subsection*{9. 解释三个尺寸比的意义}
+
+\textbf{1. $V_M = V_{DD}/2$对应的尺寸比：}
+
+这是使反相器转换电压等于电源电压一半的尺寸比，此时：
+\begin{itemize}
+    \item 噪声容限最大化且对称
+    \item 输出高电平和低电平的噪声容限相等
+    \item 通常对应于$\beta = 1$，即$\mu_p (W/L)_p = \mu_n (W/L)_n$
+\end{itemize}
+
+\textbf{2. 对称延时尺寸比：}
+
+使反相器的上升延时和下降延时相等的尺寸比：
+\begin{itemize}
+    \item 使$t_{pLH} = t_{pHL}$（低到高和高到低的传播延时相等）
+    \item 改善时序对称性
+    \item 由于$\mu_n > \mu_p$，需要$(W/L)_p > (W/L)_n$
+    \item 通常$(W/L)_p \approx 2\sim3 \times (W/L)_n$
+\end{itemize}
+
+\textbf{3. 最小延迟尺寸比：}
+
+使反相器的平均传播延时最小的尺寸比：
+\begin{itemize}
+    \item 优化速度性能
+    \item 需要平衡上升和下降延时，同时考虑面积约束
+    \item 通常介于对称延时尺寸比和最小面积尺寸比之间
+    \item 实际设计中需要在速度和面积之间权衡
+\end{itemize}
+
+\section*{二、计算题}
+
+\subsection*{1. 给定NMOS管的$V_{DS}$和$V_{GS}$来判定NMOS operation region}
+
+NMOS管的工作区域判定：
+
+\textbf{截止区（Cutoff）：}$V_{GS} < V_{tn}$
+\begin{equation}
+I_D = 0
+\end{equation}
+
+\textbf{线性区（Linear/Triode）：}$V_{GS} > V_{tn}$ 且 $V_{DS} < V_{GS} - V_{tn}$
+\begin{equation}
+I_D = \mu_n C_{ox} \frac{W}{L} \left[(V_{GS} - V_{tn})V_{DS} - \frac{V_{DS}^2}{2}\right]
+\end{equation}
+
+\textbf{饱和区（Saturation）：}$V_{GS} > V_{tn}$ 且 $V_{DS} \geq V_{GS} - V_{tn}$
+\begin{equation}
+I_D = \frac{1}{2} \mu_n C_{ox} \frac{W}{L} (V_{GS} - V_{tn})^2 (1 + \lambda V_{DS})
+\end{equation}
+
+其中，$\lambda$是沟道长度调制系数，在一级近似中可以忽略。
+
+\textbf{判定步骤：}
+\begin{enumerate}
+    \item 首先检查$V_{GS}$是否大于$V_{tn}$，若否则为截止区
+    \item 若$V_{GS} > V_{tn}$，计算$V_{GS} - V_{tn}$
+    \item 比较$V_{DS}$与$V_{GS} - V_{tn}$：
+    \begin{itemize}
+        \item 若$V_{DS} < V_{GS} - V_{tn}$，则为线性区
+        \item 若$V_{DS} \geq V_{GS} - V_{tn}$，则为饱和区
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{2. 给定$V_m$和$V_{DD}$，来求PMOS/NMOS的尺寸关系}
+
+在转换电压$V_m$点，NMOS和PMOS都处于饱和区，电流相等：
+
+\begin{equation}
+\frac{1}{2} \mu_n C_{ox} \frac{W_n}{L_n} (V_m - V_{tn})^2 = \frac{1}{2} \mu_p C_{ox} \frac{W_p}{L_p} (V_{DD} - V_m - |V_{tp}|)^2
+\end{equation}
+
+简化得：
+\begin{equation}
+\frac{(W/L)_p}{(W/L)_n} = \frac{\mu_n}{\mu_p} \cdot \frac{(V_m - V_{tn})^2}{(V_{DD} - V_m - |V_{tp}|)^2}
+\end{equation}
+
+\textbf{计算步骤：}
+\begin{enumerate}
+    \item 确定给定的$V_m$、$V_{DD}$、$V_{tn}$、$|V_{tp}|$的值
+    \item 计算$(V_m - V_{tn})$和$(V_{DD} - V_m - |V_{tp}|)$
+    \item 使用迁移率比$\mu_n/\mu_p \approx 2\sim3$
+    \item 代入公式计算尺寸比
+\end{enumerate}
+
+\textbf{特殊情况：}当$V_m = V_{DD}/2$时：
+\begin{equation}
+\frac{(W/L)_p}{(W/L)_n} = \frac{\mu_n}{\mu_p} \cdot \frac{(V_{DD}/2 - V_{tn})^2}{(V_{DD}/2 - |V_{tp}|)^2}
+\end{equation}
+
+若$V_{tn} = |V_{tp}|$，则：
+\begin{equation}
+\frac{(W/L)_p}{(W/L)_n} = \frac{\mu_n}{\mu_p} \approx 2\sim3
+\end{equation}
+
+\subsection*{3. 给定一个表达式（例如：A(B+C)）画出schematic, stick diagram, 然后估算面积}
+
+\textbf{以$F = A(B+C) = AB + AC$为例：}
+
+\textbf{步骤1：设计Schematic}
+
+Pull-down网络（NMOS）：实现$F = AB + AC$
+\begin{itemize}
+    \item A与B串联的支路
+    \item A与C串联的支路
+    \item 两个支路并联连接到地
+\end{itemize}
+
+Pull-up网络（PMOS）：实现$\overline{F} = \overline{A} + \overline{B}\cdot\overline{C}$
+\begin{itemize}
+    \item A的PMOS（串联）
+    \item B和C的PMOS并联后，与A的PMOS串联
+\end{itemize}
+
+\textbf{步骤2：绘制Stick Diagram}
+
+Stick diagram使用颜色编码：
+\begin{itemize}
+    \item 绿色：n型扩散区（NMOS源漏）
+    \item 红色：p型扩散区（PMOS源漏）
+    \item 蓝色：多晶硅（栅极）
+    \item 黄色：金属连线
+\end{itemize}
+
+布局考虑：
+\begin{itemize}
+    \item 共享扩散区以减小面积
+    \item 栅极垂直排列，输入信号通过多晶硅层
+    \item VDD在顶部，GND在底部
+    \item 尽量使晶体管共享源漏端
+\end{itemize}
+
+\textbf{步骤3：估算面积}
+
+面积估算单位：$\lambda$（最小特征尺寸）
+
+\begin{itemize}
+    \item 每个晶体管占用面积：$W \times L$（以$\lambda$为单位）
+    \item 扩散区间距：$3\lambda$
+    \item 多晶硅宽度：$2\lambda$
+    \item 金属线宽度和间距：$3\lambda$
+\end{itemize}
+
+对于$F = A(B+C)$：
+\begin{itemize}
+    \item NMOS：4个晶体管（2个A，1个B，1个C）
+    \item PMOS：3个晶体管（1个A，1个B，1个C）
+    \item 假设最小尺寸晶体管$W = 4\lambda$，$L = 2\lambda$
+    \item 通过共享扩散区，水平方向约：$5 \times 4\lambda = 20\lambda$
+    \item 垂直方向约：$(n区高度) + (p区高度) + (间距)$
+    \item 总面积约：$400\lambda^2 \sim 600\lambda^2$（取决于具体布局优化）
+\end{itemize}
+
+\section*{重要知识点补充}
+
+\subsection*{MOS管基本特性}
+
+\begin{itemize}
+    \item \textbf{长沟道与短沟道效应}：当沟道长度减小到一定程度，会出现速度饱和、漏致势垒降低（DIBL）等短沟道效应
+    \item \textbf{亚阈值区}：当$V_{GS} < V_t$时，仍有微弱的亚阈值电流，表达式：$I_D = I_0 e^{(V_{GS}-V_t)/nV_T}$
+    \item \textbf{体效应}：源衬底电压$V_{SB}$会影响阈值电压：$V_t = V_{t0} + \gamma(\sqrt{|2\phi_F + V_{SB}|} - \sqrt{|2\phi_F|})$
+\end{itemize}
+
+\subsection*{反相器关键参数}
+
+\begin{itemize}
+    \item \textbf{噪声容限}：$NM_L = V_{IL} - V_{OL}$，$NM_H = V_{OH} - V_{IH}$
+    \item \textbf{传播延时}：$t_p = (t_{pLH} + t_{pHL})/2$
+    \item \textbf{动态功耗}：主要由充放电引起，与$CV_{DD}^2f$成正比
+    \item \textbf{静态功耗}：理想CMOS为0，实际有漏电流
+\end{itemize}
+
+\subsection*{缩放理论}
+
+\begin{itemize}
+    \item \textbf{恒定电场缩放}：所有尺寸和电压同比缩放，保持电场强度不变
+    \item \textbf{恒定电压缩放}：只缩放尺寸，电压不变，会导致电场增强
+    \item \textbf{广义缩放}：尺寸和电压以不同比例缩放
+\end{itemize}
+
+\subsection*{互连线特性}
+
+\begin{itemize}
+    \item \textbf{RC延迟}：$t_d = 0.69RC$，其中$R$和$C$都与导线长度成正比
+    \item \textbf{Elmore延迟}：用于估算分布RC网络的延迟
+    \item \textbf{互连寄生效应}：包括电阻、电容、电感，影响信号完整性和速度
+\end{itemize}
+
 \end{document}

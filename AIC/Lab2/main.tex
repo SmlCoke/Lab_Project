@@ -59,5 +59,273 @@
 \tableofcontents
 \newpage
 
+\section{任务一：电流镜}
+
+\subsection{任务1.1：参考书本结合DC工作点计算和电流仿真结果，分析两者是否吻合}
+
+直流工作点仿真结果如图\ref{fig:task1_1_dc}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image.png}
+\caption{电流镜直流工作点仿真}
+\label{fig:task1_1_dc}
+\end{figure}
+
+各晶体管的关键电压和电流参数如表\ref{tab:task1_1}所示：
+
+\begin{table}[h]
+\centering
+\caption{电流镜各晶体管DC工作点参数}
+\label{tab:task1_1}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+MOSFET & $V_{GS}$/mV & $V_{DS}$/mV & $I_{DS}$/$\mu$A & $V_{\text{TH}}$/mV & $V_{\text{DSAT}}$/mV \\
+\hline
+M1 & 547.795 & 535.389 & 9.807 & 367.632 & 105.3 \\
+\hline
+M2 & 547.785 & 547.795 & 9.836 & 367.606 & 105.312 \\
+\hline
+M3 & -507.241 & -494.835 & -9.836 & -456.654 & -107.887 \\
+\hline
+M4 & -664.611 & -664.611 & -9.807 & -456.524 & -227.131 \\
+\hline
+\end{tabular}
+\end{table}
+
+电流仿真结果如图\ref{fig:task1_1_current}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-1.png}
+\caption{电流镜电流仿真结果}
+\label{fig:task1_1_current}
+\end{figure}
+
+\textbf{理论分析：}此部分理论分析待完善。
+
+\subsection{任务1.2：通过DC仿真，设置$V_{\text{DD}}$为变化量，得出$V_{\text{DD}}$与电流的关系，并绘图}
+
+通过DC仿真，设置$V_{\text{DD}}$为扫描变量，得到$I_{\text{out}} - V_{\text{DD}}$曲线如图\ref{fig:task1_2}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-9.png}
+\caption{$I_{\text{out}} - V_{\text{DD}}$关系曲线}
+\label{fig:task1_2}
+\end{figure}
+
+从仿真结果可以观察到，当$V_{\text{DD}}$在一定范围内变化时，输出电流$I_{\text{out}}$的变化特性，体现了电流镜的电源抑制特性。
+
+\subsection{任务1.3：通过DC仿真，设置温度为变化量，得出温度与电流的关系，并绘图}
+
+通过DC仿真，设置温度为扫描变量（温度范围0℃-70℃），得到$I_{\text{out}} - T$曲线如图\ref{fig:task1_3}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-8.png}
+\caption{$I_{\text{out}} - T$关系曲线}
+\label{fig:task1_3}
+\end{figure}
+
+从仿真结果可以看出，输出电流随温度的变化规律，反映了电流镜的温度特性。
+
+\subsection{任务1.4：设置工艺角（TT/FF/SS）重复任务1.2和1.3，并绘图}
+
+在不同工艺角（TT/FF/SS）下进行DC仿真，得到电流-$V_{\text{DD}}$曲线如图\ref{fig:task1_4_vdd}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-4.png}
+\caption{不同工艺角下的$I_{\text{out}} - V_{\text{DD}}$曲线}
+\label{fig:task1_4_vdd}
+\end{figure}
+
+从图\ref{fig:task1_4_vdd}可以发现，当$V_{\text{DD}}<0.9V$时，ff工艺角的$I_{\text{out}}$最大，ss工艺角的$I_{\text{out}}$最小。当$V_{\text{DD}} > 0.9V$时，ff工艺角的$I_{\text{out}}$最小，tt工艺角和ss工艺角的$I_{\text{out}}$几乎相同。
+
+不同工艺角下的电流-温度曲线如图\ref{fig:task1_4_temp}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-5.png}
+\caption{不同工艺角下的$I_{\text{out}} - T$曲线}
+\label{fig:task1_4_temp}
+\end{figure}
+
+从图\ref{fig:task1_4_temp}可以发现，三种工艺角下，$I_{\text{out}}$均随着温度上升而呈线性上升。
+
+\section{任务二：差分对}
+
+\subsection{任务2.1：采用任务一中的电流源，利用基本电流镜复制，替换ISS}
+
+设计的差分放大器顶层电路测试图如图\ref{fig:task2_1_top}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-10.png}
+\caption{差分放大器顶层电路测试图}
+\label{fig:task2_1_top}
+\end{figure}
+
+电流镜原理图（即任务一中的电流镜）如图\ref{fig:task2_1_mirror}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-11.png}
+\caption{电流镜原理图}
+\label{fig:task2_1_mirror}
+\end{figure}
+
+差分对原理图如图\ref{fig:task2_1_diff}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-12.png}
+\caption{差分对原理图}
+\label{fig:task2_1_diff}
+\end{figure}
+
+差分信号生成电路图如图\ref{fig:task2_1_signal}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-16.png}
+\caption{差分信号生成电路图}
+\label{fig:task2_1_signal}
+\end{figure}
+
+\subsection{任务2.2：M1/M2设置为100um/100nm，M3/M4设置为8um/1um，CL为1pF，进行直流仿真，分析所有晶体管的工作区间}
+
+电流镜直流工作点仿真图像如图\ref{fig:task2_2_mirror_dc}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-6.png}
+\caption{电流镜直流工作点仿真}
+\label{fig:task2_2_mirror_dc}
+\end{figure}
+
+电流镜中所有晶体管的直流工作点如表\ref{tab:task2_2_mirror}所示：
+
+\begin{table}[h]
+\centering
+\caption{电流镜各晶体管DC工作点参数}
+\label{tab:task2_2_mirror}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+MOSFET & $V_{GS}$/mV & $V_{DS}$/mV & $I_{DS}$/$\mu$A & $V_{\text{TH}}$/mV & $V_{\text{DSAT}}$/mV \\
+\hline
+M1 & 547.794 & 535.39 & 9.807 & 367.632 & 105.299 \\
+\hline
+M2 & 547.794 & 547.794 & 9.836 & 367.606 & 105.312 \\
+\hline
+M3 & -507.241 & -494.836 & -9.836 & -456.654 & -107.887 \\
+\hline
+M4 & -664.61 & -664.61 & -9.807 & -456.524 & -227.13 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{电流镜晶体管工作区间分析：}
+
+\begin{itemize}
+\item \textbf{M1（NMOS）：}$V_{GS} = 547.794\text{mV} > V_{TH} = 367.632\text{mV}$，晶体管导通；$V_{DS} = 535.39\text{mV} > V_{DSAT} = 105.299\text{mV}$，因此M1工作在\textbf{饱和区}。
+
+\item \textbf{M2（NMOS）：}$V_{GS} = 547.794\text{mV} > V_{TH} = 367.606\text{mV}$，晶体管导通；$V_{DS} = 547.794\text{mV} > V_{DSAT} = 105.312\text{mV}$，因此M2工作在\textbf{饱和区}。
+
+\item \textbf{M3（PMOS）：}$|V_{GS}| = 507.241\text{mV} > |V_{TH}| = 456.654\text{mV}$，晶体管导通；$|V_{DS}| = 494.836\text{mV} > |V_{DSAT}| = 107.887\text{mV}$，因此M3工作在\textbf{饱和区}。
+
+\item \textbf{M4（PMOS）：}$|V_{GS}| = 664.61\text{mV} > |V_{TH}| = 456.524\text{mV}$，晶体管导通；$|V_{DS}| = 664.61\text{mV} > |V_{DSAT}| = 227.13\text{mV}$，因此M4工作在\textbf{饱和区}。
+\end{itemize}
+
+差分对直流工作点仿真图像如图\ref{fig:task2_2_diff_dc}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-7.png}
+\caption{差分对直流工作点仿真}
+\label{fig:task2_2_diff_dc}
+\end{figure}
+
+差分对中所有晶体管的直流工作点如表\ref{tab:task2_2_diff}所示：
+
+\begin{table}[h]
+\centering
+\caption{差分对各晶体管DC工作点参数}
+\label{tab:task2_2_diff}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+MOSFET & $V_{GS}$/mV & $V_{DS}$/mV & $I_{DS}$/$\mu$A & $V_{\text{TH}}$/mV & $V_{\text{DSAT}}$/mV \\
+\hline
+M1 & 278.599 & 365.873 & 4.599 & 384.56 & 41.5285 \\
+\hline
+M2 & 278.599 & 365.873 & 4.599 & 384.56 & 41.5285 \\
+\hline
+M3 & -512.726 & -512.726 & -4.599 & -403.135 & -120.446 \\
+\hline
+M4 & -512.726 & -512.726 & -4.599 & -403.135 & -120.446 \\
+\hline
+$M_{\text{SS}}$ & 547.794 & 321.401 & 9.197 & 368.08 & 105.086 \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{差分对晶体管工作区间分析：}
+
+\begin{itemize}
+\item \textbf{M1（NMOS）：}$V_{GS} = 278.599\text{mV} < V_{TH} = 384.56\text{mV}$，因此M1工作在\textbf{截止区}。
+
+\item \textbf{M2（NMOS）：}$V_{GS} = 278.599\text{mV} < V_{TH} = 384.56\text{mV}$，因此M2工作在\textbf{截止区}。
+
+\item \textbf{M3（PMOS）：}$|V_{GS}| = 512.726\text{mV} > |V_{TH}| = 403.135\text{mV}$，晶体管导通；$|V_{DS}| = 512.726\text{mV} > |V_{DSAT}| = 120.446\text{mV}$，因此M3工作在\textbf{饱和区}。
+
+\item \textbf{M4（PMOS）：}$|V_{GS}| = 512.726\text{mV} > |V_{TH}| = 403.135\text{mV}$，晶体管导通；$|V_{DS}| = 512.726\text{mV} > |V_{DSAT}| = 120.446\text{mV}$，因此M4工作在\textbf{饱和区}。
+
+\item \textbf{$M_{\text{SS}}$（NMOS）：}$V_{GS} = 547.794\text{mV} > V_{TH} = 368.08\text{mV}$，晶体管导通；$V_{DS} = 321.401\text{mV} > V_{DSAT} = 105.086\text{mV}$，因此$M_{\text{SS}}$工作在\textbf{饱和区}。
+\end{itemize}
+
+\subsection{任务2.3：扫描M3/M4的宽度，将Vout的静态工作点设置为0.6V，记录晶体管设计参数和结果}
+
+设置$W$从$1\mu\text{m}$扫描至$16\mu\text{m}$，进行DC仿真，得到$V_{\text{out}}$直流工作点电压与$W$的关系图如图\ref{fig:task2_3_1}和图\ref{fig:task2_3_2}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-14.png}
+\caption{$V_{\text{out}} - W$关系曲线（图1）}
+\label{fig:task2_3_1}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-13.png}
+\caption{$V_{\text{out}} - W$关系曲线（图2）}
+\label{fig:task2_3_2}
+\end{figure}
+
+从仿真结果可知，当$V_{\text{out}} \approx 600\text{mV}$时，$W\approx 3\mu\text{m}$。因此，为了使输出静态工作点为0.6V，M3和M4的宽度应设计为$3\mu\text{m}$。
+
+\subsection{任务2.4：进行小信号AC仿真，结合实验1中的gmro参数和增益公式，对比仿真结果和解析结果，分析低频增益、带宽、增益带宽积}
+
+使用任务2.3中得到的晶体管M3和M4的参数$W=3\mu\text{m}$，进行AC仿真，设置频率从1Hz扫描到1GHz，得到$v_{\text{out}}$的增益与频率的曲线图如图\ref{fig:task2_4}所示：
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{Fig/image-15.png}
+\caption{增益-频率特性曲线}
+\label{fig:task2_4}
+\end{figure}
+
+从仿真结果可以观察到：
+
+\begin{itemize}
+\item \textbf{低频增益：}低频增益为27.1424dB。
+
+\item \textbf{带宽：}当$f = 380.2\text{kHz}$时，增益开始出现明显下降，因此该差分放大器的带宽为$380\text{kHz}$。
+
+\item \textbf{增益带宽积：}当频率来到$f = 15.84\text{MHz}$时，增益下降至0dB。
+
+\end{itemize}
+
+\textbf{理论分析：}此部分理论分析待完善。
 
 \end{document}

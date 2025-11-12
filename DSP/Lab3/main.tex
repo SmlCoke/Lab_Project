@@ -21,6 +21,49 @@
 \fancyhf{}
 \usepackage{xcolor}
 
+% ------------------------- 代码展示设置 -------------------------
+% ------------------- MATLAB 代码展示风格（DSP 专用） -----------------
+\usepackage{listings}
+\usepackage{xcolor}
+
+% 定义 MATLAB 风格
+\lstdefinestyle{matlab-dsp}{
+    language=Matlab,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{brown},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    tabsize=4,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    escapeinside={\%*}{*)},
+    % MATLAB 关键字（基础）
+    morekeywords={if, else, elseif, end, for, while, switch, case, otherwise, try, catch, function, return, break, continue, pause, clear, clc, close, disp, plot, figure, hold, grid, xlabel, ylabel, title, xlim, ylim, fft, ifft, freqz, filter, conv, zeros, ones, length, size, abs, angle, unwrap, real, imag, exp, sin, cos, pi, inf, nan, true, false, struct, cell, classdef, properties, methods},
+    % DSP 常用函数（重点突出）
+    morekeywords=[2]{freqz, zplane, fftshift, ifftshift, fft, ifft, filter, filtfilt, butter, cheby1, ellip, fir1, fir2, remez, sinc, rectwin, hamming, hanning, blackman, kaiser, decimate, interp, resample, xcorr, conv, corrcoef, pwelch, spectrogram, tf, zpk, ss, bode, impulse, step, lsim, unwrap, angle, abs, real, imag, db, mag2db, db2mag, rms, mean, std, var, cov, eig, svd, lpc, prony, residuez, tf2zp, zp2tf, tf2sos, sos2tf, sosfilt, upfirdn, buffer, overlapadd, fftfilt, spline, interp1, circshift, stem, tiledlayout, nexttile},
+    % 常量/特殊变量
+    morekeywords=[3]{pi, Inf, NaN, eps, i, j, nargin, nargout, varargin, varargout},
+    % 注释以 % 开头
+    comment=[l]{\%},
+    % 字符串用单引号或双引号
+    alsoletter={.}, % 允许 . 在标识符中（如 x.y）
+    sensitive=true
+}
+
+% 默认使用此样式
+\lstset{style=matlab-dsp}
+
 % ------------------- 设置超链接，便于跳转 -----------------
 \usepackage{enumitem}
 \usepackage{hyperref}
@@ -36,7 +79,7 @@
 
 
 % ------------------------ 标题区 ----------------------------
-\title{DSP Lab3 实验报告}
+\title{DSP 实验三报告}
 \author{
 	姓名：\underline{冯峻}~~~~~~
 	学号：\underline{523031910148}~~~~~~}
@@ -49,12 +92,614 @@
 
 % ------------------------ 页眉和页脚 ----------------------------
 \fancyhead[L]{冯峻}
-\fancyhead[C]{DSP Lab3}
+\fancyhead[C]{实验三}
 \fancyfoot[C]{\thepage}
 
 \maketitle
 \tableofcontents
 \newpage
+
+% ============================================================
+% 实验一：5-30 连续时间信号的采样
+% ============================================================
+\section{实验一：5-30 连续时间信号的采样}
+
+\subsection{题目内容}
+
+画出连续时间信号 $x_c(t) = \cos(2\pi \times 10t)$，$0 \leq t < 1\mathrm{s}$，以及它的以下各采样信号的示意图。
+
+（a）$x[n] = x_c(t) \big|_{t=(1/40)n}$；
+
+（b）$x[n] = x_c(t) \big|_{t=(1/100)n}$；
+
+（c）$x[n] = x_c(t) \big|_{t=(1/4)n}$。
+
+\subsection{实验结果}
+
+原信号和三个采样信号的时域序列示意图都在图\ref{fig:5-30}中。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_5_30.png}
+    \caption{5-30 原信号与三种采样频率下的采样信号}
+    \label{fig:5-30}
+\end{figure}
+
+\subsection{实验分析}
+
+从图\ref{fig:5-30}中可以看到，随着采样频率的提升，采样信号对于原信号的复现越精确。这一现象可以从采样定理得到理论解释。
+
+\subsubsection{采样定理}
+
+根据采样定理（Nyquist-Shannon采样定理），对于一个带限信号，若其最高频率分量为 $f_{\max}$，则采样频率 $F_s$ 必须满足：
+$$F_s \geq 2f_{\max}$$
+此时才能从采样信号无失真地重构原连续信号。奈奎斯特频率定义为 $F_N = 2f_{\max}$。
+
+\subsubsection{本实验分析}
+
+原信号 $x_c(t) = \cos(2\pi \times 10t)$ 的频率为 $f_c = 10\text{Hz}$，因此奈奎斯特频率为：
+$$F_N = 2 \times 10 = 20\text{Hz}$$
+
+三种采样情况的分析如下：
+
+\begin{itemize}
+    \item \textbf{情况(a)：}采样频率 $F_s = 40\text{Hz} > F_N$，满足采样定理。从图中可以看到，采样点能够较好地表征原信号的波形特征，可以无失真地重构原信号。
+    
+    \item \textbf{情况(b)：}采样频率 $F_s = 100\text{Hz} \gg F_N$，远大于奈奎斯特频率。采样点非常密集，几乎可以完美复现原连续信号的波形。
+    
+    \item \textbf{情况(c)：}采样频率 $F_s = 4\text{Hz} < F_N$，不满足采样定理。此时发生欠采样，产生混叠现象（aliasing）。从图中可以看到，采样点无法正确表征原10Hz信号的频率特性，采样信号表现出的频率与原信号不同。
+\end{itemize}
+
+\subsubsection{混叠现象}
+
+在情况(c)中，由于 $F_s = 4\text{Hz} < 2f_c = 20\text{Hz}$，原信号频率 $f_c = 10\text{Hz}$ 会发生频率混叠。混叠后的表观频率为：
+$$f_{apparent} = |f_c - kF_s|$$
+其中 $k$ 是使 $f_{apparent}$ 落在 $[0, F_s/2]$ 范围内的整数。取 $k=3$，得：
+$$f_{apparent} = |10 - 3 \times 4| = |10 - 12| = 2\text{Hz}$$
+因此，在采样后看到的是一个2Hz的余弦信号，这与图中的观察结果相符。
+
+% ============================================================
+% 实验二：5-32 序列抽取与三次样条插值重构
+% ============================================================
+\section{实验二：5-32 序列抽取与三次样条插值重构}
+
+\subsection{题目内容}
+
+画出序列 $x[n] = \cos(0.2\pi n)$，$0 \leq n < 40$，以及如下序列的示意图，并且用三次样条内插分别重构连续时间信号，比较各重构信号。
+
+（a）$x_1[n] = x[2n]$；
+
+（b）$x_2[n] = x[4n]$；
+
+（c）$x_3[n] = x[8n]$。
+
+（提示：可以调用的MATLAB函数有spline()，interp1()等）
+
+\subsection{实验结果}
+
+原来的4个离散时间序列以及三次样条内插重构后的连续时间信号都在图\ref{fig:5-32}中。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_5_32.png}
+    \caption{5-32 原序列与抽取序列的三次样条插值重构}
+    \label{fig:5-32}
+\end{figure}
+
+\subsection{实验分析}
+
+\subsubsection{序列抽取}
+
+序列抽取（decimation）是指从原序列中每隔 $M-1$ 个样本取一个样本，抽取因子为 $M$。抽取后的序列为：
+$$x_d[n] = x[Mn]$$
+
+在本实验中：
+\begin{itemize}
+    \item 序列 $x_1[n] = x[2n]$ 是抽取因子 $M=2$ 的抽取
+    \item 序列 $x_2[n] = x[4n]$ 是抽取因子 $M=4$ 的抽取
+    \item 序列 $x_3[n] = x[8n]$ 是抽取因子 $M=8$ 的抽取
+\end{itemize}
+
+\subsubsection{频域分析}
+
+原序列 $x[n] = \cos(0.2\pi n)$ 的数字角频率为 $\omega_0 = 0.2\pi$。
+
+抽取操作在频域的影响可以表示为：
+$$X_d(e^{j\omega}) = \frac{1}{M}\sum_{k=0}^{M-1}X(e^{j(\omega - 2\pi k)/M})$$
+
+这意味着抽取会导致频谱的拉伸和叠加。如果抽取前的信号不满足 $|\omega| < \pi/M$，则会发生频谱混叠。
+
+对于本实验：
+\begin{itemize}
+    \item $M=2$时：需要 $0.2\pi < \pi/2$，条件满足，不会发生严重混叠
+    \item $M=4$时：需要 $0.2\pi < \pi/4$，即 $0.2\pi < 0.25\pi$，条件满足
+    \item $M=8$时：需要 $0.2\pi < \pi/8$，即 $0.2\pi < 0.125\pi$，条件不满足，会发生混叠
+\end{itemize}
+
+\subsubsection{三次样条插值重构}
+
+三次样条插值（cubic spline interpolation）是一种平滑的插值方法，它通过在各采样点之间使用三次多项式进行连接，并保证在连接点处一阶和二阶导数连续。
+
+从图\ref{fig:5-32}中可以观察到：
+
+\begin{itemize}
+    \item 原序列 $x[n]$ 的样条重构信号非常平滑，很好地复现了余弦函数的特性
+    \item 抽取因子 $M=2$ 和 $M=4$ 时，由于采样点仍然较为密集且未发生严重混叠，重构信号基本保持了原信号的形状
+    \item 抽取因子 $M=8$ 时，由于采样点过于稀疏，重构信号虽然在采样点处与原序列值相符，但整体波形已经无法准确反映原信号的频率特性
+\end{itemize}
+
+这说明插值重构的质量强烈依赖于原采样序列的采样密度，符合采样定理的要求。
+
+% ============================================================
+% 实验三：6-41 DFT与频域采样关系验证
+% ============================================================
+\section{实验三：6-41 DFT与频域采样关系验证}
+
+\subsection{题目内容}
+
+已知序列 $x[n] = \{4,3,2,1,2,3,4\}$，$n = \{0,\cdots,6\}$。
+
+（a）画出 $x[n]$ 的傅里叶变换 $X(\mathrm{e}^{\mathrm{j}\omega})$ 的幅度和相位曲线；
+
+（b）画出 $x[n]$ 的32点DFT $X[k]$ 的幅度和相位，要求与（a）画在一幅图上，验证频域取样关系；
+
+（c）画出用 $X[k]$ 经过32点IDFT得到的 $x[n]$，验证DFT和IDFT的唯一性。
+
+（提示：可以调用的函数有fplot()、freqz()、fft()、ifft()等）
+
+\subsection{实验结果}
+
+\subsubsection{子题(a)结果}
+
+幅度曲线和相位曲线如图\ref{fig:6-41-dtft}所示。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_DTFT_.png}
+    \caption{6-41(a) DTFT幅度与相位曲线}
+    \label{fig:6-41-dtft}
+\end{figure}
+
+原离散时间序列满足：$x[n] = \{4,3,2,1,2,3,4\}$, $n = \{0,\cdots,6\}$，因此$x[n]$关于$n=\frac{6}{2}=3$偶对称，故$X(e^{j\omega})$具有广义线性相位（相位曲线的斜率为$-\frac{6}{2}=-3$）。又因为$x[n+3]$是实偶序列，因此可以推知$|X(e^{j\omega})|$关于$k\pi$对称。
+
+\subsubsection{子题(b)结果}
+
+$x[n]$的32点DFT以及DTFT均在图\ref{fig:6-41-compare}中可见。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_DTFT.png}
+    \caption{6-41(b) DTFT与32点DFT对比}
+    \label{fig:6-41-compare}
+\end{figure}
+
+可以很明显地看出，$x[n]$的32点DFT是其DTFT的频域取样，即：
+$$X[k] = X(e^{j\omega}) \bigg|_{\omega = k\frac{2\pi}{N}}, \quad k = 0,1,2,...,N-1$$
+
+\subsubsection{子题(c)结果}
+
+$X[k]$ 经过32点IDFT得到的序列见图\ref{fig:6-41-res}。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_res.png}
+    \caption{6-41(c) 原序列与IDFT重构序列对比}
+    \label{fig:6-41-res}
+\end{figure}
+
+该图中，左图是原序列$x[n]$，右图是经过32点DFT再经过32点IDFT后得到的序列$x'[n]$。可以发现，$x'[n]$就是$x[n]$的时域补零形式。
+
+在图\ref{fig:6-41-res-comp}中这一点可以更清晰地看出。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_res_comp.png}
+    \caption{6-41(c) 原序列与重构序列详细对比}
+    \label{fig:6-41-res-comp}
+\end{figure}
+
+\subsection{实验分析}
+
+\subsubsection{频域采样关系}
+
+离散傅里叶变换（DFT）与离散时间傅里叶变换（DTFT）之间存在频域采样关系：
+$$X[k] = X(e^{j\omega})\bigg|_{\omega = \frac{2\pi k}{N}}, \quad k = 0,1,...,N-1$$
+
+这意味着DFT是对DTFT在 $[0, 2\pi)$ 区间内进行 $N$ 点等间隔采样得到的。从图\ref{fig:6-41-compare}中可以清楚地看到，32点DFT的值恰好落在DTFT曲线上对应频率点处，完美验证了这一关系。
+
+\subsubsection{DFT和IDFT的唯一性}
+
+对于长度为 $N_0$ 的有限长序列 $x[n]$，进行 $N$ 点（$N \geq N_0$）DFT得到 $X[k]$，再进行 $N$ 点IDFT，可以完全恢复原序列（在 $0 \leq n < N_0$ 范围内），在 $N_0 \leq n < N$ 范围内补零。
+
+数学表达式为：
+$$x'[n] = \text{IDFT}_N\{\text{DFT}_N\{x[n]\}\} = \begin{cases}
+x[n], & 0 \leq n < N_0 \\
+0, & N_0 \leq n < N
+\end{cases}$$
+
+本实验中，原序列长度 $N_0 = 7$，进行32点DFT和IDFT后，得到的序列在 $n = 0$ 到 $n = 6$ 处与原序列完全相同，在 $n = 7$ 到 $n = 31$ 处为零，完美验证了DFT/IDFT的唯一性和可逆性。
+
+\subsubsection{时域补零的作用}
+
+时域补零不会改变信号的频谱形状，但会增加频域采样点的密度，使得DFT能更精细地逼近DTFT。在本实验中，7点序列进行32点DFT，相当于在时域补了25个零点，使得频域采样点从7个增加到32个，从而更清晰地展现DTFT的连续变化特性。
+
+% ============================================================
+% 实验四：6-42 DFT的时移和调制性质
+% ============================================================
+\section{实验四：6-42 DFT的时移和调制性质}
+
+\subsection{题目内容}
+
+画出以下序列的10点DFT的幅度和相位曲线。
+
+（a）$x_1[n] = 0.2^n$，$0 \leq n \leq 9$
+
+（b）$x_2[n] = x_1[((n-3))_{10}]$，$0 \leq n \leq 9$
+
+（c）$x_3[n] = x_1[n]\mathrm{e}^{\mathrm{j}0.4\pi n}$，$0 \leq n \leq 9$
+
+（提示：可以调用的函数有circshift()和fft()等）
+
+\subsection{实验结果}
+
+\subsubsection{子题(a)结果}
+
+$x_1[n]$的10点DFT的幅度曲线和相位曲线见图\ref{fig:6-42-x1}。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X1.png}
+    \caption{6-42(a) $x_1[n]$的10点DFT}
+    \label{fig:6-42-x1}
+\end{figure}
+
+\subsubsection{子题(b)结果}
+
+$x_2[n]$的10点DFT的幅度曲线和相位曲线见图\ref{fig:6-42-x2}。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X2.png}
+    \caption{6-42(b) $x_2[n]$的10点DFT}
+    \label{fig:6-42-x2}
+\end{figure}
+
+\subsubsection{子题(c)结果}
+
+$x_3[n]$的10点DFT的幅度曲线和相位曲线见图\ref{fig:6-42-x3}。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X3.png}
+    \caption{6-42(c) $x_3[n]$的10点DFT}
+    \label{fig:6-42-x3}
+\end{figure}
+
+\subsection{实验分析}
+
+\subsubsection{DFT的循环移位性质}
+
+对于长度为 $N$ 的序列，其DFT具有循环移位性质。若 $x[n] \xrightarrow{\text{DFT}} X[k]$，则：
+$$x[((n-m))_N] \xrightarrow{\text{DFT}} e^{-j\frac{2\pi}{N}km}X[k]$$
+
+其中 $((n-m))_N$ 表示模 $N$ 的循环移位。
+
+在本实验中，$x_2[n] = x_1[((n-3))_{10}]$ 是 $x_1[n]$ 循环右移3位得到的序列。根据循环移位性质：
+$$X_2[k] = e^{-j\frac{2\pi}{10} \times 3k}X_1[k] = e^{-j0.6\pi k}X_1[k]$$
+
+这意味着：
+\begin{itemize}
+    \item \textbf{幅度：}$|X_2[k]| = |X_1[k]|$，幅度保持不变
+    \item \textbf{相位：}$\angle X_2[k] = \angle X_1[k] - 0.6\pi k$，相位产生线性变化
+\end{itemize}
+
+对比图\ref{fig:6-42-x1}和图\ref{fig:6-42-x2}可以验证：
+\begin{itemize}
+    \item 两者的幅度曲线完全相同
+    \item $x_2[n]$ 的相位相对于 $x_1[n]$ 的相位增加了一个斜率为 $-0.6\pi$ 的线性项
+\end{itemize}
+
+\subsubsection{DFT的调制性质}
+
+DFT的调制性质（或称频移性质）表明，时域乘以复指数信号会导致频域的循环移位。若 $x[n] \xrightarrow{\text{DFT}} X[k]$，则：
+$$x[n]e^{j\frac{2\pi}{N}ln} \xrightarrow{\text{DFT}} X[((k-l))_N]$$
+
+在本实验中，$x_3[n] = x_1[n]e^{j0.4\pi n} = x_1[n]e^{j\frac{2\pi}{10} \times 2n}$，即 $l = 2$。
+
+根据调制性质：
+$$X_3[k] = X_1[((k-2))_{10}]$$
+
+这意味着 $X_3[k]$ 是 $X_1[k]$ 在频域循环左移2位的结果。
+
+对比图\ref{fig:6-42-x1}和图\ref{fig:6-42-x3}可以验证：
+\begin{itemize}
+    \item $X_3[k]$ 的幅度和相位曲线形状与 $X_1[k]$ 相同，但整体在频域循环左移了2个单位
+    \item 例如，$X_1[k]$ 在 $k=0$ 处的值出现在 $X_3[k]$ 的 $k=2$ 处（考虑循环特性）
+\end{itemize}
+
+\subsubsection{实际应用}
+
+这两个性质在数字信号处理中有重要应用：
+
+\begin{itemize}
+    \item \textbf{循环移位性质：}用于时延估计、信号对齐、相位校正等应用
+    \item \textbf{调制性质：}是调制解调系统的理论基础，广泛应用于通信系统中，如载波调制、频分复用等
+\end{itemize}
+
+% ============================================================
+% 附录：MATLAB代码
+% ============================================================
+\newpage
+\section{附录：MATLAB代码}
+
+\subsection{实验一代码：5-30}
+
+\begin{lstlisting}
+% 5-30 连续时间信号的采样
+clear; close all; clc;
+
+fc = 10; % 原信号频率为10Hz
+t_continuous = linspace(0, 1, 1000); 
+xc_continuous = cos(2*pi*fc*t_continuous);
+
+% (a) 采样频率 Fs = 40 Hz
+Fs_a = 40; 
+n_a = 0:39;
+t_a = n_a/Fs_a;
+x_a = cos(2*pi*fc*t_a);
+
+% (b) 采样频率 Fs = 100Hz
+Fs_b = 100;
+n_b = 0:99;
+t_b = n_b/Fs_b;
+x_b = cos(2*pi*fc*t_b);
+
+% (c) 采样频率 Fs = 4Hz
+Fs_c = 4;
+n_c = 0:3;
+t_c = n_c / Fs_c;
+x_c = cos(2*pi*fc*t_c);
+
+t = tiledlayout(4,1, 'Padding','compact','TileSpacing','compact');
+
+nexttile; 
+plot(t_continuous, xc_continuous, 'k-', 'LineWidth', 0.5); 
+grid on;
+legend('原始信号');
+title('原始连续信号');
+
+nexttile; 
+plot(t_continuous, xc_continuous, 'k-', 'LineWidth', 0.5); hold on;
+stem(t_a, x_a, 'r', 'LineWidth', 1.5, 'MarkerSize', 4.5);
+grid on;
+legend('原始信号', '采样点');
+title('(a) 采样频率 Fs = 40 Hz');
+
+
+nexttile; 
+plot(t_continuous, xc_continuous, 'k-', 'LineWidth', 0.5); hold on;
+stem(t_b, x_b, 'g', 'LineWidth', 1.5, 'MarkerSize', 4.5);
+grid on;
+legend('原始信号', '采样点');
+title('(b) 采样频率 Fs = 100 Hz');
+
+nexttile; 
+plot(t_continuous, xc_continuous, 'k-', 'LineWidth', 0.5); hold on;
+stem(t_c, x_c, 'b', 'LineWidth', 1.5, 'MarkerSize', 4.5);
+grid on;
+legend('原始信号', '采样点');
+title('(c) 采样频率 Fs = 4 Hz');
+\end{lstlisting}
+
+\subsection{实验二代码：5-32}
+
+\begin{lstlisting}
+% 5-32 序列抽取与三次样条插值重构
+clear; close all; clc;
+
+% 原始序列
+n = 0:39;
+x = cos(0.2*pi*n);
+
+% (a) x1[n] = x[2n] - 抽取因子为2
+n1 = 0:19;
+x1 = x(2*n1 + 1);
+
+% (b) x2[n] = x[4n] - 抽取因子为4
+n2 = 0:9;
+x2 = x(4*n2 + 1);
+
+% (c) x3[n] = x[8n] - 抽取因子为8
+n3 = 0:4;
+x3 = x(8*n3 + 1);
+
+% 样条插值 \delta t
+t_inter = linspace(0, 39, 1000);
+y = spline(n,x,t_inter);
+
+t_inter1 = linspace(0, 19, 1000);
+y1 = spline(n1,x1,t_inter1);
+
+t_inter2 = linspace(0, 9, 1000);
+y2 = spline(n2,x2,t_inter2);
+
+t_inter3 = linspace(0, 4, 1000);
+y3 = spline(n3,x3,t_inter3);
+
+fig1 = tiledlayout(4,1, 'Padding','compact','TileSpacing','compact');
+
+nexttile; 
+stem(n, x, 'k', 'LineWidth', 1, 'MarkerSize', 4.5); hold on;
+plot(t_inter, y, 'r-', 'LineWidth', 0.5);
+grid on;
+legend('原始信号', '插值重构信号');
+title('x[n]');
+
+nexttile; 
+stem(n1, x1, 'k', 'LineWidth', 1, 'MarkerSize', 4.5); hold on;
+plot(t_inter1, y1, 'r-', 'LineWidth', 0.5);
+grid on;
+legend('原始信号', '插值重构信号');
+title('x_{1}[n]');
+
+nexttile; 
+stem(n2, x2, 'k', 'LineWidth', 1, 'MarkerSize', 4.5); hold on;
+plot(t_inter2, y2, 'r-', 'LineWidth', 0.5);
+grid on;
+legend('原始信号', '插值重构信号');
+title('x_{2}[n]');
+
+nexttile; 
+stem(n3, x3, 'k', 'LineWidth', 1, 'MarkerSize', 4.5); hold on;
+plot(t_inter3, y3, 'r-', 'LineWidth', 0.5);
+grid on;
+legend('原始信号', '插值重构信号');
+title('x_{3}[n]');
+\end{lstlisting}
+
+\subsection{实验三代码：6-41}
+
+\begin{lstlisting}
+% 6-41 DFT与频域采样关系验证
+clear; close all; clc;
+
+% 已知序列
+x = [4, 3, 2, 1, 2, 3, 4];
+n = 0:6;
+N = length(x);
+
+% (a) 利用频率响应求解傅里叶变换
+[X,w] = freqz(x, 1, 2048, 'whole');
+
+% (b) 计算32点DFT，并验证频域取样关系
+N_dft = 32;
+X_dft = fft(x, N_dft);
+k = 0:N_dft-1;
+w_dft = 2*pi*k/N_dft; % DFT对应的频率点
+
+figure('Position', [100, 100, 1200, 400]);
+figab = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');  % 创建 2 行 1 列的网格布局，压缩边距与间距，便于紧凑显示两幅图。
+% figure 1
+nexttile; 
+plot(w, abs(X)); hold on;
+% stem(w_dft, abs(X_dft));
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('|X(e^{j\omega)}|','|X[k]|')
+title(['幅度曲线']);
+
+% figure 2
+nexttile; 
+plot(w, unwrap(angle(X)));   % unwrap 去除 2π 跳变，使相位连续
+hold on;
+% stem(w_dft, angle(X_dft));
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('\angle X(e^{j\omega})', '\angle X[k]'); 
+title(['相位曲线']);
+
+% (c) 利用IDFT计算重构后的信号，验证验证DFT和IDFT的唯一性
+x_reconstructed = ifft(X_dft, N_dft);
+
+figure('Position', [100, 100, 1200, 400]);
+figc = tiledlayout(1,1, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+stem(n,x, 'b', 'LineWidth', 2, 'MarkerSize', 6); hold on;
+stem(0:N_dft - 1, x_reconstructed, 'r', 'LineWidth', 1, 'MarkerSize', 4.5);
+xlabel('n');
+legend('原始信号', 'IDFT得到的信号');
+
+figure('Position', [100, 100, 1200, 400]);
+figc2 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+stem(n,x, 'b', 'LineWidth', 2, 'MarkerSize', 6);
+xlabel('n');
+ylabel('x[n]')
+legend('原始信号');
+
+nexttile;
+stem(0:N_dft - 1, x_reconstructed, 'r', 'LineWidth', 1, 'MarkerSize', 4.5);
+xlabel('n');
+ylabel('x_{r}[n]');
+legend('重构后的信号');
+\end{lstlisting}
+
+\subsection{实验四代码：6-42}
+
+\begin{lstlisting}
+% 6-42 DFT的时移和调制性质
+clear; close all; clc;
+
+% (a) x1[n] = 0.2^n, 0 ≤ n ≤ 9
+n = 0:9;
+N_dft = 10;
+x1 = 0.2.^n;
+disp("x1:");
+disp(x1);
+
+% (b) x2[n] = x1[((n-3))_10] - 循环右移3
+x2 = circshift(x1, 3);
+disp("x2:");
+disp(x2);
+
+% (c) x3[n] = x1[n] * exp(j*0.4*pi*n)
+x3 = x1 .* exp(1j*0.4*pi*n);
+disp("x3:");
+disp(x3);
+
+% 计算10点DFT
+X1 = fft(x1, N_dft);
+X2 = fft(x2, N_dft);
+X3 = fft(x3, N_dft);
+
+% x1的10点DFT的幅度曲线和相位曲线
+figure('Position', [100, 100, 1200, 400]);
+fig1 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+stem(0:N_dft-1,abs(X1));
+xlabel('$n/ \frac{2\pi}{10}$','Interpreter', 'latex');
+ylabel('|X1[k]|')
+legend('幅度');
+nexttile; 
+stem(0:N_dft-1,angle(X1));
+xlabel('$n/ \frac{2\pi}{10}$','Interpreter', 'latex');
+ylabel('\angle X1[k]')
+legend('相位');
+
+% x2的10点DFT的幅度曲线和相位曲线
+figure('Position', [100, 100, 1200, 400]);
+fig2 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+stem(0:N_dft-1,abs(X2));
+xlabel('$n/ \frac{2\pi}{10}$','Interpreter', 'latex');
+ylabel('|X2[k]|')
+legend('幅度');
+nexttile; 
+stem(0:N_dft-1,angle(X2));
+xlabel('$n/ \frac{2\pi}{10}$','Interpreter', 'latex');
+ylabel('\angle X2[k]')
+legend('相位');
+
+% x3的10点DFT的幅度曲线和相位曲线
+figure('Position', [100, 100, 1200, 400]);
+fig3 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+stem(0:N_dft-1,abs(X3));
+xlabel('$n/ \frac{2\pi}{10}$','Interpreter', 'latex');
+ylabel('|X3[k]|')
+legend('幅度');
+nexttile; 
+stem(0:N_dft-1,angle(X3));
+xlabel('$n/ \frac{2\pi}{10}$','Interpreter', 'latex');
+ylabel('\angle X3[k]')
+legend('相位');
+\end{lstlisting}
 
 
 \end{document}

@@ -70,11 +70,11 @@ V_{\text{GS4}} = V_{\text{GS3}} - I_{\text{out}}R_{\text{S}}
 \end{equation}
 假设电流镜中的各个晶体管工作在饱和区，因此有：
 \begin{equation}
-\sqrt{\frac{2I_{\text{out}}}{\mu_{\text{p}} C_{\text{ox}} (W/L)_{\text{N}}}} + V_{\text{THP}4} = \sqrt{\frac{2I_{\text{out}}}{\mu_{\text{p}} C_{\text{ox}} K(W/L)_{\text{N}}}} + V_{\text{THP}3} - I_{\text{out}}R_{\text{S}}
+\sqrt{\frac{2I_{\text{out}}}{\mu_{\text{p}} C_{\text{ox}} (W/L)_{\text{P}}}} + V_{\text{THP}4} = \sqrt{\frac{2I_{\text{out}}}{\mu_{\text{p}} C_{\text{ox}} K(W/L)_{\text{P}}}} + V_{\text{THP}3} - I_{\text{out}}R_{\text{S}}
 \end{equation}
 因此有：
 \begin{equation}
-I_{\text{out}} = \frac{2}{\mu_{\text{p}} C_{\text{ox}} (W/L)_{\text{N}}}\frac{1}{R_{\text{S}}^2}(\frac{1}{\sqrt{K}}-1)^2
+I_{\text{out}} = \frac{2}{\mu_{\text{p}} C_{\text{ox}} (W/L)_{\text{P}}}\frac{1}{R_{\text{S}}^2}(\frac{1}{\sqrt{K}}-1)^2
 \end{equation}
 \begin{figure}[h]
     \centering
@@ -388,7 +388,7 @@ $M_{\text{SS}}$ & 547.794 & 321.401 & 9.197 & 368.08 & 105.086 \\
     \label{fig:task2_3}
 \end{figure}
 
-==
+
 
 从仿真结果可知，当$V_{\text{out}} \approx 600\text{mV}$时，$W\approx 3\mu\text{m}$。因此，为了使输出静态工作点为0.6V，M3和M4的宽度应设计为$3\mu\text{m}$。
 
@@ -399,7 +399,7 @@ $M_{\text{SS}}$ & 547.794 & 321.401 & 9.197 & 368.08 & 105.086 \\
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{Fig/image-15.png}
+\includegraphics[width=0.8\textwidth]{Fig/增益曲线.png}
 \caption{增益-频率特性曲线}
 \label{fig:task2_4}
 \end{figure}
@@ -409,12 +409,65 @@ $M_{\text{SS}}$ & 547.794 & 321.401 & 9.197 & 368.08 & 105.086 \\
 \begin{itemize}
 \item \textbf{低频增益：}低频增益为27.1424dB。
 
-\item \textbf{带宽：}当$f = 380.2\text{kHz}$时，增益开始出现明显下降，因此该差分放大器的带宽为$380\text{kHz}$。
+\item \textbf{带宽：}当$f = 772\text{kHz}$时，增益开始出现明显下降，因此该差分放大器的带宽为$772\text{kHz}$。
 
-\item \textbf{增益带宽积：}当频率来到$f = 15.84\text{MHz}$时，增益下降至0dB。
+\item \textbf{增益带宽积：}当频率来到$f = 17.6\text{MHz}$时，增益下降至0dB。
 
 \end{itemize}
 
-\textbf{理论分析：}此部分理论分析待完善。
+\textbf{理论分析：}
+
+根据教材，五管OTA电路的低频增益公式为：
+\begin{equation}
+\frac{v_{\text{out}}}{v_{\text{in}}} = g_\text{m1}(r_{\text{ds1} // \text{ds4}})\frac{2g_{\text{m4}}r_{\text{ds4} + 1}}{2(g_{\text{m4}}r_{\text{ds4}}+1)}
+\end{equation}
+实验测得，直流工作点下，晶体管M1和M4的跨到和输出电阻见图\ref{fig:task2_4_M}所示。
+
+在输出结点$V_{\text{out}}$向上看的电阻为：$r_{\text{ds4}}$，向下看的电阻为：$r_{\text{ds2}}$，负载电容为$C_{\text{L}}$，因此时间常数为：$r_{\text{ds2}}//r_{\text{ds4}}C_{\text{L}}$，我们假设电路中其他寄生电容较小，则主极点频率为：$\frac{1}{2\pi r_{\text{ds2}}//r_{\text{ds4}}C_{\text{L}}}$。
+
+\begin{figure}[htbp]
+    \centering
+    % 第一张子图
+    \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
+        \centering
+        \includegraphics[width=\textwidth]{Fig/M1直流工作参数.png}
+        \caption{M1的跨导及输出电阻}
+        \label{fig:task2_4_1}
+    \end{subfigure}
+    \hfill % 添加水平间距
+    % 第二张子图
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Fig/M4直流工作参数.png}
+        \caption{M4的跨导及输出电阻}
+        \label{fig:task2_4_2}
+    \end{subfigure}
+    % 总图标题
+    \caption{M1和M4的直流工作参数}
+    \label{fig:task2_4_M}
+\end{figure}
+可知，$$g_{\text{m1}} = 126.383\text{uS}, g_{\text{ds1}} = 5.057\text{uS}, g_{\text{m4}} = 43.882\text{uS}, g_{\text{ds4}} = 462.3\text{nS}$$ 
+
+因此：
+\begin{itemize}
+    \item \textbf{低频增益}
+    
+    $$A_0 = \frac{v_{\text{out}}}{v_{\text{in}}} \approx 22.77 \rightarrow 20\text{lg}\frac{v_{\text{out}}}{v_{\text{in}}} \approx 27.15\text{dB}$$而仿真结果为$27.1424\text{dB}$，
+    两者较为接近。证明了理论分析的正确性。
+
+    \item \textbf{带宽}
+    
+    通过直流工作点仿真可以得到
+    $$g_{\text{ds2}} = 4.47\text{uS}$$
+    ,求解得到主极点频率为：
+    $$f_{\text{p}} = \frac{1}{2\pi r_{\text{ds2}}//r_{\text{ds4}}C_{\text{L}}} \approx 785\text{kHz}$$
+    ,而仿真测量出的值为$772\text{kHz}$，两者较为接近。证明了理论分析的正确性。
+
+    \item \textbf{增益带宽积}
+    
+    增益带宽积的理论值为：
+    $$\text{GBW} = \text{BW} \times A_{0} = f_{\text{p}} \times A_{0} = 785\text{kHz} \times 22.77 \approx 17.87\text{MHz}$$
+    ，而仿真结果为$17.6\text{MHz}$，两者较为接近。证明了理论分析的正确性。
+\end{itemize}
 
 \end{document}

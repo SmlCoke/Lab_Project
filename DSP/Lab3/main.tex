@@ -102,17 +102,17 @@
 % ============================================================
 % 实验一：5-30 连续时间信号的采样
 % ============================================================
-\section{实验一：5-30 连续时间信号的采样}
+\section{实验一：5-30}
 
 \subsection{题目内容}
 
 画出连续时间信号 $x_c(t) = \cos(2\pi \times 10t)$，$0 \leq t < 1\mathrm{s}$，以及它的以下各采样信号的示意图。
 
-（a）$x[n] = x_c(t) \big|_{t=(1/40)n}$；
+(a) $x[n] = x_c(t) \big|_{t=(1/40)n}$;
 
-（b）$x[n] = x_c(t) \big|_{t=(1/100)n}$；
+(b) $x[n] = x_c(t) \big|_{t=(1/100)n}$;
 
-（c）$x[n] = x_c(t) \big|_{t=(1/4)n}$。
+(c) $x[n] = x_c(t) \big|_{t=(1/4)n}$。
 
 \subsection{实验结果}
 
@@ -120,7 +120,7 @@
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_5_30.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_5_30.pdf}
     \caption{5-30 原信号与三种采样频率下的采样信号}
     \label{fig:5-30}
 \end{figure}
@@ -131,9 +131,9 @@
 
 \subsubsection{采样定理}
 
-根据采样定理（Nyquist-Shannon采样定理），对于一个带限信号，若其最高频率分量为 $f_{\max}$，则采样频率 $F_s$ 必须满足：
+根据采样定理，对于一个带限信号，若其最高频率分量为 $f_{\max}$，则采样频率 $F_s$ 必须满足：
 $$F_s \geq 2f_{\max}$$
-此时才能从采样信号无失真地重构原连续信号。奈奎斯特频率定义为 $F_N = 2f_{\max}$。
+此时才能从采样信号无失真地重构原连续信号。
 
 \subsubsection{本实验分析}
 
@@ -142,36 +142,27 @@ $$F_N = 2 \times 10 = 20\text{Hz}$$
 
 三种采样情况的分析如下：
 
-\begin{itemize}
-    \item \textbf{情况(a)：}采样频率 $F_s = 40\text{Hz} > F_N$，满足采样定理。从图中可以看到，采样点能够较好地表征原信号的波形特征，可以无失真地重构原信号。
-    
-    \item \textbf{情况(b)：}采样频率 $F_s = 100\text{Hz} \gg F_N$，远大于奈奎斯特频率。采样点非常密集，几乎可以完美复现原连续信号的波形。
-    
-    \item \textbf{情况(c)：}采样频率 $F_s = 4\text{Hz} < F_N$，不满足采样定理。此时发生欠采样，产生混叠现象（aliasing）。从图中可以看到，采样点无法正确表征原10Hz信号的频率特性，采样信号表现出的频率与原信号不同。
-\end{itemize}
+(a) 采样频率 $F_s = 40\text{Hz} > F_N$，满足采样定理。
 
-\subsubsection{混叠现象}
+(b) 采样频率 $F_s = 100\text{Hz} \gg F_N$，满足采样定理。
 
-在情况(c)中，由于 $F_s = 4\text{Hz} < 2f_c = 20\text{Hz}$，原信号频率 $f_c = 10\text{Hz}$ 会发生频率混叠。混叠后的表观频率为：
-$$f_{apparent} = |f_c - kF_s|$$
-其中 $k$ 是使 $f_{apparent}$ 落在 $[0, F_s/2]$ 范围内的整数。取 $k=3$，得：
-$$f_{apparent} = |10 - 3 \times 4| = |10 - 12| = 2\text{Hz}$$
-因此，在采样后看到的是一个2Hz的余弦信号，这与图中的观察结果相符。
+(c) 采样频率 $F_s = 4\text{Hz} < F_N$，不满足采样定理。此时发生欠采样，会产生频谱混叠现象。
 
 % ============================================================
 % 实验二：5-32 序列抽取与三次样条插值重构
 % ============================================================
-\section{实验二：5-32 序列抽取与三次样条插值重构}
+\newpage
+\section{实验二：5-32}
 
 \subsection{题目内容}
 
 画出序列 $x[n] = \cos(0.2\pi n)$，$0 \leq n < 40$，以及如下序列的示意图，并且用三次样条内插分别重构连续时间信号，比较各重构信号。
 
-（a）$x_1[n] = x[2n]$；
+(a) $x_1[n] = x[2n]$;
 
-（b）$x_2[n] = x[4n]$；
+(b) $x_2[n] = x[4n]$;
 
-（c）$x_3[n] = x[8n]$。
+(c) $x_3[n] = x[8n]$。
 
 （提示：可以调用的MATLAB函数有spline()，interp1()等）
 
@@ -181,59 +172,32 @@ $$f_{apparent} = |10 - 3 \times 4| = |10 - 12| = 2\text{Hz}$$
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_5_32.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_5_32.pdf}
     \caption{5-32 原序列与抽取序列的三次样条插值重构}
     \label{fig:5-32}
 \end{figure}
 
 \subsection{实验分析}
 
-\subsubsection{序列抽取}
-
-序列抽取（decimation）是指从原序列中每隔 $M-1$ 个样本取一个样本，抽取因子为 $M$。抽取后的序列为：
-$$x_d[n] = x[Mn]$$
-
-在本实验中：
-\begin{itemize}
-    \item 序列 $x_1[n] = x[2n]$ 是抽取因子 $M=2$ 的抽取
-    \item 序列 $x_2[n] = x[4n]$ 是抽取因子 $M=4$ 的抽取
-    \item 序列 $x_3[n] = x[8n]$ 是抽取因子 $M=8$ 的抽取
-\end{itemize}
-
-\subsubsection{频域分析}
-
-原序列 $x[n] = \cos(0.2\pi n)$ 的数字角频率为 $\omega_0 = 0.2\pi$。
-
-抽取操作在频域的影响可以表示为：
-$$X_d(e^{j\omega}) = \frac{1}{M}\sum_{k=0}^{M-1}X(e^{j(\omega - 2\pi k)/M})$$
-
-这意味着抽取会导致频谱的拉伸和叠加。如果抽取前的信号不满足 $|\omega| < \pi/M$，则会发生频谱混叠。
-
-对于本实验：
-\begin{itemize}
-    \item $M=2$时：需要 $0.2\pi < \pi/2$，条件满足，不会发生严重混叠
-    \item $M=4$时：需要 $0.2\pi < \pi/4$，即 $0.2\pi < 0.25\pi$，条件满足
-    \item $M=8$时：需要 $0.2\pi < \pi/8$，即 $0.2\pi < 0.125\pi$，条件不满足，会发生混叠
-\end{itemize}
-
-\subsubsection{三次样条插值重构}
-
-三次样条插值（cubic spline interpolation）是一种平滑的插值方法，它通过在各采样点之间使用三次多项式进行连接，并保证在连接点处一阶和二阶导数连续。
+三次样条插值（cubic spline interpolation）是一种平滑的插值方法，它通过在各采样点之间使用\textbf{三次多项式}进行连接，并保证在连接点处一阶和二阶导数连续。
 
 从图\ref{fig:5-32}中可以观察到：
 
-\begin{itemize}
-    \item 原序列 $x[n]$ 的样条重构信号非常平滑，很好地复现了余弦函数的特性
-    \item 抽取因子 $M=2$ 和 $M=4$ 时，由于采样点仍然较为密集且未发生严重混叠，重构信号基本保持了原信号的形状
-    \item 抽取因子 $M=8$ 时，由于采样点过于稀疏，重构信号虽然在采样点处与原序列值相符，但整体波形已经无法准确反映原信号的频率特性
-\end{itemize}
+(a) 原序列 $x[n]$ 的样条重构信号非常平滑，很好地复现了余弦信号的波形；
 
-这说明插值重构的质量强烈依赖于原采样序列的采样密度，符合采样定理的要求。
+(b) 抽取因子 $M=2$时采样点较为密集，重构信号基本保持了原信号的形状；
+
+(c) 抽取因子 $M=4$时，采样点变得较为稀疏，重构信号开始出现一定的失真，但整体波形仍然与正弦型信号波形类似；
+
+(d) 抽取因子 $M=8$时，由于采样点过于稀疏，重构信号的整体波形已经严重偏离原信号，出现严重失真。
+
+这说明插值重构的质量强烈依赖于原采样序列的采样密度。
 
 % ============================================================
 % 实验三：6-41 DFT与频域采样关系验证
 % ============================================================
-\section{实验三：6-41 DFT与频域采样关系验证}
+\newpage
+\section{实验三：6-41}
 
 \subsection{题目内容}
 
@@ -255,7 +219,7 @@ $$X_d(e^{j\omega}) = \frac{1}{M}\sum_{k=0}^{M-1}X(e^{j(\omega - 2\pi k)/M})$$
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_DTFT_.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_DTFT_.pdf}
     \caption{6-41(a) DTFT幅度与相位曲线}
     \label{fig:6-41-dtft}
 \end{figure}
@@ -268,7 +232,7 @@ $x[n]$的32点DFT以及DTFT均在图\ref{fig:6-41-compare}中可见。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_DTFT.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_DTFT.pdf}
     \caption{6-41(b) DTFT与32点DFT对比}
     \label{fig:6-41-compare}
 \end{figure}
@@ -282,51 +246,30 @@ $X[k]$ 经过32点IDFT得到的序列见图\ref{fig:6-41-res}。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_res.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_res.pdf}
     \caption{6-41(c) 原序列与IDFT重构序列对比}
     \label{fig:6-41-res}
 \end{figure}
 
-该图中，左图是原序列$x[n]$，右图是经过32点DFT再经过32点IDFT后得到的序列$x'[n]$。可以发现，$x'[n]$就是$x[n]$的时域补零形式。
+该图中，左图是原序列$x[n]$，右图是经过32点DFT再经过32点IDFT后得到的序列$x'[n]$。可以发现，$x'[n]$就是$x[n]$的时域补零形式。完美验证了DFT/IDFT的唯一性和可逆性。在图\ref{fig:6-41-res-comp}中这一点可以更清晰地看出。
 
-在图\ref{fig:6-41-res-comp}中这一点可以更清晰地看出。
+时域补零不会改变信号的频谱形状，因为我们只是增加了频域采样点的密度，使得DFT能更精细地逼近DTFT。在本实验中，7点序列进行32点DFT，相当于在时域补了25个零点，使得频域采样点从7个增加到32个，从而更清晰地展现DTFT的连续变化特性。
+
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_res_comp.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_41_res_comp.pdf}
     \caption{6-41(c) 原序列与重构序列详细对比}
     \label{fig:6-41-res-comp}
 \end{figure}
 
-\subsection{实验分析}
 
-\subsubsection{频域采样关系}
-
-离散傅里叶变换（DFT）与离散时间傅里叶变换（DTFT）之间存在频域采样关系：
-$$X[k] = X(e^{j\omega})\bigg|_{\omega = \frac{2\pi k}{N}}, \quad k = 0,1,...,N-1$$
-
-这意味着DFT是对DTFT在 $[0, 2\pi)$ 区间内进行 $N$ 点等间隔采样得到的。从图\ref{fig:6-41-compare}中可以清楚地看到，32点DFT的值恰好落在DTFT曲线上对应频率点处，完美验证了这一关系。
-
-\subsubsection{DFT和IDFT的唯一性}
-
-对于长度为 $N_0$ 的有限长序列 $x[n]$，进行 $N$ 点（$N \geq N_0$）DFT得到 $X[k]$，再进行 $N$ 点IDFT，可以完全恢复原序列（在 $0 \leq n < N_0$ 范围内），在 $N_0 \leq n < N$ 范围内补零。
-
-数学表达式为：
-$$x'[n] = \text{IDFT}_N\{\text{DFT}_N\{x[n]\}\} = \begin{cases}
-x[n], & 0 \leq n < N_0 \\
-0, & N_0 \leq n < N
-\end{cases}$$
-
-本实验中，原序列长度 $N_0 = 7$，进行32点DFT和IDFT后，得到的序列在 $n = 0$ 到 $n = 6$ 处与原序列完全相同，在 $n = 7$ 到 $n = 31$ 处为零，完美验证了DFT/IDFT的唯一性和可逆性。
-
-\subsubsection{时域补零的作用}
-
-时域补零不会改变信号的频谱形状，但会增加频域采样点的密度，使得DFT能更精细地逼近DTFT。在本实验中，7点序列进行32点DFT，相当于在时域补了25个零点，使得频域采样点从7个增加到32个，从而更清晰地展现DTFT的连续变化特性。
 
 % ============================================================
 % 实验四：6-42 DFT的时移和调制性质
 % ============================================================
-\section{实验四：6-42 DFT的时移和调制性质}
+\newpage
+\section{实验四：6-42}
 
 \subsection{题目内容}
 
@@ -348,7 +291,7 @@ $x_1[n]$的10点DFT的幅度曲线和相位曲线见图\ref{fig:6-42-x1}。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X1.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X1.pdf}
     \caption{6-42(a) $x_1[n]$的10点DFT}
     \label{fig:6-42-x1}
 \end{figure}
@@ -359,7 +302,7 @@ $x_2[n]$的10点DFT的幅度曲线和相位曲线见图\ref{fig:6-42-x2}。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X2.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X2.pdf}
     \caption{6-42(b) $x_2[n]$的10点DFT}
     \label{fig:6-42-x2}
 \end{figure}
@@ -370,61 +313,46 @@ $x_3[n]$的10点DFT的幅度曲线和相位曲线见图\ref{fig:6-42-x3}。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X3.png}
+    \includegraphics[width=0.8\textwidth]{Fig/T_6_42_X3.pdf}
     \caption{6-42(c) $x_3[n]$的10点DFT}
     \label{fig:6-42-x3}
 \end{figure}
 
-\subsection{实验分析}
+\subsection{实验分析——DFT的循环移位性质}
 
-\subsubsection{DFT的循环移位性质}
+\subsubsection{时移}
 
 对于长度为 $N$ 的序列，其DFT具有循环移位性质。若 $x[n] \xrightarrow{\text{DFT}} X[k]$，则：
 $$x[((n-m))_N] \xrightarrow{\text{DFT}} e^{-j\frac{2\pi}{N}km}X[k]$$
 
-其中 $((n-m))_N$ 表示模 $N$ 的循环移位。
 
 在本实验中，$x_2[n] = x_1[((n-3))_{10}]$ 是 $x_1[n]$ 循环右移3位得到的序列。根据循环移位性质：
 $$X_2[k] = e^{-j\frac{2\pi}{10} \times 3k}X_1[k] = e^{-j0.6\pi k}X_1[k]$$
 
 这意味着：
 \begin{itemize}
-    \item \textbf{幅度：}$|X_2[k]| = |X_1[k]|$，幅度保持不变
-    \item \textbf{相位：}$\angle X_2[k] = \angle X_1[k] - 0.6\pi k$，相位产生线性变化
+    \item[1.] \textbf{幅度：}$|X_2[k]| = |X_1[k]|$，\textbf{幅度保持不变}
+    \item[2.] \textbf{相位：}$\angle X_2[k] = \angle X_1[k] - 0.6\pi k$。
 \end{itemize}
 
-对比图\ref{fig:6-42-x1}和图\ref{fig:6-42-x2}可以验证：
-\begin{itemize}
-    \item 两者的幅度曲线完全相同
-    \item $x_2[n]$ 的相位相对于 $x_1[n]$ 的相位增加了一个斜率为 $-0.6\pi$ 的线性项
-\end{itemize}
+对比图\ref{fig:6-42-x1}和图\ref{fig:6-42-x2}可以验证：两者的幅度曲线完全相同。$X_2[k]$ 的相位相对于 $X_1[k]$ 的相位，在每一个点$k$处都会滞后$0.6\pi k$。
 
-\subsubsection{DFT的调制性质}
 
-DFT的调制性质（或称频移性质）表明，时域乘以复指数信号会导致频域的循环移位。若 $x[n] \xrightarrow{\text{DFT}} X[k]$，则：
+\subsubsection{频移}
+
+根据循环移位性质，若 $x[n] \xrightarrow{\text{DFT}} X[k]$，则：
 $$x[n]e^{j\frac{2\pi}{N}ln} \xrightarrow{\text{DFT}} X[((k-l))_N]$$
 
 在本实验中，$x_3[n] = x_1[n]e^{j0.4\pi n} = x_1[n]e^{j\frac{2\pi}{10} \times 2n}$，即 $l = 2$。
 
-根据调制性质：
+则有：
 $$X_3[k] = X_1[((k-2))_{10}]$$
 
 这意味着 $X_3[k]$ 是 $X_1[k]$ 在频域循环左移2位的结果。
 
-对比图\ref{fig:6-42-x1}和图\ref{fig:6-42-x3}可以验证：
-\begin{itemize}
-    \item $X_3[k]$ 的幅度和相位曲线形状与 $X_1[k]$ 相同，但整体在频域循环左移了2个单位
-    \item 例如，$X_1[k]$ 在 $k=0$ 处的值出现在 $X_3[k]$ 的 $k=2$ 处（考虑循环特性）
-\end{itemize}
+对比图\ref{fig:6-42-x1}和图\ref{fig:6-42-x3}可以验证：$X_3[k]$ 的幅度和相位曲线形状与 $X_1[k]$ 相同，但整体在频域循环左移了2个单位。例如，$X_1[k]$ 在 $k=0$ 处的值出现在 $X_3[k]$ 的 $k=2$ 处。
 
-\subsubsection{实际应用}
 
-这两个性质在数字信号处理中有重要应用：
-
-\begin{itemize}
-    \item \textbf{循环移位性质：}用于时延估计、信号对齐、相位校正等应用
-    \item \textbf{调制性质：}是调制解调系统的理论基础，广泛应用于通信系统中，如载波调制、频分复用等
-\end{itemize}
 
 % ============================================================
 % 附录：MATLAB代码

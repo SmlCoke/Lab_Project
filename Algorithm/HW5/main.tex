@@ -62,164 +62,55 @@
 %\tableofcontents
 %\newpage
 
-\section*{作业题目}
 \begin{enumerate}[1.]
 	\item 有一个函数 $F:\{0,1,\ldots,n-1\} \to \{0,1,\ldots,m-1\}$，且 $F((x+y)\bmod n) = (F(x) + F(y))\bmod m$ 对 $\forall x, y \in \{0,1,\ldots,n-1\}$ 成立，其中 $\bmod$ 为求模操作。设 $F(x)$ 存储在一个数组中，数组下标表示自变量的值，数组元素的值表示函数值；由于某种意外，数组中 $1/5$ 的函数值被恶意篡改。试设计一个随机算法使其对 $\forall z \in \{0,1,\ldots,n-1\}$，算法能够以大于 $1/2$ 的概率计算出正确的 $F(z)$。如果算法运行 3 次，应该返回什么样的值？此时算法得到正确 $F(z)$ 的概率有什么变化？
-\end{enumerate}
 
-\section*{问题分析}
+	\textbf{解：}
+	
+	\textbf{算法设计过程：}
 
-本题的关键在于利用函数的加法同态性质：$F((x+y)\bmod n) = (F(x) + F(y))\bmod m$。
+	对于任意 $z \in \{0,1,\ldots,n-1\}$，我们可以随机选择 $x \in \{0,1,\ldots,n-1\}$，计算 $y = (z-x) \bmod n$，则有 $(x+y) \bmod n = z$。根据函数的性质，应该满足：
+	$$F(z) = (F(x) + F(y)) \bmod m$$
 
-对于任意 $z \in \{0,1,\ldots,n-1\}$，我们可以随机选择 $x \in \{0,1,\ldots,n-1\}$，计算 $y = (z-x) \bmod n$，则有 $(x+y) \bmod n = z$。根据函数的性质，应该满足：
-$$F(z) = (F(x) + F(y)) \bmod m$$
+	由于只有 $1/5$ 的值被篡改，因此有 $4/5$ 的值是正确的。当我们随机选择 $x$ 和 $y$ 时：
+	
+	\textbf{1.} $F(x)$ 和 $F(y)$ 都正确的概率为 $(4/5) \times (4/5) = 16/25 = 0.64$
+	
+	\textbf{2.} 至少一个错误的概率为 $1 - 16/25 = 9/25 = 0.36$
+	
+	如果我们不考虑选取的一个值错误或者两个值错误恰好导致结果正确的情况，仅仅认为只有当 $F(x)$ 和 $F(y)$ 都正确时，计算得到的 $F(z)$ 才是正确的。那么便有：
 
-由于只有 $1/5$ 的值被篡改，因此有 $4/5$ 的值是正确的。当我们随机选择 $x$ 和 $y$ 时：
-\begin{itemize}
-	\item $F(x)$ 和 $F(y)$ 都正确的概率为 $(4/5) \times (4/5) = 16/25 = 0.64$
-	\item 至少一个错误的概率为 $1 - 16/25 = 9/25 = 0.36$
-\end{itemize}
+	\textbf{单次随机验证得到正确 $F(z)$ 的概率为 $16/25 > 1/2$，满足题目要求。}
 
-因此，单次随机验证得到正确 $F(z)$ 的概率为 $16/25 > 1/2$，满足题目要求。
-
-\section*{算法设计}
-
-\subsection{单次随机验证算法（Monte Carlo 算法）}
-
-基本思想是随机选择 $x$，利用函数的加法性质计算候选值。算法伪代码如下：
-
-\begin{algorithm}[H]
-	\caption{COMPUTE-F($F, n, m, z$)}
-	\begin{algorithmic}[1]
-		\Require 函数数组 $F$，定义域大小 $n$，值域大小 $m$，查询位置 $z$
-		\Ensure $F(z)$ 的估计值
-		\State 随机选择 $x \in \{0,1,\ldots,n-1\}$
-		\State $y \gets (z - x + n) \bmod n$
-		\State $candidate \gets (F[x] + F[y]) \bmod m$
-		\State \Return{$candidate$}
-	\end{algorithmic}
-\end{algorithm}
-
-\textbf{正确性分析：}算法返回正确值的概率为 $P = (4/5)^2 = 16/25 = 0.64 > 1/2$。
-
-\subsection{多次验证与投票机制}
-
-为了提高算法的准确性，可以进行 $k$ 次随机验证，并采用多数投票（Majority Voting）策略选择出现次数最多的候选值。
-
-\begin{algorithm}[H]
-	\caption{COMPUTE-F-VOTING($F, n, m, z, k$)}
-	\begin{algorithmic}[1]
-		\Require 函数数组 $F$，定义域大小 $n$，值域大小 $m$，查询位置 $z$，验证次数 $k$
-		\Ensure $F(z)$ 的估计值
-		\State 初始化投票字典 $votes \gets \emptyset$
-		\For{$i = 1$ to $k$}
+	\textbf{算法伪代码：}
+	\begin{algorithm}[H]
+		\caption{COMPUTE-F($F, n, m, z$)}
+		\begin{algorithmic}[1]
+			\Require 函数数组 $F$，定义域长度 $n$，值域长度 $m$，索引 $z$
+			\Ensure $F(z)$ 的估计值
 			\State 随机选择 $x \in \{0,1,\ldots,n-1\}$
-			\State $y \gets (z - x + n) \bmod n$
+			\State 计算：$y \gets (z - x + n) \bmod n$
 			\State $candidate \gets (F[x] + F[y]) \bmod m$
-			\State $votes[candidate] \gets votes[candidate] + 1$
-		\EndFor
-		\State \Return{获得最多票数的 $candidate$}
-	\end{algorithmic}
-\end{algorithm}
+			\State \Return{$candidate$}
+		\end{algorithmic}
+	\end{algorithm}
 
-\subsection{算法运行 3 次的策略}
+	\textbf{算法运行 3 次的策略}
+	
+	当算法运行 3 次时，我们假设三次运行时选择的$x$都是随机的，即即便我们前面运行过程中已经选取了某个$x$，那么下一次选择时也会有可能选择到$x$。在这种情况下，我们应该返回的是：\textbf{返回出现次数最多的值（众数）}。这是因为：
+	
+	单次运行得到正确结果的概率为 $p = 16/25 = 0.64$。运行 3 次（每次纯随机），至少 2 次正确（从而众数正确）的概率为：
+	\begin{align*}
+		P_{correct} & =  C_{3}^{2} p^2(1-p) + C_{3}^{3} p^3 \\
+		& = 3 \times (16/25)^2 \times (9/25) + (16/25)^3 \\ 
+		& = 3 \times 0.4096 \times 0.36 + 0.262144 \\
+		& = 0.442368 + 0.262144 = 0.704512  \\
+		& \approx 0.70
+	\end{align*}
 
-当算法运行 3 次时，应该\textbf{返回出现次数最多的值（众数）}。这是因为：
+	因此，运行 3 次并返回众数，正确概率从 $0.64$ 提升到约 $0.70$，概率有所提高。
 
-\begin{itemize}
-	\item 单次运行得到正确结果的概率为 $p = 16/25 = 0.64$
-	\item 运行 3 次，至少 2 次正确（从而众数正确）的概率为：
-	$$P_{correct} = \binom{3}{2}p^2(1-p) + \binom{3}{3}p^3$$
-	$$= 3 \times (16/25)^2 \times (9/25) + (16/25)^3$$
-	$$= 3 \times 0.4096 \times 0.36 + 0.262144$$
-	$$= 0.442368 + 0.262144 = 0.704512 \approx 0.70$$
-\end{itemize}
-
-因此，运行 3 次并返回众数，正确概率从 $0.64$ 提升到约 $0.70$，概率有所提高。
-
-\section*{算法实现}
-
-\subsection{C++ 代码实现}
-
-算法的 C++ 代码如下：
-
-\begin{lstlisting}[language={C++}, basicstyle=\ttfamily\small]
-#include <iostream>
-#include <vector>
-#include <map>
-#include <cstdlib>
-#include <ctime>
-using namespace std;
-
-// 单次随机验证算法
-int singleRandomCheck(vector<int>& F, int n, int m, int z) {
-    int x = rand() % n;              // 随机选择x
-    int y = (z - x + n) % n;         // 计算y
-    return (F[x] + F[y]) % m;        // 返回候选值
-}
-
-// 运行k次并投票
-int computeWithVoting(vector<int>& F, int n, int m, int z, int k) {
-    map<int, int> votes;  // 存储投票结果
-    
-    for (int i = 0; i < k; i++) {
-        int candidate = singleRandomCheck(F, n, m, z);
-        votes[candidate]++;
-    }
-    
-    // 返回获得最多票数的值
-    int maxVotes = 0, result = F[z];
-    for (auto& p : votes) {
-        if (p.second > maxVotes) {
-            maxVotes = p.second;
-            result = p.first;
-        }
-    }
-    return result;
-}
-
-// 运行3次算法并返回众数
-int threeTimesAlgorithm(vector<int>& F, int n, int m, int z) {
-    return computeWithVoting(F, n, m, z, 3);
-}
-
-int main() {
-    srand(time(0));
-    int n = 10, m = 10;
-    
-    // 示例：F(x) = (2*x) mod m
-    vector<int> originalF(n);
-    for (int i = 0; i < n; i++)
-        originalF[i] = (2 * i) % m;
-    
-    // 篡改1/5的值
-    vector<int> corruptedF = originalF;
-    for (int i = 0; i < n/5; i++) {
-        int pos = rand() % n;
-        corruptedF[pos] = rand() % m;
-    }
-    
-    // 测试算法
-    int z = 5;
-    cout << "真实值: " << originalF[z] << endl;
-    cout << "单次验证: " << singleRandomCheck(corruptedF, n, m, z) << endl;
-    cout << "3次验证: " << threeTimesAlgorithm(corruptedF, n, m, z) << endl;
-    
-    return 0;
-}
-\end{lstlisting}
-
-\section*{总结}
-
-本题设计的随机算法是一个 Monte Carlo 算法，其主要特点是：
-\begin{itemize}
-	\item 利用函数的加法同态性质进行验证
-	\item 单次运行的正确概率为 $16/25 = 0.64 > 1/2$
-	\item 通过多次运行和投票机制可以进一步提高准确率
-	\item 运行 3 次时采用众数投票，正确概率提升至约 $0.70$
-	\item 算法时间复杂度为 $O(k)$，其中 $k$ 是验证次数
-\end{itemize}
-
+\end{enumerate}
 
 
 \end{document}

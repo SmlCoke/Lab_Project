@@ -1,0 +1,87 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption}   % \caption*需要
+\usepackage{subcaption} % 子图布局
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+
+
+
+
+
+% ------------------- 设置超链接，便于跳转 -----------------
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfborder={0 0 0},    % 消除超链接边框
+    colorlinks=true,       % 将边框改为颜色标记（可选）
+    linkcolor=black,       % 内部链接颜色（目录、引用等）
+    citecolor=black,       % 引用颜色
+    urlcolor=blue          % URL链接颜色（保持蓝色以便区分）
+}
+
+
+
+
+% ------------------------ 标题区 ----------------------------
+\title{集成电路工艺技术基础课程作业1}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+
+
+% ------------------------ 页眉和页脚 ----------------------------
+\fancyhead[L]{冯峻}
+\fancyhead[C]{集成电路工艺技术基础}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+%\tableofcontents
+%\newpage
+
+\textbf{题目：} 
+
+你认为未来集成电路会朝什么方向发展（从基片材料谈起）？我们面临的最大挑战是什么？你最感兴趣的是哪方面？
+
+\textbf{朝什么方向发展}
+
+随着传统硅基集成电路工艺的不断发展，硅基材料在某些方面已经接近其物理极限，未来集成电路的发展方向可能会朝着以下几个方面发展：
+
+从化合物半导体方向来看：砷化铟（InAs）等III-V族化合物半导体，凭借其高电子迁移率和强自旋轨道相互作用，在高速、高频、光电子和量子器件中展现出巨大潜力。例如，采用InAs纳米线可构筑耦合多量子点阵列，为先进的量子处理器提供平台
+
+从特种衬底与宽禁带材料方向来看：碳化硅（SiC）和氮化镓（GaN）等宽禁带半导体材料，因其耐高压、耐高温和高频特性，已成为功率半导体和射频器件的核心材料。氧化镓作为超宽禁带半导体的代表，是未来的研发重点。
+
+\textbf{我们面临的核心挑战}
+
+\textbf{物理尺度的极限————量子效应与短沟道效应：} 当势垒薄到一定程度时，电子会像“穿墙术”一样直接隧穿通过。这不仅发生在栅氧层（即使采用High-k材料，物理厚度也已逼近极限），也发生在源漏之间，导致晶体管无法可靠关闭。此外，当晶体管栅长缩小到几纳米时（例如5nm、3nm节点），栅极对沟道电流的控制能力急剧减弱。这会导致漏电流增加，功耗上升，器件性能下降。
+
+\textbf{材料本身的瓶颈：} 1. 载流子迁移率下降：在超薄沟道中，载流子（电子和空穴）受到界面散射和声子散射的严重影响，导致迁移率下降，从而影响晶体管开关速度和驱动电流。 2.互联延迟超越晶体管延迟：后端工艺中，用于连接晶体管的铜互连线和低k介质面临巨大挑战，导致信号传输延迟增加，甚至超过晶体管本身的开关延迟，成为性能瓶颈。3. 热管理问题：随着器件尺寸的缩小和集成度的提高，芯片的功耗密度显著增加，导致热管理成为一个关键挑战。过高的温度不仅影响器件性能，还会缩短其寿命。
+
+\textbf{工艺制造的空前复杂性与成本：} 传统的“雕刻”式（自上而下）工艺在纳米尺度遇到精度极限。沉积、刻蚀、掺杂等每一步工艺的误差都变得不可忽视。例如，精确地向仅有几个原子宽的沟道内注入特定数量的掺杂原子，几乎是不可能的任务。
+
+\textbf{我最感兴趣的方向}
+
+我最感兴趣的是低维材料的研究与应用。低维材料（如二维材料、纳米线、量子点等）因其独特的电子、光学和力学性质，展现出在未来集成电路中的巨大潜力。例如，石墨烯和过渡金属硫化物（TMDs）等二维材料，具有高载流子迁移率和优异的机械柔韧性，可用于制造高性能、柔性电子器件。此外，低维材料在量子计算和光电子器件中也有广泛应用前景。我希望通过深入研究这些新兴材料，探索其在集成电路中的创新应用，推动下一代电子技术的发展。
+
+\end{document}

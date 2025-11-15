@@ -88,10 +88,10 @@
 		\begin{algorithmic}[1]
 			\Require 函数数组 $F$，定义域长度 $n$，值域长度 $m$，索引 $z$
 			\Ensure $F(z)$ 的估计值
-			\State 随机选择 $x \in \{0,1,\ldots,n-1\}$
+			\State 随机选择: $x \in \{0,1,\ldots,n-1\}$
 			\State 计算：$y \gets (z - x + n) \bmod n$
-			\State $candidate \gets (F[x] + F[y]) \bmod m$
-			\State \Return{$candidate$}
+			\State result $\gets (F[x] + F[y]) \bmod m$
+			\State \Return{result}
 		\end{algorithmic}
 	\end{algorithm}
 

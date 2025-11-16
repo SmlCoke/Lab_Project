@@ -1,0 +1,147 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption} %\captioN^{*}需要
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	breaklines,
+	tabsize=4,
+	extendedchars=false,
+	columns=fixed,
+	%numbers=left,                                        % 在左侧显示行号
+	numbers=none,
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	xleftmargin=1em,
+	%xrightmargin=1em,
+	%aboveskip=-0.5em
+	language=c++,                                        % 设置语言
+}
+
+
+\title{算法原理 HW6 近似算法}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+% 如下两行请按实际情况修改
+\fancyhead[L]{冯峻}
+\fancyhead[C]{近似算法}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+%\tableofcontents
+%\newpage
+
+
+\begin{enumerate}[1.]
+	\item 码头来了一艘集装箱船，运输了$n$个集装箱，每个集装箱的重量分别为$w_1,w_2,...,w_n$。
+	码头上配备了大量的卡车，每辆卡车最多可运输$K$重量的货物。
+	已知上述的集装箱重量和卡车的可载重量都是整数。
+	假设可以为每辆卡车装载多个集装箱，只要不超过$K$重量的限制。
+	问题的目标是用最少的卡车将船上所有的集装箱都运走。
+
+	该问题一个可行的近似解法是：将集装箱依次编号为1,2,3,...，每次开来一辆空卡车，
+	按序号将集装箱卸载到该卡车上，直到不能放下更多集装箱为止；
+	然后换下一辆空卡车，继续按序号卸载。
+	
+	要求：
+	1) 给出一个问题的实例，即为$w_1,w_2,...,w_n$ 和 $K$ 给定实际值，说明上述近似算法会求到
+	非优化解。
+
+	2) 证明对于一般情况，上述算法的近似比为2，即最多可能用到两倍数量的卡车卸载同一批
+	货物。
+
+	解：
+
+	我们先把这个近似算法整理为伪代码形式：
+	\begin{algorithm}[H]
+		\caption{APPROXIMATE-TRUCKS($w, n, K$)}
+		\begin{algorithmic}[1]
+			\Require 集装箱重量数组 $w$，集装箱数量 $n$，卡车最大载重量 $K$
+			\Ensure 使用的卡车数量 result
+			\State result $\gets 0$
+			\While{$w$并非全0}
+				\State result $\gets$ result + 1
+				\State currentLoad, j $\gets 0$
+				\While{j $\leq n$ 且 currentLoad $+ w[j] \leq K$}
+					\State currentLoad $\gets$ currentLoad $+ w[j]$
+					\State $w[j] \gets 0$
+					\State j $\gets$ $j+1$
+				\EndWhile
+			\EndWhile
+			\State \Return{result}
+		\end{algorithmic}
+	\end{algorithm}
+
+
+	\textbf{1) 反例实例：} 
+
+	例如： $K = 8, n = 5, w = {4,3,4,3,2}$
+
+	按照上述近似算法的步骤：
+	\begin{itemize}
+		\item 第1辆卡车装载：$w[0] = 4$, $w[1] = 3$ （当前载重7，无法再装下4）
+		\item 第2辆卡车装载：$w[2] = 4$, $w[3] = 3$ （当前载重7，无法再装下2）
+		\item 第3辆卡车装载：$w[4] = 2$
+	\end{itemize}
+	总共使用了3辆卡车。
+
+	但是,实际上，我们可以将集装箱按如下方式装载：
+	\begin{itemize}
+		\item 第1辆卡车装载：$w[0] = 4$, $w[1] = 4$ （当前载重8）
+		\item 第2辆卡车装载：$w[2] = 3$, $w[3] = 3$, $w[4] = 2$ （当前载重8）
+	\end{itemize}
+	总共只需要2辆卡车。
+	
+	\textbf{因此，该近似算法在此实例中没有求得最优解。}
+
+	\textbf{2) 近似比证明：}
+
+	设最优解需要的卡车数量为 $N^{*}$，近似算法需要的卡车数量为 $N$。
+
+	则必有：$N^{*} \geq (\sum_{i=1}^{n} w_i)/K$
+	
+	设$|B_1, B_2, B_3, ..., B_N|$分别为近似算法中每辆卡车装载的集装箱重量总和。
+
+	那么必有：$|B_i| + |B_j| > K$，其中 $i \neq j$，$i,j \in \{1,2,...,N\}$。否则，算法会把这两辆卡车合并为一辆。
+
+	因此：$$\sum_{i=1}^{n}w_i = \sum_{i=1}^{N} |B_i|  = (|B_1| + |B_2|)/2 + (|B_2| + |B_3|)/2 + ... + (|B_N| + |B_1|) /2 > NK/2$$
+
+	因此：$$N^{*} \geq \frac{\sum_{i=1}^{n}w_i}{K} > \frac{NK}{2K} = N/2$$
+
+	因此：$$N < 2N^{*}$$
+
+	因此， 该近似算法的近似比为2。
+
+\end{enumerate}
+
+
+\end{document}

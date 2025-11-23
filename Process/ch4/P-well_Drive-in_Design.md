@@ -513,7 +513,7 @@ Direct calculation of $R_s$ from the doping profile is difficult because:
 
 ### 1. Unit Conversion Errors
 - ✗ Using temperature in °C instead of K in Arrhenius equation
-- ✓ Always convert: $T(\text{K}) = T(\text{°C}) + 273$
+- ✓ Always convert: $T(\text{K}) = T(\text{°C}) + 273.15$ (or 273 for approximate calculations)
 - ✗ Mixing μm and cm in calculations
 - ✓ Convert to consistent units: 3 μm = $3 \times 10^{-4}$ cm
 
@@ -524,9 +524,9 @@ Direct calculation of $R_s$ from the doping profile is difficult because:
 - ✓ Predeposition uses erfc (constant surface concentration)
 
 ### 3. Misunderstanding $Dt$ Product
-- $Dt$ is the **diffusion length squared** (not the diffusion length)
-- $Dt$ has units of cm² (not cm)
-- Diffusion length: $L_D = \sqrt{Dt}$
+- $Dt$ is the product of **diffusion coefficient and time**, with units of cm²
+- The diffusion length is $L_D = \sqrt{Dt}$, which has units of cm
+- Therefore $Dt = L_D^2$, but they represent different physical quantities
 
 ### 4. Neglecting Physical Constraints
 - Temperature too high (>1250°C): excessive thermal budget, defects

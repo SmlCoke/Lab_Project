@@ -34,10 +34,10 @@
 
 
 % ------------------------ 标题区 ----------------------------
-\title{}
+\title{集成电路工艺技术基础 Chapter 5\\离子注入详细复习手稿}
 \author{
-	姓名：\underline{冯峻}~~~~~~
-	学号：\underline{523031910148}~~~~~~}
+姓名：\underline{冯峻}~~~~~~
+学号：\underline{523031910148}~~~~~~}
 \date{\today}
 \pagenumbering{arabic}
 
@@ -46,13 +46,1152 @@
 
 
 % ------------------------ 页眉和页脚 ----------------------------
-\fancyhead[L]{冯峻}
-\fancyhead[C]{}
+\fancyhead[L]{Chapter 5 复习手稿}
+\fancyhead[C]{离子注入}
 \fancyfoot[C]{\thepage}
 
 \maketitle
 \tableofcontents
 \newpage  % \section之前用newpage分割，\subsection不用
 
+\section{为什么需要离子注入}
+
+\subsection{离子注入引入的关键原因}
+
+\subsubsection{掺杂剂量的精确控制}
+
+离子注入技术能够精确控制掺杂剂的注入剂量(Dose)和深度分布，这是传统扩散工艺无法实现的。
+
+\textbf{剂量计算公式：}
+\begin{equation}
+Q_{total} = \int_0^{d_{max}} q N_B(x) dx = q N_B^{max} d_{max} + Q_{Im}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $Q_{total}$：总掺杂电荷量
+    \item $N_B(x)$：掺杂浓度分布
+    \item $N_B^{max}$：最大掺杂浓度
+    \item $d_{max}$：掺杂层深度
+    \item $Q_{Im}$：离子注入贡献的电荷量
+\end{itemize}
+
+\subsubsection{阈值电压调节应用}
+
+\textbf{NMOS阈值电压调节：}
+
+通过硼(B)离子注入调节NMOS器件的阈值电压$V_{TH}$。
+
+\textbf{典型注入条件：}
+\begin{itemize}
+    \item \textbf{剂量(Dose)：}$\phi = 1-10 \times 10^{12}$ cm$^{-2}$
+    \item \textbf{能量(Energy)：}约50 keV
+\end{itemize}
+
+\textbf{阈值电压计算：}
+\begin{equation}
+V_{TH} = \frac{Q_{Im}}{C_{ox}} = \frac{q N_B C_{ox}}{C_{ox}}
+\end{equation}
+
+当$R_p \ll d_{max}$时（射程远小于掺杂层深度）：
+\begin{equation}
+V_{TH} = \frac{2\phi_s}{q} + \frac{Q_b}{C_{ox}} + \frac{\sqrt{2\epsilon_s q N_A}}{C_{ox}}\sqrt{2\phi_s + V_{sb}}
+\end{equation}
+
+\textbf{剂量精确控制原理：}
+
+剂量$\phi$可以精确控制，因为它基于对注入到晶圆中的离子束流的积分：
+
+\begin{equation}
+\phi = \frac{I \cdot t}{q \cdot A}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $I$ = 收集的束流电流（从晶圆背面测量）
+    \item $t$ = 积分时间
+    \item $q$ = 离子电荷
+    \item $A$ = 注入面积
+\end{itemize}
+
+\subsection{历史发展与现代应用}
+
+\subsubsection{传统扩散方法的局限性}
+
+\textbf{原始方法：}气相扩散（高温）
+
+\begin{itemize}
+    \item 通过氧化层掩膜进行选择性扩散
+    \item 在高温下进行
+\end{itemize}
+
+\textbf{严重局限性：}
+\begin{enumerate}
+    \item 难以精确控制掺杂剂量
+    \item 难以控制浓度分布轮廓形状
+    \item 横向扩散严重，影响器件尺寸控制
+    \item 工艺窗口窄
+\end{enumerate}
+
+\subsubsection{现代预淀积中的应用}
+
+\textbf{现代方法：}
+
+\begin{enumerate}
+    \item 使用离子注入引入掺杂剂（低温、精确控制）
+    \item 通过退火/扩散步骤修复损伤
+    \item 必要时进行进一步扩散以调整浓度分布
+\end{enumerate}
+
+\textbf{优势：}
+\begin{itemize}
+    \item 分离了掺杂引入和分布调整两个步骤
+    \item 更大的工艺灵活性
+    \item 更好的可控性和重复性
+\end{itemize}
+
+\newpage
+
+\section{离子注入机基础}
+
+\subsection{离子注入的优势}
+
+\subsubsection{技术优势总结}
+
+\begin{enumerate}
+    \item \textbf{剂量和深度分布的精确控制}
+    \begin{itemize}
+        \item 剂量控制精度：$\pm 1-2\%$
+        \item 远优于扩散工艺的20-30\%偏差
+        \item 深度可通过能量精确调节
+    \end{itemize}
+    
+    \item \textbf{低温工艺}
+    \begin{itemize}
+        \item 注入过程在室温进行
+        \item 避免高温引起的不必要扩散
+        \item 减少热预算(thermal budget)
+    \end{itemize}
+    
+    \item \textbf{掩膜材料选择广泛}
+    \begin{itemize}
+        \item 光刻胶(photoresist)
+        \item 二氧化硅(SiO$_2$)
+        \item 多晶硅(poly-Si)
+        \item 金属(metal)
+    \end{itemize}
+    
+    \item \textbf{优异的横向均匀性}
+    \begin{itemize}
+        \item 12英寸晶圆上变化率 < 1\%
+        \item 确保大面积器件性能一致性
+    \end{itemize}
+    
+    \item \textbf{对表面清洗程序不敏感}
+    \begin{itemize}
+        \item 离子能量足够穿透表面污染层
+        \item 工艺鲁棒性好
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{典型应用实例}
+
+\textbf{自对准MOSFET源漏区：}
+
+\begin{itemize}
+    \item 使用栅极作为掩膜
+    \item 自动对准形成源漏区
+    \item 减小寄生电容
+    \item 提高器件性能
+\end{itemize}
+
+\subsection{离子注入机概述}
+
+\subsubsection{基本原理}
+
+\begin{itemize}
+    \item 晶圆作为高能加速器中的靶材
+    \item 杂质离子被"射入"晶圆
+    \item 是现代工艺中引入杂质的首选方法
+\end{itemize}
+
+\subsubsection{系统特点}
+
+\textbf{优点：}
+\begin{itemize}
+    \item 可注入几乎所有元素
+    \item 剂量控制严格（偏差几个百分点）
+    \item 低温工艺
+\end{itemize}
+
+\textbf{局限性：}
+\begin{itemize}
+    \item 设备昂贵
+    \item 需要真空系统
+\end{itemize}
+
+\subsection{离子注入机示意图和组成}
+
+\subsubsection{主要组成部分}
+
+\begin{enumerate}
+    \item \textbf{离子源(Ion Source)}
+    \begin{itemize}
+        \item \textbf{功能：}产生所需的掺杂离子
+        \item \textbf{源气体：}BF$_3$、AsH$_3$、PH$_3$等
+        \item \textbf{工作原理：}通过电离产生离子
+    \end{itemize}
+    
+    \item \textbf{质量分析器(Mass Analyzer)}
+    \begin{itemize}
+        \item \textbf{功能：}分离和选择目标离子
+        \item \textbf{原理：}利用磁场中离子的m/z比差异
+        \item \textbf{结果：}提取纯净的目标离子束
+    \end{itemize}
+    
+    \item \textbf{加速器(Accelerator)}
+    \begin{itemize}
+        \item \textbf{功能：}加速离子束
+        \item \textbf{原理：}在高电压下加速离子
+        \item \textbf{作用：}决定离子注入深度
+    \end{itemize}
+    
+    \item \textbf{中性粒子捕获器(Neutral Trapper)}
+    \begin{itemize}
+        \item \textbf{功能：}分离中性原子
+        \item \textbf{方法：}通过偏转电极使离子偏转，中性粒子直行被捕获
+    \end{itemize}
+    
+    \item \textbf{聚焦系统(Focus System)}
+    \begin{itemize}
+        \item \textbf{功能：}聚焦离子束至毫米级直径
+        \item \textbf{目的：}提高注入精度和效率
+    \end{itemize}
+    
+    \item \textbf{扫描系统(Scan System)}
+    \begin{itemize}
+        \item \textbf{功能：}使离子束沿x和y方向扫描
+        \item \textbf{目的：}实现整个晶圆的均匀注入
+    \end{itemize}
+    
+    \item \textbf{工艺腔室(Operation Chamber)}
+    \begin{itemize}
+        \item \textbf{功能：}放置晶圆（样品）
+        \item \textbf{特点：}位置可调节
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{关键物理公式}
+
+\textbf{1. 带电粒子在磁场中的受力：}
+\begin{equation}
+\frac{M v^2}{r} = q(\vec{v} \times \vec{B})
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $M$ = 离子质量
+    \item $v$ = 离子速度
+    \item $r$ = 圆周运动半径
+    \item $q$ = 离子电荷
+    \item $\vec{B}$ = 磁场强度
+\end{itemize}
+
+\textbf{2. 磁场与电流关系：}
+\begin{equation}
+B = \alpha I = \frac{2m V_{ext}}{q r^2}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $I$ = 电流
+    \item $V_{ext}$ = 外加电压
+    \item $\alpha$ = 比例常数
+\end{itemize}
+
+\textbf{3. 注入剂量计算：}
+\begin{equation}
+Q = \frac{1}{nqA} \int_0^T I(t) dt
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $Q$ = 注入剂量（单位：cm$^{-2}$）
+    \item $n$ = 离子价态数
+    \item $q$ = 单位电荷
+    \item $A$ = 注入面积
+    \item $I(t)$ = 束流电流
+    \item $T$ = 注入时间
+\end{itemize}
+
+\newpage
+
+\section{离子注入基础理论}
+
+\subsection{离子注入基本过程}
+
+\subsubsection{温度条件}
+
+\begin{itemize}
+    \item \textbf{注入过程温度：}室温（ambient temperature）
+    \item \textbf{后续必要步骤：}退火（annealing）
+    \item \textbf{退火温度：}> 900°C
+    \item \textbf{退火目的：}修复晶格损伤，激活掺杂
+\end{itemize}
+
+\subsection{离子能量损失机制}
+
+离子进入固体后，通过两种主要机制损失能量：
+
+\subsubsection{核阻止(Nuclear Stopping)}
+
+\textbf{机制：}
+\begin{itemize}
+    \item 离子与硅原子核之间的碰撞
+    \item 弹性碰撞过程
+    \item 导致硅晶格损伤
+\end{itemize}
+
+\textbf{特点：}
+\begin{itemize}
+    \item 重离子和低能离子：核阻止占主导
+    \item 造成晶格结构破坏
+    \item 产生点缺陷、位错等
+\end{itemize}
+
+\subsubsection{电子阻止(Electronic Stopping)}
+
+\textbf{机制：}
+\begin{itemize}
+    \item 离子与电子云的相互作用
+    \item 电子激发过程
+    \item 产生热量
+\end{itemize}
+
+\textbf{特点：}
+\begin{itemize}
+    \item 轻离子和高能离子：电子阻止占主导
+    \item 较少的晶格损伤
+    \item 能量转化为热
+\end{itemize}
+
+\subsection{离子能量损失特性}
+
+\subsubsection{不同离子的能量损失模式}
+
+\textbf{注入硅的典型实例：}
+
+\begin{enumerate}
+    \item \textbf{氢离子(H$^+$)：}
+    \begin{itemize}
+        \item 轻离子/高能条件
+        \item 电子阻止占绝对主导
+        \item 晶格损伤最小
+    \end{itemize}
+    
+    \item \textbf{硼离子(B$^+$)：}
+    \begin{itemize}
+        \item 中等质量离子
+        \item 电子阻止占主导
+        \item 但核阻止也有一定贡献
+    \end{itemize}
+    
+    \item \textbf{砷离子(As$^+$)：}
+    \begin{itemize}
+        \item 重离子
+        \item 核阻止占显著地位
+        \item 产生大量晶格损伤
+    \end{itemize}
+\end{enumerate}
+
+\textbf{一般规律：}
+\begin{itemize}
+    \item 轻离子/高能 $\rightarrow$ 电子阻止为主
+    \item 重离子/低能 $\rightarrow$ 核阻止为主
+\end{itemize}
+
+\subsubsection{50 keV硼注入硅的模拟}
+
+典型的中等质量离子注入过程，展现了：
+\begin{itemize}
+    \item 离子轨迹的随机性
+    \item 碰撞引起的方向改变
+    \item 最终的深度分布
+\end{itemize}
+
+\subsection{全片注入模型}
+
+\subsubsection{高斯分布模型}
+
+离子注入的浓度分布可近似用高斯分布描述：
+
+\begin{equation}
+N(x) = N_{peak} \exp\left[-\frac{(x-R_p)^2}{2\Delta R_p^2}\right]
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $N(x)$ = 深度x处的掺杂浓度
+    \item $N_{peak}$ = 峰值浓度
+    \item $R_p$ = 投影射程(Projected Range)
+    \item $\Delta R_p$ = 标准偏差(Straggle)
+\end{itemize}
+
+\subsubsection{关键参数定义}
+
+\textbf{1. 投影射程$R_p$(Projected Range)：}
+\begin{itemize}
+    \item 离子在垂直于表面方向上的平均穿透深度
+    \item 浓度分布峰值位置
+    \item 由离子能量、质量和靶材决定
+\end{itemize}
+
+\textbf{2. 标准偏差$\Delta R_p$(Straggle)：}
+\begin{itemize}
+    \item 描述离子射程的统计涨落
+    \item 分布的宽度参数
+    \item 反映离子路径的随机性
+\end{itemize}
+
+\textbf{参数获取：}
+\begin{itemize}
+    \item 可从表格或图表查询
+    \item 也可通过SRIM/TRIM等模拟软件计算
+\end{itemize}
+
+\textbf{峰值浓度计算：}
+\begin{equation}
+N_{peak} = \frac{\phi}{\sqrt{2\pi} \Delta R_p}
+\end{equation}
+
+其中$\phi$为注入剂量。
+
+\newpage
+
+\section{选择性离子注入}
+
+\subsection{横向标准偏差效应}
+
+\subsubsection{特征尺寸扩大}
+
+\textbf{问题：}
+
+由于离子注入存在横向标准偏差(Lateral Straggle)，实际掺杂区域会大于掩膜开口。
+
+\textbf{横向标准偏差$\Delta R_t$：}
+\begin{itemize}
+    \item 与纵向标准偏差$\Delta R_p$量级相当
+    \item 通常：$\Delta R_t \approx 0.6 - 0.8 \times \Delta R_p$
+    \item 导致注入区边界模糊
+\end{itemize}
+
+\textbf{影响：}
+\begin{itemize}
+    \item 器件特征尺寸增大
+    \item 边界位置不确定性
+    \item 需要在版图设计中考虑
+\end{itemize}
+
+\subsection{掩膜厚度要求}
+
+\subsubsection{基本原则}
+
+\textbf{目标：}
+
+掩膜下方的注入杂质浓度应远小于背景掺杂浓度。
+
+\textbf{数学表达：}
+\begin{equation}
+N_{mask}(d) \ll N_{background}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $N_{mask}(d)$ = 掩膜厚度d处的注入浓度
+    \item $N_{background}$ = 晶圆背景掺杂浓度
+\end{itemize}
+
+\subsection{掩膜透射因子}
+
+\subsubsection{透射因子定义}
+
+透射因子T描述离子穿透掩膜的能力：
+
+\begin{equation}
+T = \frac{N_{mask}}{N_{substrate}} = \exp\left[-\frac{(d-R_p)^2}{2\Delta R_p^2}\right]
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item $d$ = 掩膜厚度
+    \item $R_p$ = 在掩膜材料中的投影射程
+    \item $\Delta R_p$ = 在掩膜材料中的标准偏差
+\end{itemize}
+
+\subsubsection{掩膜厚度选择}
+
+\textbf{常用准则：}
+
+为了有效阻挡离子，通常要求：
+\begin{equation}
+d \geq R_p + 3\Delta R_p
+\end{equation}
+
+此时：$T \approx 0.135\%$（透射率很小）
+
+更严格的要求：
+\begin{equation}
+d \geq R_p + 4\Delta R_p
+\end{equation}
+
+此时：$T \approx 0.003\%$（几乎完全阻挡）
+
+\textbf{不同掩膜材料的特性：}
+\begin{itemize}
+    \item \textbf{光刻胶：}密度低，需要较厚
+    \item \textbf{SiO$_2$：}密度中等，常用掩膜材料
+    \item \textbf{多晶硅：}密度高，阻挡效果好
+    \item \textbf{金属：}密度最高，最薄即可有效阻挡
+\end{itemize}
+
+\newpage
+
+\section{离子注入的其他方面}
+
+\subsection{结深计算}
+
+\subsubsection{结深定义}
+
+\textbf{结深(Junction Depth) $x_j$：}
+
+注入杂质浓度等于背景掺杂浓度的位置。
+
+\textbf{计算方法：}
+
+从高斯分布出发：
+\begin{equation}
+N(x_j) = N_{background}
+\end{equation}
+
+\begin{equation}
+N_{peak} \exp\left[-\frac{(x_j-R_p)^2}{2\Delta R_p^2}\right] = N_{background}
+\end{equation}
+
+求解得：
+\begin{equation}
+x_j = R_p + \Delta R_p \sqrt{2\ln\left(\frac{N_{peak}}{N_{background}}\right)}
+\end{equation}
+
+\textbf{物理意义：}
+\begin{itemize}
+    \item $x_j$标志着PN结的位置
+    \item 是器件设计的关键参数
+    \item 影响器件的电学特性
+\end{itemize}
+
+\subsection{沟道效应}
+
+\subsubsection{沟道效应原理}
+
+\textbf{定义：}
+
+当离子沿着晶体轴向注入时，由于晶格原子的有序排列，离子不容易被原子核散射，可以沿着晶格间隙深入传播。
+
+\textbf{机制：}
+\begin{itemize}
+    \item 离子进入晶格通道
+    \item 与原子核碰撞减少
+    \item 方向改变很小
+    \item 可以传播更远距离
+\end{itemize}
+
+\textbf{沿<110>晶向的沟道效应：}
+\begin{itemize}
+    \item 沟道方向上射程显著增加
+    \item 深度分布出现"拖尾"
+    \item 难以精确控制注入深度
+\end{itemize}
+
+\subsubsection{沟道效应的影响}
+
+\textbf{负面影响：}
+\begin{enumerate}
+    \item 注入深度不可控
+    \item 浓度分布偏离高斯分布
+    \item 出现深层杂质"尾巴"
+    \item 影响器件性能
+    \item 可能导致漏电增加
+\end{enumerate}
+
+\subsection{减少沟道效应的方法}
+
+\subsubsection{方法1：倾斜和旋转}
+
+\textbf{晶圆倾斜：}
+\begin{itemize}
+    \item 通常倾斜7°相对于离子束
+    \item 破坏离子与晶轴的对准
+    \item 使入射方向偏离主要晶向
+\end{itemize}
+
+\textbf{晶圆旋转：}
+\begin{itemize}
+    \item 配合倾斜使用
+    \item 模拟"随机"方向
+    \item 平均化各向异性效应
+\end{itemize}
+
+\textbf{局限性：}
+
+沟道效应无法完全消除，因为：
+\begin{enumerate}
+    \item 入射离子在第一次碰撞中可能被散射到沟道方向
+    \item 随着能量降低，临界角增大，离子更容易进入沟道
+\end{enumerate}
+
+\subsubsection{方法2：使用非晶层}
+
+\textbf{原理：}
+
+在注入前预先形成非晶硅表层，破坏晶格有序性。
+
+\textbf{步骤：}
+\begin{enumerate}
+    \item \textbf{步骤1：预非晶化}
+    \begin{itemize}
+        \item 高剂量Si$^+$注入
+        \item 将表层转化为非晶硅
+        \item 破坏晶格有序结构
+    \end{itemize}
+    
+    \item \textbf{步骤2：掺杂注入}
+    \begin{itemize}
+        \item 将目标掺杂剂注入非晶层
+        \item 无沟道效应
+        \item 深度分布可控
+    \end{itemize}
+\end{enumerate}
+
+\textbf{优点：}
+\begin{itemize}
+    \item 完全消除沟道效应
+    \item 深度分布精确可控
+\end{itemize}
+
+\textbf{缺点：}
+\begin{itemize}
+    \item 需要额外的高剂量注入步骤
+    \item 增加工艺复杂度和成本
+    \item 后续退火要求更高
+\end{itemize}
+
+\subsection{注入损伤}
+
+\subsubsection{损伤形成机制}
+
+\textbf{主要损伤类型：}
+
+\begin{enumerate}
+    \item \textbf{位错(Dislocation)}
+    \begin{itemize}
+        \item 由核碰撞产生
+        \item 线缺陷
+        \item 影响晶格完整性
+    \end{itemize}
+    
+    \item \textbf{碰撞级联(Collision Cascade)}
+    \begin{itemize}
+        \item 一个高能离子引发多次碰撞
+        \item 产生大量点缺陷
+        \item 形成无序区域
+    \end{itemize}
+    
+    \item \textbf{非晶化(Amorphization)}
+    \begin{itemize}
+        \item 高剂量注入导致
+        \item 晶格完全破坏
+        \item 形成非晶硅层
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{位移能量}
+
+\textbf{位移能量$E_d$：}
+
+将硅原子从晶格位置移走所需的最小能量。
+
+\textbf{硅的位移能量：}
+\begin{itemize}
+    \item $E_d \approx 15$ eV
+    \item 决定损伤产生的阈值
+\end{itemize}
+
+\subsubsection{晶格损伤的类型和数量}
+
+损伤类型和程度取决于：
+\begin{itemize}
+    \item \textbf{离子质量：}重离子损伤更严重
+    \item \textbf{离子能量：}影响碰撞方式
+    \item \textbf{注入剂量：}高剂量可导致非晶化
+    \item \textbf{注入温度：}室温下损伤累积
+\end{itemize}
+
+\subsection{瞬态增强扩散}
+
+\subsubsection{现象}
+
+\textbf{Transient Enhanced Diffusion (TED)：}
+
+\begin{itemize}
+    \item 注入损伤产生过量点缺陷（间隙原子和空位）
+    \item 退火初期，点缺陷浓度远高于平衡值
+    \item 掺杂原子通过点缺陷机制扩散加快
+    \item 导致浓度分布偏离预期
+\end{itemize}
+
+\textbf{影响：}
+\begin{itemize}
+    \item 浅结深度难以控制
+    \item 影响短沟道器件性能
+    \item 需要优化退火条件
+\end{itemize}
+
+\subsection{损伤修复}
+
+\subsubsection{后注入退火}
+
+\textbf{必要性：}
+
+注入后必须进行退火步骤。
+
+\textbf{退火的典型作用：}
+
+\begin{enumerate}
+    \item \textbf{恢复硅晶体结构}
+    \begin{itemize}
+        \item 修复晶格损伤
+        \item 重新形成晶体结构
+        \item 消除点缺陷
+    \end{itemize}
+    
+    \item \textbf{电学激活}
+    \begin{itemize}
+        \item 将掺杂原子放置到替位位置
+        \item 使掺杂原子电学活性化
+        \item 提供期望的电学特性
+    \end{itemize}
+\end{enumerate}
+
+\textbf{退火方法：}
+\begin{itemize}
+    \item \textbf{炉管退火：}高温（900-1100°C），长时间（30min-数小时）
+    \item \textbf{快速热退火(RTA)：}高温（1000-1100°C），短时间（数秒-数十秒）
+    \item \textbf{激光退火：}超高温，超短时间（ns级），表层退火
+    \item \textbf{尖峰退火(Spike Anneal)：}快速升温降温，最小化扩散
+\end{itemize}
+
+\subsection{浅结和深结注入}
+
+\subsubsection{浅注入}
+
+\textbf{特点：}
+\begin{itemize}
+    \item 低能量注入（< 50 keV）
+    \item $R_p$小（< 100 nm）
+    \item 用于源漏延伸区(extension)
+    \item 对沟道效应更敏感
+\end{itemize}
+
+\textbf{挑战：}
+\begin{itemize}
+    \item TED影响显著
+    \item 结深控制困难
+    \item 需要低热预算退火
+\end{itemize}
+
+\subsubsection{深注入}
+
+\textbf{特点：}
+\begin{itemize}
+    \item 高能量注入（> 200 keV）
+    \item $R_p$大
+    \item 用于阱区、埋层等
+\end{itemize}
+
+\textbf{偏离高斯分布：}
+
+深注入时，浓度分布曲线偏离高斯分布：
+\begin{itemize}
+    \item 出现多峰结构
+    \item 需要更复杂的模型描述
+    \item 通常用Pearson分布等替代
+\end{itemize}
+
+\subsection{多价离子注入}
+
+\subsubsection{动能与电荷关系}
+
+\textbf{基本原理：}
+
+离子的动能由其电荷数决定。
+
+\textbf{在加速电压为x kV时：}
+
+\begin{itemize}
+    \item \textbf{单电荷离子：}动能 = x keV
+    \item \textbf{双电荷离子：}动能 = 2x keV
+    \item \textbf{三电荷离子：}动能 = 3x keV
+\end{itemize}
+
+\textbf{注意：}
+
+动能以eV表示。一个电荷q经过1V电压降将获得1 eV动能。
+
+\textbf{应用：}
+
+\begin{itemize}
+    \item 在相同加速电压下获得更高能量
+    \item 实现更深的注入
+    \item 例如：B$^{++}$、B$^{+++}$
+\end{itemize}
+
+\subsection{分子离子注入}
+
+\subsubsection{分子离子解离}
+
+\textbf{典型例子：BF$_2^+$注入}
+
+\textbf{过程：}
+\begin{enumerate}
+    \item 分子离子BF$_2^+$进入固体
+    \item 立即解离成原子组分（B和F）
+    \item 所有原子组分具有相同速度
+\end{enumerate}
+
+\textbf{能量分配：}
+
+\begin{itemize}
+    \item BF$_2$总质量：11 + 2×19 = 49 amu
+    \item 如加速电压50 kV，BF$_2^+$总动能 = 50 keV
+    \item 解离后，B原子能量：$E_B = \frac{11}{49} \times 50$ keV $\approx$ 11.2 keV
+    \item 解离后，每个F原子能量：$E_F = \frac{19}{49} \times 50$ keV $\approx$ 19.4 keV
+\end{itemize}
+
+\textbf{应用：}
+\begin{itemize}
+    \item 实现更浅的硼注入
+    \item 等效于低能单原子注入
+    \item 减少晶格损伤
+\end{itemize}
+
+\newpage
+
+\section{章节总结与知识点梳理}
+
+\subsection{核心概念对照}
+
+\begin{longtable}{|L{4cm}|L{11cm}|}
+\hline
+\textbf{概念} & \textbf{关键要点} \\
+\hline
+\endfirsthead
+\hline
+\textbf{概念} & \textbf{关键要点} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+
+离子注入优势 & 精确控制剂量和深度；低温工艺；横向均匀性好；掩膜材料选择广；不敏感表面清洗 \\
+\hline
+
+注入剂量控制 & $\phi = \frac{I \cdot t}{q \cdot A}$；精度±1-2\%；远优于扩散工艺 \\
+\hline
+
+质量分析器 & 利用磁场分离m/z；$\frac{Mv^2}{r} = q(\vec{v} \times \vec{B})$；提取纯净离子束 \\
+\hline
+
+能量损失机制 & 核阻止：碰撞损伤；电子阻止：激发产热；轻离子/高能→电子为主；重离子/低能→核为主 \\
+\hline
+
+投影射程$R_p$ & 垂直方向平均穿透深度；浓度峰值位置；由能量、质量、靶材决定 \\
+\hline
+
+标准偏差$\Delta R_p$ & 射程统计涨落；分布宽度；反映随机性 \\
+\hline
+
+高斯分布 & $N(x) = N_{peak}\exp[-(x-R_p)^2/(2\Delta R_p^2)]$；$N_{peak} = \phi/(\sqrt{2\pi}\Delta R_p)$ \\
+\hline
+
+横向标准偏差 & $\Delta R_t \approx 0.6-0.8 \times \Delta R_p$；导致特征尺寸扩大；边界模糊 \\
+\hline
+
+掩膜厚度 & $d \geq R_p + 3\Delta R_p$（常用）；$d \geq R_p + 4\Delta R_p$（严格）；透射因子T描述穿透能力 \\
+\hline
+
+结深计算 & $x_j = R_p + \Delta R_p\sqrt{2\ln(N_{peak}/N_{bg})}$；PN结位置；关键器件参数 \\
+\hline
+
+沟道效应 & 离子沿晶轴传播；射程增加；深度不可控；产生拖尾 \\
+\hline
+
+减少沟道方法1 & 倾斜7°；旋转模拟随机方向；无法完全消除 \\
+\hline
+
+减少沟道方法2 & 预非晶化：高剂量Si$^+$；破坏晶格；完全消除沟道；需额外步骤 \\
+\hline
+
+注入损伤 & 位错、碰撞级联、非晶化；位移能$E_d \approx 15$ eV；损伤程度取决于质量、能量、剂量 \\
+\hline
+
+TED & 瞬态增强扩散；过量点缺陷；退火初期扩散加快；影响浅结控制 \\
+\hline
+
+后注入退火 & 必须进行；恢复晶体结构；电学激活掺杂；方法：炉管、RTA、激光、尖峰 \\
+\hline
+
+浅注入 & <50 keV；$R_p$<100nm；源漏延伸；TED影响大 \\
+\hline
+
+深注入 & >200 keV；大$R_p$；阱区、埋层；偏离高斯分布 \\
+\hline
+
+多价离子 & 动能=电荷数×电压；B$^{++}$、B$^{+++}$；相同电压获得更高能量 \\
+\hline
+
+分子离子 & BF$_2^+$立即解离；能量按质量比分配；实现更浅注入 \\
+\hline
+
+\end{longtable}
+
+\subsection{重要公式汇总}
+
+\begin{enumerate}
+    \item \textbf{注入剂量：}$\phi = \frac{I \cdot t}{q \cdot A}$
+    
+    \item \textbf{带电粒子运动：}$\frac{Mv^2}{r} = q(\vec{v} \times \vec{B})$
+    
+    \item \textbf{高斯分布：}$N(x) = N_{peak}\exp\left[-\frac{(x-R_p)^2}{2\Delta R_p^2}\right]$
+    
+    \item \textbf{峰值浓度：}$N_{peak} = \frac{\phi}{\sqrt{2\pi}\Delta R_p}$
+    
+    \item \textbf{透射因子：}$T = \exp\left[-\frac{(d-R_p)^2}{2\Delta R_p^2}\right]$
+    
+    \item \textbf{掩膜厚度：}$d \geq R_p + 3\Delta R_p$（常用）或$d \geq R_p + 4\Delta R_p$（严格）
+    
+    \item \textbf{结深：}$x_j = R_p + \Delta R_p\sqrt{2\ln\left(\frac{N_{peak}}{N_{background}}\right)}$
+    
+    \item \textbf{分子离子能量分配：}$E_{atom} = \frac{m_{atom}}{m_{molecule}} \times E_{total}$
+    
+    \item \textbf{硅位移能量：}$E_d \approx 15$ eV
+\end{enumerate}
+
+\subsection{关键数据记忆}
+
+\begin{itemize}
+    \item \textbf{阈值电压调节剂量：}$1-10 \times 10^{12}$ cm$^{-2}$
+    \item \textbf{阈值电压调节能量：}约50 keV
+    \item \textbf{剂量控制精度：}±1-2\%（离子注入）vs. 20-30\%（扩散）
+    \item \textbf{12英寸晶圆均匀性：}<1\%
+    \item \textbf{退火温度：}>900°C
+    \item \textbf{倾斜角度：}7°（减少沟道）
+    \item \textbf{横向标准偏差：}$\Delta R_t \approx 0.6-0.8 \times \Delta R_p$
+    \item \textbf{浅注入能量：}<50 keV
+    \item \textbf{深注入能量：}>200 keV
+    \item \textbf{硅位移能量：}$E_d \approx 15$ eV
+    \item \textbf{BF$_2$质量：}49 amu（B: 11, F: 19）
+\end{itemize}
+
+\subsection{关键工艺流程}
+
+\textbf{完整离子注入工艺流程：}
+\begin{enumerate}
+    \item 晶圆准备与清洗
+    \item 掩膜层形成（光刻胶、氧化层等）
+    \item 光刻开窗
+    \item 离子注入
+    \begin{itemize}
+        \item 离子源产生离子
+        \item 质量分析器选择目标离子
+        \item 加速器加速离子
+        \item 扫描系统均匀注入
+    \end{itemize}
+    \item 去除掩膜
+    \item 后注入退火
+    \begin{itemize}
+        \item 修复晶格损伤
+        \item 电学激活掺杂
+    \end{itemize}
+    \item 检测与测量
+\end{enumerate}
+
+\subsection{常见考点和易错点}
+
+\begin{enumerate}
+    \item \textbf{能量损失机制判断}
+    \begin{itemize}
+        \item 易错：混淆核阻止和电子阻止的主导条件
+        \item 记忆：轻/高能→电子；重/低能→核
+        \item 实例：H$^+$电子为主，As$^+$核为主，B$^+$两者兼有
+    \end{itemize}
+    
+    \item \textbf{高斯分布参数}
+    \begin{itemize}
+        \item 易错：混淆$R_p$和$\Delta R_p$的定义
+        \item $R_p$：峰值位置（平均深度）
+        \item $\Delta R_p$：分布宽度（标准偏差）
+    \end{itemize}
+    
+    \item \textbf{掩膜厚度计算}
+    \begin{itemize}
+        \item 易错：直接用硅中的$R_p$和$\Delta R_p$
+        \item 正确：使用掩膜材料中的参数
+        \item 公式：$d \geq R_p^{mask} + 3\Delta R_p^{mask}$
+    \end{itemize}
+    
+    \item \textbf{沟道效应}
+    \begin{itemize}
+        \item 现象：沿晶轴射程增加
+        \item 减少方法：倾斜7°+旋转；预非晶化
+        \item 不能完全消除（除非预非晶化）
+    \end{itemize}
+    
+    \item \textbf{分子离子能量分配}
+    \begin{itemize}
+        \item 易错：平均分配能量
+        \item 正确：按质量比分配
+        \item 计算：$E_B/E_{BF_2} = m_B/m_{BF_2} = 11/49$
+    \end{itemize}
+    
+    \item \textbf{后注入退火的双重作用}
+    \begin{itemize}
+        \item 作用1：修复晶格损伤
+        \item 作用2：电学激活掺杂
+        \item 两者缺一不可
+    \end{itemize}
+\end{enumerate}
+
+\subsection{计算题型准备}
+
+\begin{enumerate}
+    \item \textbf{剂量计算}
+    \begin{itemize}
+        \item 给定电流、时间、面积，计算剂量
+        \item 公式：$\phi = I \cdot t / (q \cdot A)$
+    \end{itemize}
+    
+    \item \textbf{峰值浓度计算}
+    \begin{itemize}
+        \item 给定剂量和$\Delta R_p$，计算$N_{peak}$
+        \item 公式：$N_{peak} = \phi / (\sqrt{2\pi}\Delta R_p)$
+    \end{itemize}
+    
+    \item \textbf{结深计算}
+    \begin{itemize}
+        \item 给定$R_p$、$\Delta R_p$、$N_{peak}$、$N_{bg}$，计算$x_j$
+        \item 公式：$x_j = R_p + \Delta R_p\sqrt{2\ln(N_{peak}/N_{bg})}$
+    \end{itemize}
+    
+    \item \textbf{掩膜厚度设计}
+    \begin{itemize}
+        \item 给定能量和掺杂元素，查表获得$R_p$和$\Delta R_p$
+        \item 计算所需掩膜厚度
+    \end{itemize}
+    
+    \item \textbf{分子离子能量分配}
+    \begin{itemize}
+        \item 计算BF$_2^+$解离后B和F的能量
+        \item 能量比=质量比
+    \end{itemize}
+    
+    \item \textbf{透射因子计算}
+    \begin{itemize}
+        \item 给定掩膜厚度，计算透射率
+        \item 判断掩膜是否足够
+    \end{itemize}
+\end{enumerate}
+
+\subsection{与其他章节的联系}
+
+\begin{itemize}
+    \item \textbf{与扩散(Chapter 6)：}
+    \begin{itemize}
+        \item 离子注入形成初始分布
+        \item 后续扩散调整浓度轮廓
+        \item TED由点缺陷驱动
+        \item 两者结合实现理想分布
+    \end{itemize}
+    
+    \item \textbf{与氧化：}
+    \begin{itemize}
+        \item 氧化层可作为掩膜
+        \item 栅氧前需要清洁表面
+        \item 退火可能伴随氧化
+    \end{itemize}
+    
+    \item \textbf{与薄膜沉积：}
+    \begin{itemize}
+        \item 多晶硅可作为掩膜
+        \item 注入后可能沉积激活层
+    \end{itemize}
+    
+    \item \textbf{与光刻：}
+    \begin{itemize}
+        \item 光刻胶可作为软掩膜
+        \item 自对准工艺关键
+    \end{itemize}
+    
+    \item \textbf{与刻蚀：}
+    \begin{itemize}
+        \item 注入前后需要刻蚀掩膜层
+        \item 浅沟槽隔离中的应用
+    \end{itemize}
+    
+    \item \textbf{与器件物理：}
+    \begin{itemize}
+        \item 结深影响器件性能
+        \item 掺杂分布决定电学特性
+        \item 源漏工程应用
+    \end{itemize}
+\end{itemize}
+
+\subsection{复习建议}
+
+\subsubsection{重点掌握内容}
+
+\begin{enumerate}
+    \item 离子注入的五大优势
+    \item 离子注入机的七大组成部分及功能
+    \item 两种能量损失机制及主导条件
+    \item 高斯分布模型及关键参数
+    \item 掩膜厚度设计原则
+    \item 沟道效应及减少方法
+    \item 注入损伤类型及修复
+    \item 所有关键公式及计算方法
+\end{enumerate}
+
+\subsubsection{理解性内容}
+
+\begin{enumerate}
+    \item 为什么离子注入优于传统扩散？
+    \item 质量分析器如何分离不同离子？
+    \item 为什么轻离子以电子阻止为主？
+    \item 高斯分布的物理来源是什么？
+    \item 沟道效应为什么难以完全消除？
+    \item TED的物理机制是什么？
+    \item 为什么BF$_2^+$能实现更浅注入？
+\end{enumerate}
+
+\subsubsection{记忆技巧}
+
+\begin{itemize}
+    \item \textbf{能量损失：}轻高电，重低核（轻离子高能电子阻止，重离子低能核阻止）
+    \item \textbf{掩膜厚度：}$R_p$ + 3偏差（常用），+ 4偏差（严格）
+    \item \textbf{沟道减少：}7度倾斜，预先非晶
+    \item \textbf{退火双作用：}修复损伤，激活掺杂
+    \item \textbf{分子解离：}能量按质量分
+\end{itemize}
 
 \end{document}

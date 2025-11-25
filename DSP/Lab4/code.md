@@ -64,7 +64,7 @@ Y = fft(y, 16);  % 16点FFT
 X_32_from16 = zeros(1, 32);
 for k = 0:31
     k16 = mod(k, 16);  % k mod 16
-    k16_neg = mod(16 - k16, 16);  % (16-k) mod 16
+    k16_neg = mod(16 - k16, 16);  % (-k) mod 16，用于DFT共轭对称性
     
     W = exp(-1j*2*pi*k/32);  % 旋转因子
     
@@ -109,7 +109,7 @@ clear; clc; close all;
 %% (a) x1[n] = R_5[n], x2[n] = (-1)^n * R_7[n]
 x1a = ones(1, 5);  % R_5[n]
 n2a = 0:6;
-x2a = ((-1).^n2a);  % (-1)^n * R_7[n]
+x2a = (-1).^n2a;  % (-1)^n * R_7[n]
 
 % 直接计算线性卷积
 ya_direct = conv(x1a, x2a);

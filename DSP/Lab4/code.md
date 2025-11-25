@@ -1,314 +1,5 @@
-\documentclass[UTF8,12pt,a4paper]{ctexart}
-
-\usepackage{amsmath}
-\usepackage{cases}
-\usepackage{cite}
-\usepackage{graphicx}
-\usepackage{enumerate}
-\usepackage{algorithm}
-\usepackage{caption}   % \caption*需要
-\usepackage{subcaption} % 子图布局
-\usepackage[noend]{algpseudocode} %algorithmicx
-\makeatletter
-\renewcommand{\fnum@algorithm}{\fname@algorithm}
-\makeatother
-\renewcommand{\algorithmicrequire}{\textbf{Input:}}
-\renewcommand{\algorithmicensure}{\textbf{Output:}}
-\usepackage[margin=1in]{geometry}
-\geometry{a4paper}
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhf{}
-\usepackage{xcolor}
-
-% ------------------------- 代码展示设置 -------------------------
-% ------------------- MATLAB 代码展示风格（DSP 专用） -----------------
-\usepackage{listings}
-\usepackage{xcolor}
-
-% 定义 MATLAB 风格
-\lstdefinestyle{matlab-dsp}{
-    language=Matlab,
-    basicstyle=\ttfamily\small,
-    keywordstyle=\color{blue}\bfseries,
-    commentstyle=\color{green!50!black}\itshape,
-    stringstyle=\color{brown},
-    numbers=left,
-    numberstyle=\tiny\color{gray},
-    stepnumber=1,
-    numbersep=5pt,
-    backgroundcolor=\color{white},
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    frame=single,
-    rulecolor=\color{black},
-    tabsize=4,
-    captionpos=b,
-    breaklines=true,
-    breakatwhitespace=true,
-    escapeinside={\%*}{*)},
-    % MATLAB 关键字（基础）
-    morekeywords={if, else, elseif, end, for, while, switch, case, otherwise, try, catch, function, return, break, continue, pause, clear, clc, close, disp, plot, figure, hold, grid, xlabel, ylabel, title, xlim, ylim, fft, ifft, freqz, filter, conv, zeros, ones, length, size, abs, angle, unwrap, real, imag, exp, sin, cos, pi, inf, nan, true, false, struct, cell, classdef, properties, methods},
-    % DSP 常用函数（重点突出）
-    morekeywords=[2]{freqz, zplane, fftshift, ifftshift, fft, ifft, filter, filtfilt, butter, cheby1, ellip, fir1, fir2, remez, sinc, rectwin, hamming, hanning, blackman, kaiser, decimate, interp, resample, xcorr, conv, corrcoef, pwelch, spectrogram, tf, zpk, ss, bode, impulse, step, lsim, unwrap, angle, abs, real, imag, db, mag2db, db2mag, rms, mean, std, var, cov, eig, svd, lpc, prony, residuez, tf2zp, zp2tf, tf2sos, sos2tf, sosfilt, upfirdn, buffer, overlapadd, fftfilt, spline, interp1, circshift, stem, tiledlayout, nexttile},
-    % 常量/特殊变量
-    morekeywords=[3]{pi, Inf, NaN, eps, i, j, nargin, nargout, varargin, varargout},
-    % 注释以 % 开头
-    comment=[l]{\%},
-    % 字符串用单引号或双引号
-    alsoletter={.}, % 允许 . 在标识符中（如 x.y）
-    sensitive=true
-}
-
-% 默认使用此样式
-\lstset{style=matlab-dsp}
-
-% ------------------- 设置超链接，便于跳转 -----------------
-\usepackage{enumitem}
-\usepackage{hyperref}
-\hypersetup{
-    pdfborder={0 0 0},    % 消除超链接边框
-    colorlinks=true,       % 将边框改为颜色标记（可选）
-    linkcolor=black,       % 内部链接颜色（目录、引用等）
-    citecolor=black,       % 引用颜色
-    urlcolor=blue          % URL链接颜色（保持蓝色以便区分）
-}
-
-
-
-
-% ------------------------ 标题区 ----------------------------
-\title{DSP 实验四报告}
-\author{
-	姓名：\underline{冯峻}~~~~~~
-	学号：\underline{523031910148}~~~~~~}
-\date{\today}
-\pagenumbering{arabic}
-
-\begin{document}
-
-
-
-% ------------------------ 页眉和页脚 ----------------------------
-\fancyhead[L]{冯峻}
-\fancyhead[C]{实验四}
-\fancyfoot[C]{\thepage}
-
-\maketitle
-\tableofcontents
-
-% ============================================================
-% 实验一：7-25 实数序列的FFT运算
-% ============================================================
-\newpage
-\section{实验一：7-25 实数序列的FFT运算}
-
-\subsection{题目内容}
-已知实数序列 $x[n] = \frac{n}{10} + 0.2^n + 4\cos(0.2\pi n)$，$0 \leq n \leq 31$。
-
-(a) 采用32点FFT运算，求出并画出其32点DFT的实部和虚部；
-
-(b) 对(a)的结果再采用32点FFT运算，求出并画出 $x[n]$；
-
-(c) 采用一次16点FFT运算，求出并画出 $x[n]$ 的32点DFT的实部和虚部。
-
-(提示: 可以调用的函数有 \texttt{fft()}、\texttt{real()} 和 \texttt{imag()} 等)
-
-\subsection{实验结果}
-
-7-25(a) 32点FFT运算求32点DFT的实部和虚部，MATLAB仿真结果见图\ref{fig:7-25a}：
-
-% TODO: 在MATLAB中运行代码后，将生成的图片保存，然后替换下面的文件名
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{7-25a.png}
-    \caption{7-25(a) 32点DFT的实部和虚部}
-    \label{fig:7-25a}
-\end{figure}
-
-7-25(b) 对(a)的DFT结果再采用32点IFFT运算恢复$x[n]$，MATLAB仿真结果见图\ref{fig:7-25b}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{7-25b.png}
-    \caption{7-25(b) IFFT恢复信号x[n]}
-    \label{fig:7-25b}
-\end{figure}
-
-7-25(c) 采用一次16点FFT运算求32点DFT，MATLAB仿真结果见图\ref{fig:7-25c}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{7-25c.png}
-    \caption{7-25(c) 16点FFT计算32点DFT}
-    \label{fig:7-25c}
-\end{figure}
-
-\subsection{实验分析}
-
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. (a)中32点DFT的实部和虚部有什么特点？实序列DFT的共轭对称性如何体现？
-% 2. (b)中IFFT恢复的信号与原信号是否一致？验证DFT与IDFT的互逆关系
-% 3. (c)中利用16点FFT计算32点DFT的原理是什么？结果与(a)是否一致？
-
-\textbf{【请在此处填写分析内容】}
-
-
-% ============================================================
-% 实验二：7-26 线性卷积的直接计算和FFT方法
-% ============================================================
-\newpage
-\section{实验二：7-26 线性卷积的计算}
-
-\subsection{题目内容}
-对于下列序列分别采用直接计算和FFT求出并画出其线性卷积。
-
-(a) $x_1[n] = R_5[n]$，$x_2[n] = (-1)^n R_7[n]$；
-
-(b) $x_1[n] = \{2, 1, 1, 2\}$（箭头表示n=0位置），$x_2[n] = 0.5^n R_5[n]$
-
-(提示: 可以调用的函数有 \texttt{fft()}、\texttt{ifft()} 和 \texttt{conv()} 等)
-
-\subsection{实验结果}
-
-7-26(a) 线性卷积计算结果见图\ref{fig:7-26a}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{7-26a.png}
-    \caption{7-26(a) $x_1[n]=R_5[n]$与$x_2[n]=(-1)^n R_7[n]$的线性卷积}
-    \label{fig:7-26a}
-\end{figure}
-
-7-26(b) 线性卷积计算结果见图\ref{fig:7-26b}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{7-26b.png}
-    \caption{7-26(b) $x_1[n]=\{2,1,1,2\}$与$x_2[n]=0.5^n R_5[n]$的线性卷积}
-    \label{fig:7-26b}
-\end{figure}
-
-\subsection{实验分析}
-
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. 直接计算方法conv()和FFT方法的结果是否一致？
-% 2. 利用FFT计算线性卷积时，补零的长度如何确定？为什么需要补零？
-% 3. 两种方法的计算复杂度比较
-
-\textbf{【请在此处填写分析内容】}
-
-
-% ============================================================
-% 实验三：8-30 脉冲响应不变法设计巴特沃思IIR滤波器
-% ============================================================
-\newpage
-\section{实验三：8-30 脉冲响应不变法设计巴特沃思滤波器}
-
-\subsection{题目内容}
-采用脉冲响应不变法设计一个巴特沃思离散时间低通IIR滤波器，要求通带截止频率 $\omega_p = 0.4\pi \text{rad}$，阻带截止频率 $\omega_s = 0.5\pi \text{rad}$，通带最多衰减 $\alpha_p = 3\text{dB}$，阻带最小衰减 $\alpha_s = 40\text{dB}$。取 $T_d = 1$，给出直接形式的系统函数，画出连续时间和离散时间系统的对数幅度响应曲线和单位脉冲响应曲线。
-
-(提示: 可以调用的函数有 \texttt{buttord()}、\texttt{butter()}、\texttt{impinvar()}、\texttt{freqs()}、\texttt{freqz()}、\texttt{impz()}、\texttt{tf()} 和 \texttt{impulse()} 等)
-
-\subsection{实验结果}
-
-MATLAB计算得到的滤波器参数：
-
-\begin{verbatim}
-% TODO: 运行MATLAB代码后，将输出的滤波器阶数、系数等信息粘贴到此处
-巴特沃思滤波器阶数: N = ?
-模拟截止频率: Wc = ? rad/s
-模拟滤波器分子系数 (b_s): [...]
-模拟滤波器分母系数 (a_s): [...]
-数字滤波器分子系数 (b_z): [...]
-数字滤波器分母系数 (a_z): [...]
-\end{verbatim}
-
-连续时间和离散时间滤波器的对数幅度响应及单位脉冲响应见图\ref{fig:8-30}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.9\textwidth]{8-30.png}
-    \caption{8-30 巴特沃思滤波器设计：对数幅度响应与单位脉冲响应}
-    \label{fig:8-30}
-\end{figure}
-
-\subsection{实验分析}
-
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. 脉冲响应不变法的基本原理是什么？数字频率与模拟频率的映射关系？
-% 2. 设计得到的滤波器是否满足技术指标要求？
-% 3. 模拟滤波器和数字滤波器的脉冲响应之间有什么关系？
-% 4. 脉冲响应不变法的优缺点是什么？
-
-\textbf{【请在此处填写分析内容】}
-
-
-% ============================================================
-% 实验四：8-32 切比雪夫II型IIR高通滤波器设计
-% ============================================================
-\newpage
-\section{实验四：8-32 切比雪夫II型高通滤波器设计}
-
-\subsection{题目内容}
-设计一个切比雪夫II型的离散时间IIR高通滤波器，要求阻带截止频率为 $\omega_p = 0.6\pi \text{rad}$，通带截止频率为 $\omega_s = 0.7\pi \text{rad}$，通带最大衰减 $\alpha_p = 3\text{dB}$，阻带最小衰减 $\alpha_s = 40\text{dB}$。分别采用脉冲响应不变法和双线性变换法，画出对数幅度响应曲线，你发现了什么？
-
-(提示: 可以调用的函数有 \texttt{cheb2ord()}、\texttt{cheby2()}、\texttt{impinvar()} 和 \texttt{freqz()} 等)
-
-\subsection{实验结果}
-
-脉冲响应不变法设计的高通滤波器对数幅度响应见图\ref{fig:8-32a}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{8-32a.png}
-    \caption{8-32 脉冲响应不变法设计的高通滤波器对数幅度响应}
-    \label{fig:8-32a}
-\end{figure}
-
-双线性变换法设计的高通滤波器对数幅度响应见图\ref{fig:8-32b}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{8-32b.png}
-    \caption{8-32 双线性变换法设计的高通滤波器对数幅度响应}
-    \label{fig:8-32b}
-\end{figure}
-
-两种方法的对比见图\ref{fig:8-32c}：
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{8-32c.png}
-    \caption{8-32 脉冲响应不变法与双线性变换法对比}
-    \label{fig:8-32c}
-\end{figure}
-
-\subsection{实验分析}
-
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. 观察两种方法设计的高通滤波器对数幅度响应曲线，发现了什么？
-% 2. 为什么脉冲响应不变法不适合设计高通滤波器？（频谱混叠问题）
-% 3. 双线性变换法如何避免频谱混叠问题？
-% 4. 双线性变换法的频率畸变现象及预畸变技术
-
-\textbf{【请在此处填写分析内容】}
-
-
-% ============================================================
-% 附录：MATLAB代码
-% ============================================================
-\newpage
-\section{附录：MATLAB代码}
-
-\subsection{实验一代码：7-25}
-
-\begin{lstlisting}
+### 7-25
+```matlab
 %% 7-25 实数序列的FFT运算
 % x[n] = n/10 + 0.2^n + 4*cos(0.2*pi*n), 0 <= n <= 31
 clear; clc; close all;
@@ -406,11 +97,12 @@ title('32点DFT的虚部 (由16点FFT计算)');
 % 验证结果
 disp('(c)与(a)结果的最大误差:');
 disp(max(abs(X_32 - X_32_from16)));
-\end{lstlisting}
+```
 
-\subsection{实验二代码：7-26}
+---
 
-\begin{lstlisting}
+### 7-26
+```matlab
 %% 7-26 线性卷积的直接计算和FFT方法
 clear; clc; close all;
 
@@ -516,11 +208,12 @@ disp('7-26(a) 两种方法的最大误差:');
 disp(max(abs(ya_direct - real(ya_fft))));
 disp('7-26(b) 两种方法的最大误差:');
 disp(max(abs(yb_direct - real(yb_fft))));
-\end{lstlisting}
+```
 
-\subsection{实验三代码：8-30}
+---
 
-\begin{lstlisting}
+### 8-30
+```matlab
 %% 8-30 脉冲响应不变法设计巴特沃思低通IIR滤波器
 % 通带截止频率 ωp = 0.4π rad
 % 阻带截止频率 ωs = 0.5π rad
@@ -621,11 +314,12 @@ grid on;
 xlabel('n');
 ylabel('h[n]');
 title('数字滤波器单位脉冲响应');
-\end{lstlisting}
+```
 
-\subsection{实验四代码：8-32}
+---
 
-\begin{lstlisting}
+### 8-32
+```matlab
 %% 8-32 切比雪夫II型离散时间IIR高通滤波器设计
 % 阻带截止频率 ωp = 0.6π rad (注意：题目中阻带截止频率标为ωp)
 % 通带截止频率 ωs = 0.7π rad (注意：题目中通带截止频率标为ωs)
@@ -741,7 +435,4 @@ fprintf('\n========== 分析 ==========\n');
 fprintf('脉冲响应不变法用于高通滤波器设计时，由于频谱混叠问题，\n');
 fprintf('会导致滤波器性能下降，无法满足设计指标。\n');
 fprintf('双线性变换法不存在频谱混叠问题，适合设计各种类型的滤波器。\n');
-\end{lstlisting}
-
-
-\end{document}
+```

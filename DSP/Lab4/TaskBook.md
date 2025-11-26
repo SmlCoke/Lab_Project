@@ -11,13 +11,15 @@
 (a) \( x_1[n] = R_5[n] \)，\( x_2[n] = (-1)^n R_7[n] \)；
 (b) \( x_1[n] = \{2, 1, 1, 2\} \)（箭头表示n=0位置），\( x_2[n] = 0.5^n R_5[n] \)
 （提示：可以调用的函数有 `fft()`、`ifft()` 和 `conv()` 等）
-
+> 提示ifft(fft(x, M), fft(y, M))
 
 ### 8-30
 采用脉冲响应不变法设计一个巴特沃思离散时间低通IIR滤波器，要求通带截止频率 \( \omega_p = 0.4\pi \text{rad} \)，阻带截止频率 \( \omega_s = 0.5\pi \text{rad} \)，通带最多衰减 \( \alpha_p = 3\text{dB} \)，阻带最小衰减 \( \alpha_s = 40\text{dB} \)。取 \( T_d = 1 \)，给出直接形式的系统函数，画出连续时间和离散时间系统的对数幅度响应曲线和单位脉冲响应曲线。
 （提示：可以调用的函数有 `buttord()`、`butter()`、`impinvar()`、`freqs()`、`freqz()`、`impz()`、`tf()` 和 `impulse()` 等）
 
 
-### 8-32
-设计一个切比雪夫II型的离散时间IIR高通滤波器，要求阻带截止频率为 \( \omega_p = 0.6\pi \text{rad} \)，通带截止频率为 \( \omega_s = 0.7\pi \text{rad} \)，通带最大衰减 \( \alpha_p = 3\text{dB} \)，阻带最小衰减 \( \alpha_s = 40\text{dB} \)。分别采用脉冲响应不变法和双线性变换法，画出对数幅度响应曲线，你发现了什么？
-（提示：可以调用的函数有 `cheb2ord()`、`cheby2()`、`impinvar()` 和 `freqz()` 等）
+### 8-31
+采用脉冲响应不变法设计一个巴特沃思离散时间带通IIR滤波器，要求下、上阻带截止频率分别为 \( \omega_{p1} = 0.2\pi \text{rad} \) 和 \( \omega_{p2} = 0.8\pi \text{rad} \)，下、上通带截止频率分别为 \( \omega_{p1} = 0.3\pi \text{rad} \) 和 \( \omega_{p2} = 0.7\pi \text{rad} \)，通带最大衰减 \( \alpha_p = 1\text{dB} \)，阻带最小衰减 \( \alpha_s = 30\text{dB} \)。给出级联形式的系统函数，画出对数幅度响应。
+（提示：可以调用的函数有 `buttord()`、`butter()`、`impinvar()`、`freqz()` 和 `tf2zp()` 等）
+
+

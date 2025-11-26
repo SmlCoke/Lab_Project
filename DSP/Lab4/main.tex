@@ -1,6 +1,7 @@
 \documentclass[UTF8,12pt,a4paper]{ctexart}
 
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{cases}
 \usepackage{cite}
 \usepackage{graphicx}
@@ -79,7 +80,7 @@
 
 
 % ------------------------ 标题区 ----------------------------
-\title{DSP 实验四报告}
+\title{DSP 任务四报告}
 \author{
 	姓名：\underline{冯峻}~~~~~~
 	学号：\underline{523031910148}~~~~~~}
@@ -92,17 +93,17 @@
 
 % ------------------------ 页眉和页脚 ----------------------------
 \fancyhead[L]{冯峻}
-\fancyhead[C]{实验四}
+\fancyhead[C]{任务四}
 \fancyfoot[C]{\thepage}
 
 \maketitle
 \tableofcontents
 
 % ============================================================
-% 实验一：7-25 实数序列的FFT运算
+% 任务一：7-25 实数序列的FFT运算
 % ============================================================
 \newpage
-\section{实验一：7-25 实数序列的FFT运算}
+\section{任务一：7-25 实数序列的FFT运算}
 
 \subsection{题目内容}
 已知实数序列 $x[n] = \frac{n}{10} + 0.2^n + 4\cos(0.2\pi n)$，$0 \leq n \leq 31$。
@@ -117,50 +118,84 @@
 
 \subsection{实验结果}
 
-7-25(a) 32点FFT运算求32点DFT的实部和虚部，MATLAB仿真结果见图\ref{fig:7-25a}：
+\subsubsection{7-25(a)} 
+32点FFT运算求32点DFT的实部和虚部，MATLAB仿真结果见图\ref{fig:7-25a}：
 
 % TODO: 在MATLAB中运行代码后，将生成的图片保存，然后替换下面的文件名
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{7-25a.png}
+    \includegraphics[width=0.8\textwidth]{T_7_25_32点DFT.pdf}
     \caption{7-25(a) 32点DFT的实部和虚部}
     \label{fig:7-25a}
 \end{figure}
 
-7-25(b) 对(a)的DFT结果再采用32点IFFT运算恢复$x[n]$，MATLAB仿真结果见图\ref{fig:7-25b}：
+\subsubsection{7-25(b)}
+对(a)的DFT结果再采用32点IFFT运算恢复$x[n]$，MATLAB仿真结果见图\ref{fig:7-25b}：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{7-25b.png}
+    \includegraphics[width=0.8\textwidth]{T_7_25信号重建.pdf}
     \caption{7-25(b) IFFT恢复信号x[n]}
     \label{fig:7-25b}
 \end{figure}
 
-7-25(c) 采用一次16点FFT运算求32点DFT，MATLAB仿真结果见图\ref{fig:7-25c}：
+\subsubsection{7-25(c)}
+采用一次16点FFT运算求32点DFT，MATLAB仿真结果见图\ref{fig:7-25c}：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{7-25c.png}
+    \includegraphics[width=0.8\textwidth]{T_7_25_32点DFT(快速计算).pdf}
     \caption{7-25(c) 16点FFT计算32点DFT}
     \label{fig:7-25c}
 \end{figure}
 
 \subsection{实验分析}
+\subsubsection{7-25(a)}
+根据图\ref{fig:7-25a}可以发现，原信号32点DFT的实部和虚部分别满足：
 
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. (a)中32点DFT的实部和虚部有什么特点？实序列DFT的共轭对称性如何体现？
-% 2. (b)中IFFT恢复的信号与原信号是否一致？验证DFT与IDFT的互逆关系
-% 3. (c)中利用16点FFT计算32点DFT的原理是什么？结果与(a)是否一致？
+实部$Re\{X[k]\}$满足\textbf{周期共轭对称}：$Re\{X[k]\} = Re\{X[32-k]^*\}$
 
-\textbf{【请在此处填写分析内容】}
+虚部$Im\{X[k]\}$满足\textbf{周期共轭反对称}：$Im\{X[k]\} = -Im\{X[32-k]^*\}$
 
+这是因为原信号$x[n]$是实序列，理论符合一致。
+
+\subsubsection{7-25(b)}
+本次任务采用的由32点DFT$X[k]$恢复时域序列$x[n]$的方法为：
+$$x[n] = \frac{1}{N}[\text{FFT}{X^*[k]}]^*$$
+证明：
+\begin{align*}
+x[n] = &\frac{1}{N}\sum_{k=0}^{N-1} X[k] W_{N}^{-kn}\\
+     = &\frac{1}{N}[\sum_{k=0}^{N-1} X[k]^* W_{N}^{kn}]^*\\
+     = &\frac{1}{N}[\text{FFT}{X^*[k]}]^*
+\end{align*}
+
+因此，我们不直接采用IFFT算法，而是加上一些共轭操作，直接进行FFT算法就可以重建$x[n]$，观察\ref{fig:7-25b}我们可以发现原序列与采用这种重建方式得到的序列完全一致，证明了理论的正确性。
+
+\subsubsection{7-25(c)}
+利用16点FFT计算32点DFT的原理是\textbf{基于DIF-FFT的第一次分解原理}，具体来说：
+\begin{align*}
+    X[k] & = X_1[k] + W_{N}^{k}X_2[k] \\
+    X[k+N/2] & = X_1[k] - W_{N}^{k}X_2[k]
+\end{align*}
+其中，$X_1[k]$和$X_2[k]$分别是$x[2n]$和$x[2n+1]$的$N/2$点DFT。
+
+因为原序列为实序列，我们可以构建两个实子序列：$x_1[n] = x[2n], x_2[n] = x[2n+1]$，然后构造：
+$$y[n] = x_1[n] + jx_2[n]$$
+那么$y[n]$就是一个$N/2(=16)$点的复数序列，可以直接对其进行16点FFT运算。其中$y[n]$的实部就是$x_1[n]$，虚部就是$x_2[n]$。我们根据复序列实部与DFT周期共轭对称分量、虚部与DFT周期反对称分量的关系，可以直接根据16点DFT得到$X_1[k]$和$X_2[k]$：
+\begin{align*}
+    X_1[k] & = \frac{1}{2}(Y[k] + Y^*[N/2 - k]) \\
+    X_2[k] & = \frac{1}{2j}(Y[k] - Y^*[N/2 - k])
+\end{align*}
+
+然后我们就能根据$X_1[k]$和$X_2[k]$以及DIF-FFT第一次分解原理直接得到$X[k]$。
+
+这种方式的好处就是原本的$N$点DFT计算量直接被压缩为一半，只需要增加一些轻量的取共轭和周期（反）对称运算，相比复杂的FFT流图运算要快捷的多，因此利用这种巧妙地算法，实序列的FFT计算效率得到了显著提升。
 
 % ============================================================
-% 实验二：7-26 线性卷积的直接计算和FFT方法
+% 任务二：7-26 线性卷积的直接计算和FFT方法
 % ============================================================
 \newpage
-\section{实验二：7-26 线性卷积的计算}
+\section{任务二：7-26 线性卷积的计算}
 
 \subsection{题目内容}
 对于下列序列分别采用直接计算和FFT求出并画出其线性卷积。
@@ -173,43 +208,77 @@
 
 \subsection{实验结果}
 
-7-26(a) 线性卷积计算结果见图\ref{fig:7-26a}：
+\subsubsection{7-26(a)} 
+(a)组的线性卷积与循环卷积计算结果见图\ref{fig:7-26a}：
 
+其中，图\ref{fig:7-26a}上方子图是线性卷积的直接计算结果，下方子图是借助于FFT和循环卷积的计算结果。我们可以发现，两张子图中的序列完全一致。
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{7-26a.png}
-    \caption{7-26(a) $x_1[n]=R_5[n]$与$x_2[n]=(-1)^n R_7[n]$的线性卷积}
+    \includegraphics[width=0.8\textwidth]{T_7_26线性卷积与循环卷积a组.pdf}
+    \caption{7-26(a) $x_1[n]=R_5[n]$与$x_2[n]=(-1)^n R_7[n]$的线性卷积与循环卷积}
     \label{fig:7-26a}
 \end{figure}
 
-7-26(b) 线性卷积计算结果见图\ref{fig:7-26b}：
+数值结果为：
+\begin{align*}
+\text{线性卷积计算方式}: & 1, 0, 1, 0, 1, -1, 1, 0, 1, 0, 1 \\
+\text{循环卷积计算方式}: & 1.000, 0.000, 1.000, 0.000, 1.000, -1.000, 1.000, 0.000, 1.000, 0.000, 1.000
+\end{align*}
+从序列数值结果上，也能发现两种计算卷积的方法得到的结果完全相同。
 
+\subsubsection{7-26(b)} 
+线性卷积计算结果见图\ref{fig:7-26b}：
+
+其中，图\ref{fig:7-26b}上方子图是线性卷积的直接计算结果，下方子图是借助于FFT和循环卷积的计算结果。我们可以发现，两张子图中的序列完全一致。
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{7-26b.png}
+    \includegraphics[width=0.8\textwidth]{T_7_26线性卷积与循环卷积b组.pdf}
     \caption{7-26(b) $x_1[n]=\{2,1,1,2\}$与$x_2[n]=0.5^n R_5[n]$的线性卷积}
     \label{fig:7-26b}
 \end{figure}
 
-\subsection{实验分析}
+数值结果为：
+\begin{align*}
+\text{线性卷积计算方式}: & 2.0000, 2.0000, 2.0000, 3.0000, 1.5000, 0.6875, 0.3125, 0.1250 \\
+\text{循环卷积计算方式}: & 2.0000, 2.0000, 2.0000, 3.0000, 1.5000, 0.6875, 0.3125, 0.1250
+\end{align*}
+从序列数值结果上，也能发现两种计算卷积的方法得到的结果完全相同。
 
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. 直接计算方法conv()和FFT方法的结果是否一致？
-% 2. 利用FFT计算线性卷积时，补零的长度如何确定？为什么需要补零？
-% 3. 两种方法的计算复杂度比较
+\subsection{实验分析——利用FFT计算线性卷积的方法}
 
-\textbf{【请在此处填写分析内容】}
+我们先证明N点DFT的循环卷积性质：$x[n]\circledast h[n] \leftrightarrow X[k]H[k]$，即时域卷积对应频域乘法。
+假设序列$x[n]$和$h[n]$的长度都是$N$，证明过程如下：
+\begin{align*}
+    \text{DFT}\{x[n]\circledast h[n]\} & = \sum_{n=0}^{N-1}\{x[n]\circledast h[n]\}W_{N}^{kn} \\
+    & = \sum_{n=0}^{N-1}\sum_{m=0}^{N-1}x[m]h[((n-m))_{N}]R_N[n]W_{N}^{kn} \\
+    & = \sum_{m=0}^{N-1}x[m]\sum_{n=0}^{N-1}h[((n-m))_N]R_N[n]W_{N}^{kn} \\
+    & = \sum_{m=0}^{N-1}x[m]W_N{km}H[k] \\
+    & = X[k]H[k]
+\end{align*}
 
+然后，我们证明循环卷积与线性卷积的关系满足：$x[n]\circledast h[n] =  (\sum_{r=-\infty}^{+\infty}y[n-rN])R_N[n]$
+其中$y[n] = x[n] * h[n]$，即$y[n]$是$x[n]$与$h[n]$的\textbf{线性卷积}。
 
+证明过程如下：
+\begin{align*}
+     x[n] * h[n] & = y[n] \rightarrow \\
+     X(e^{j\omega})H(e^{j\omega}) & = Y(e^{j\omega}) \rightarrow \\
+     X[k]H[k] & = Y(e^{j\omega})\big|_{\omega = jk\frac{2\pi}{N}} \rightarrow \\
+     x[n] \circledast h[n] & = (\sum_{r=-\infty}^{+\infty}y[n-rN])R_N[n]
+\end{align*}
+证毕。
+
+从证明过程中我们可以看到，在对原序列$x[n]$和$y[n]$做DFT时，必须做采样点个数($N$)相同的$N$点DFT，并且这个$N$还必须大于线性卷积$y[n]$的长度($L+P-1$，其中$L, P$分别是$x[n], h[n]$的长度)，否则根据公式$(\sum_{r=-\infty}^{+\infty}y[n-rN])R_N[n]$得到的序列结果会发生混叠，无法还原原信号。
+
+在本案例(a)(b)中，我们分别对两组序列做11点DFT(a)和8点DFT(b)。然后对两个DFT相乘，并且做IDFT就能得到\textbf{循环卷积}，这里的11和8都是大于等于各自线性卷积的长度的，因此这里的得到循环卷积必定与线性卷积完全一致，这一点从图\ref{fig:7-26a}和图\ref{fig:7-26b}中可以看出。
 % ============================================================
-% 实验三：8-30 脉冲响应不变法设计巴特沃思IIR滤波器
+% 任务三：8-30 脉冲响应不变法设计巴特沃茨IIR滤波器
 % ============================================================
 \newpage
-\section{实验三：8-30 脉冲响应不变法设计巴特沃思滤波器}
+\section{任务三：8-30 脉冲响应不变法设计巴特沃茨低通滤波器}
 
 \subsection{题目内容}
-采用脉冲响应不变法设计一个巴特沃思离散时间低通IIR滤波器，要求通带截止频率 $\omega_p = 0.4\pi \text{rad}$，阻带截止频率 $\omega_s = 0.5\pi \text{rad}$，通带最多衰减 $\alpha_p = 3\text{dB}$，阻带最小衰减 $\alpha_s = 40\text{dB}$。取 $T_d = 1$，给出直接形式的系统函数，画出连续时间和离散时间系统的对数幅度响应曲线和单位脉冲响应曲线。
+采用脉冲响应不变法设计一个巴特沃茨离散时间低通IIR滤波器，要求通带截止频率 $\omega_p = 0.4\pi \text{rad}$，阻带截止频率 $\omega_s = 0.5\pi \text{rad}$，通带最多衰减 $\alpha_p = 3\text{dB}$，阻带最小衰减 $\alpha_s = 40\text{dB}$。取 $T_d = 1$，给出直接形式的系统函数，画出连续时间和离散时间系统的对数幅度响应曲线和单位脉冲响应曲线。
 
 (提示: 可以调用的函数有 \texttt{buttord()}、\texttt{butter()}、\texttt{impinvar()}、\texttt{freqs()}、\texttt{freqz()}、\texttt{impz()}、\texttt{tf()} 和 \texttt{impulse()} 等)
 
@@ -218,87 +287,206 @@
 MATLAB计算得到的滤波器参数：
 
 \begin{verbatim}
-% TODO: 运行MATLAB代码后，将以下信息替换为实际输出结果
-巴特沃思滤波器阶数: N = ______
-模拟截止频率: Wc = ______ rad/s
-模拟滤波器分子系数 (b_s): ______
-模拟滤波器分母系数 (a_s): ______
-数字滤波器分子系数 (b_z): ______
-数字滤波器分母系数 (a_z): ______
+巴特沃茨滤波器阶数: N = 21
+连续时间截止频率: Wc = 1.2615 rad/s
 \end{verbatim}
 
-连续时间和离散时间滤波器的对数幅度响应及单位脉冲响应见图\ref{fig:8-30}：
+连续时间和离散时间滤波器的对数幅度响应及单位脉冲响应见图\ref{fig:8-30-H}以及图\ref{fig:8-30-h}。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.9\textwidth]{8-30.png}
-    \caption{8-30 巴特沃思滤波器设计：对数幅度响应与单位脉冲响应}
-    \label{fig:8-30}
+    \includegraphics[width=0.9\textwidth]{T_8_30对数幅度响应.pdf}
+    \caption{8-30 巴特沃茨滤波器设计：对数幅度响应}
+    \label{fig:8-30-H}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{T_8_30单位脉冲响应.pdf}
+    \caption{8-30 巴特沃茨滤波器设计：单位脉冲响应}
+    \label{fig:8-30-h}
 \end{figure}
 
 \subsection{实验分析}
 
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. 脉冲响应不变法的基本原理是什么？数字频率与模拟频率的映射关系？
-% 2. 设计得到的滤波器是否满足技术指标要求？
-% 3. 模拟滤波器和数字滤波器的脉冲响应之间有什么关系？
-% 4. 脉冲响应不变法的优缺点是什么？
+\subsubsection{脉冲响应法设计离散时间IIR滤波器的基本原理}
 
-\textbf{【请在此处填写分析内容】}
+脉冲响应不变法是将连续时间滤波器的脉冲响应直接映射到离散时间滤波器的脉冲响应的一种设计方法。其基本原理是保持连续时间滤波器的脉冲响应在离散时间滤波器中不变，从而实现离散时间滤波器的设计。
+两种滤波器的单位脉冲响应的对应关系为：
+\[
+h[n] = T_d h_c[nT_d]
+\]
+其中，$h[n]$为离散时间滤波器的单位脉冲响应，$h_c[t]$为连续时间滤波器的单位脉冲响应，$T_d$为采样周期。
 
+单位脉冲响应的对应关系是我们要求得到的，据此我们可以推导两者的系统函数与频率响应应该有怎样的关系：
+
+假设原连续时间滤波器的系统函数为：$$H_c(s) = \sum_{k=0}^{N-1}\frac{A_k}{s-s_k}$$
+
+则有：$$h_c(t) = \sum_{k=0}^{N-1}A_k e^{s_k t}u(t)$$
+
+则有：$$h[n] = T_d \sum_{k=0}^{N-1}A_k e^{s_k nT_d}u(nT_d)$$
+
+因此易知二者系统函数的关系为：
+$$H(z) = \sum_{k=0}^{N-1}\frac{T_d A_k}{1 - e^{s_k T_d}z^{-1}}$$
+
+
+根据第五章理想采样一节，我们可以直接写出两者频率响应的关系应该满足：
+\begin{equation}
+H(e^{j\omega}) = \sum_{k=-\infty}^{+\infty}H_c(j\frac{\omega - k\cdot 2\pi}{T_d})
+\label{eq:滤波器频率响应关系}
+\end{equation}
+
+观察式子\eqref{eq:滤波器频率响应关系}，我们可以发现一个严重的问题：
+
+如果说$H_c(j\Omega)$是一个很好的带限信号，例如为$100×2\pi$时截至的低通滤波器，那么当$T_d=0.005s$时就不会发生频谱混叠，但是当$T_d>0.005s$时就会发生频谱混叠，因此我们需要更高的采样率，即可避免混叠。
+
+但是，当$H_c(j\Omega)$真的就不是带限信号时，无论T有多小，频谱必定会发生混叠。尤其是我们设计的是IIR滤波器，这一问题必将出现，这就是脉冲响应发设计IIR滤波器的缺点之一。
+
+\subsubsection{巴特沃茨滤波器}
+连续时间巴特沃茨滤波器的一般表达式（准确来说是幅度平方响应）为：
+$$|H_c(j\Omega)|^2 = \frac{1}{1 + (j\frac{\Omega}{\Omega_c})^{2N}}$$
+在本案例中，$N=21, \Omega_c=1.2615 \text{rad/s}$，因此原型连续时间巴特沃茨低通滤波器的表达式为：
+$$|H_c(j\Omega)|^2 = \frac{1}{1 + (j\frac{\Omega}{1.2615})^{42}}$$
+
+\subsubsection{离散时间滤波器的实现效果}
+在图\ref{fig:8-30-H}中，我们将$\omega_p, \omega_s, \alpha_p, \alpha_s$标注出来，可以清晰地看到设计的滤波器满足了题目要求的技术指标。
 
 % ============================================================
-% 实验四：8-32 切比雪夫II型IIR高通滤波器设计
+% 任务四：8-31 脉冲响应不变法设计巴特沃茨带通滤波器
 % ============================================================
 \newpage
-\section{实验四：8-32 切比雪夫II型高通滤波器设计}
+\section{任务四：8-31 脉冲响应不变法设计巴特沃茨带通滤波器}
 
 \subsection{题目内容}
-设计一个切比雪夫II型的离散时间IIR高通滤波器，要求阻带截止频率为 $\omega_p = 0.6\pi \text{rad}$，通带截止频率为 $\omega_s = 0.7\pi \text{rad}$，通带最大衰减 $\alpha_p = 3\text{dB}$，阻带最小衰减 $\alpha_s = 40\text{dB}$。分别采用脉冲响应不变法和双线性变换法，画出对数幅度响应曲线，你发现了什么？
+采用脉冲响应不变法设计一个巴特沃思离散时间带通IIR滤波器，要求下、上阻带截止频率分别为 \( \omega_{p1} = 0.2\pi \text{rad} \) 和 \( \omega_{p2} = 0.8\pi \text{rad} \)，下、上通带截止频率分别为 \( \omega_{p1} = 0.3\pi \text{rad} \) 和 \( \omega_{p2} = 0.7\pi \text{rad} \)，通带最大衰减 \( \alpha_p = 1\text{dB} \)，阻带最小衰减 \( \alpha_s = 30\text{dB} \)。给出级联形式的系统函数，画出对数幅度响应。
 
-(提示: 可以调用的函数有 \texttt{cheb2ord()}、\texttt{cheby2()}、\texttt{impinvar()} 和 \texttt{freqz()} 等)
+（提示：可以调用的函数有 `buttord()`、`butter()`、`impinvar()`、`freqz()` 和 `tf2zp()` 等）
 
 \subsection{实验结果}
 
-脉冲响应不变法设计的高通滤波器对数幅度响应见图\ref{fig:8-32a}：
+MATLAB计算得到的滤波器参数：
+
+\begin{verbatim}
+巴特沃茨滤波器阶数: N = 14
+连续时间截止频率: Wc1 = 0.9239 rad/s, Wc2 = 2.2434 rad/s
+\end{verbatim}
+
+\subsubsection{对数幅度响应以及单位脉冲响应}
+对数幅度响应和单位脉冲响应见图\ref{fig:8-31-H}和图\ref{fig:8-31-h}。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{8-32a.png}
-    \caption{8-32 脉冲响应不变法设计的高通滤波器对数幅度响应}
-    \label{fig:8-32a}
+    \includegraphics[width=0.9\textwidth]{T_8_31对数幅度响应.pdf}
+    \caption{8-31 巴特沃茨滤波器设计：对数幅度响应}
+    \label{fig:8-31-H}
 \end{figure}
-
-双线性变换法设计的高通滤波器对数幅度响应见图\ref{fig:8-32b}：
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{8-32b.png}
-    \caption{8-32 双线性变换法设计的高通滤波器对数幅度响应}
-    \label{fig:8-32b}
+    \includegraphics[width=0.9\textwidth]{T_8_31单位脉冲响应.pdf}
+    \caption{8-31 巴特沃茨滤波器设计：单位脉冲响应}
+    \label{fig:8-31-h}
 \end{figure}
 
-两种方法的对比见图\ref{fig:8-32c}：
 
-\begin{figure}[htbp]
+\subsubsection{级联系统分解}
+我们得到离散时间滤波器后，利用tf2zp函数求得该离散时间滤波器的所有零点和极点，以及增益。我们就可以分别利用零点和极点构建\textbf{全零点子系统}和\textbf{全极点子系统}（本实验中，我们将增益分配给全零点子系统），并将它们级联起来构成最终的滤波器。我们可以验证，级联后的滤波器与原离散时间滤波器的频率响应完全一致。
+
+具体来说，假设得到的离散时间滤波器的系统函数为$H(z)$，其零点为：$z_1, z_2, ..., z_M$，极点为：$p_1, p_2, ..., p_N$。增益为：$k=A_0$
+
+那么，全零点子系统的构建方式为：
+\[
+H_{1}(z) = A0(z - z_1)(z - z_2) \cdots (z - z_M)
+\]
+
+求全极点子系统的构建方式为：
+\[
+H_{2}(z) = \frac{1}{(z - p_1)(z - p_2) \cdots (z - p_N)}
+\]
+
+两者级联后的系统就是：
+\[
+H_0(z) = H_{1}(z) \cdot H_{2}(z) = A0(z - z_1)(z - z_2) \cdots (z - z_M) \cdot \frac{1}{(z - p_1)(z - p_2) \cdots (z - p_N)}
+\]
+
+级联后得到的系统$H_0(z)$其实就是$H(z)$，我们将通过二者的频率响应图像进行验证。
+
+在本案例中，通过tf2zp函数计算得到的离散时间滤波器系统函数零点为：
+
+$0.0000 + 0.0000i, 0.9495 + 5.9865i, 0.9495 - 5.9865i, -4.4651 + 0.8699i, -4.4651 - 0.8699i, 1.7475 + 1.1573i, 1.7475 - 1.1573i, -1.6373 + 0.0000i, 1.1434 + 0.7412i, 1.1434 - 0.7412i, -0.9706 + 0.0000i, 0.9310 + 0.5593i, 0.9310 - 0.5593i, -0.6326 + 0.0000i, 0.8044 + 0.4370i, 0.8044 - 0.4370i, 0.7092 + 0.3303i, -1.6373 + 0.0000i, 1.1434 + 0.7412i, 1.1434 - 0.7412i, -0.9706 + 0.0000i, 0.9310 + 0.5593i, 0.9310 - 0.5593i, -0.6326 + 0.0000i, 0.8044 + 0.4370i, 0.8044 - 0.4370i, 0.7092 + 0.3303i, 0.7092 - 0.3303i, 0.6314 + 0.2172i, 0.6314 - 0.2172i, 0.5770 + 0.0794i, 0.5770 - 0.0794i, -0.4108 + 0.0000i, -0.2458 + 0.0000i, -0.1212 + 0.0000i, -0.0413 + 0.0000i, -0.0023 + 0.0054i, -0.0023 - 0.0054i
+$
+
+极点为：
+
+$
+-0.5560 + 0.7087i, -0.5560 - 0.7087i,  0.5765 + 0.7648i,  0.5765 - 0.7648i,  0.5224 + 0.7050i,  0.5224 - 0.7050i, -0.4208 + 0.6051i, -0.4208 - 0.6051i,  0.4658 + 0.6524i,  0.4658 - 0.6524i,  0.4054 + 0.6058i,  0.4054 - 0.6058i, -0.2949 + 0.5434i, -0.2949 - 0.5434i,  0.3401 + 0.5649i,  0.3401 - 0.5649i,  0.2685 + 0.5305i,  0.2685 - 0.5305i, -0.1816 + 0.5082i, -0.1816 - 0.5082i,  0.1900 + 0.5045i,  0.1900 - 0.5045i, -0.0791 + 0.4899i, -0.0791 - 0.4899i,  0.1054 + 0.4887i,  0.1054 - 0.4887i,  0.0158 + 0.4838i,  0.0158 - 0.4838i
+$
+
+增益为：$8.7610\times 10^{-7}$。
+
+在MATLAB根据零点和极点重建子系统以及原系统，得到：
+
+全零点子系统$H_{1}(z)$的频率响应见图\ref{fig:8-31-H1}
+\begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{8-32c.png}
-    \caption{8-32 脉冲响应不变法与双线性变换法对比}
-    \label{fig:8-32c}
+    \includegraphics[width=0.9\textwidth]{T_8_31全零点系统.pdf}
+    \caption{全零点子系统频率响应}
+    \label{fig:8-31-H1}
 \end{figure}
+通过MATLAB数值计算得到的其系统函数分子系数为：
+0.0000, -0.0000, 0.0000, 0.0001, -0.0008, 0.0007, 0.0087, -0.0334, 0.0391, 0.0394, 
+-0.1750, 0.1953, -0.0069, -0.2039, 0.2023, -0.0374, -0.0716, 0.0553, -0.0067, -0.0088, 
+0.0036, 0.0001, -0.0003, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0
+
+因此，其系统函数表达式为：
+
+$H_1(z) = 8.7610\times 10^{-7}(0 + 0z + 0z^2 + 0.0001z^3 - 0.0008z^4 + 0.0007z^5 + 0.0087z^6 - 0.0334z^7 + 0.0391z^8 + 0.0394z^9 - 0.1750z^{10} + 0.1953z^{11} - 0.0069z^{12} - 0.2039z^{13} + 0.2023z^{14} - 0.0374z^{15} - 0.0716z^{16} + 0.0553z^{17} - 0.0067z^{18} - 0.0088z^{19} + 0.0036z^{20} + 0.0001z^{21} - 0.0003z^{22} + 0z^{23} + 0z^{24} + 0z^{25} + 0z^{26} + 0z^{27} + 0z^{28})$
+
+全极点子系统$H_2(z)$的频率响应见图\ref{fig:8-31-H2}。
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{T_8_31全极点系统.pdf}
+    \caption{全极点子系统频率响应}
+    \label{fig:8-31-H2}
+\end{figure}
+通过MATLAB数值计算得到其系统函数分母系数为：
+1.0000, -2.7151, 6.7160, -10.5184, 16.4728, -20.3178, 25.5345, -26.7653, 28.4358, 
+-25.8510, 23.8316, -19.0445, 15.4481, -10.8934, 7.8152, -4.8536, 3.0811, -1.6729, 
+0.9359, -0.4380, 0.2140, -0.0842, 0.0354, -0.0112, 0.0040, -0.0009, 0.0003, -0.0000, 0.0000
+
+因此，其系统函数表达式为：
+
+$H_2(z) = 1 -2.7151z + 6.7160z^2 -10.5184z^3 + 16.4728z^4 -20.3178z^5 + 25.5345z^6 -26.7653z^7 + 28.4358z^8 -25.8510z^9 + 23.8316z^{10} -19.0445z^{11} + 15.4481z^{12} -10.8934z^{13} + 7.8152z^{14} -4.8536z^{15} + 3.0811z^{16} -1.6729z^{17} + 0.9359z^{18} -0.4380z^{19} + 0.2140z^{20} -0.0842z^{21} + 0.0354z^{22} -0.0112z^{23} + 0.0040z^{24} -0.0009z^{25} + 0.0003z^{26} -0.0000z^{27} + 0.0000z^{28}$
+
+我们将两个子系统级联，得到$H_0(z) = H_1(z)H_2(z)$，并将该系统的频率响应与原系统的频率响应比较，见\ref{fig:8-31-H0}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\textwidth]{T_8_31复原原系统.pdf}
+    \caption{级联系统与原系统频率响应对比}
+    \label{fig:8-31-H0}
+\end{figure}
+
+可见，两系统的频率响应完全一致，这说明了将原系统拆分为全零点子系统以及全极点子系统并且级联后，可以恢复原系统。
 
 \subsection{实验分析}
 
-% TODO: 请在此处补充实验分析
-% 分析内容可以包括：
-% 1. 观察两种方法设计的高通滤波器对数幅度响应曲线，发现了什么？
-% 2. 为什么脉冲响应不变法不适合设计高通滤波器？（频谱混叠问题）
-% 3. 双线性变换法如何避免频谱混叠问题？
-% 4. 双线性变换法的频率畸变现象及预畸变技术
+本实验内容与实验三相似，这里仅分析不同点。
 
-\textbf{【请在此处填写分析内容】}
+\subsubsection{带通形式的巴特沃茨滤波器设计}
 
+\[
+|H_c(j\Omega)|^2 = \frac{1}{1 + [\frac{B \Omega}{\Omega^2 - \Omega_0^2}]^{2N}}
+\]
+
+其中：
+$\Omega_0 = \sqrt{\Omega_{p1} \Omega_{p2}}$为几何中心频率，$B = \Omega_{p2} - \Omega_{p1}$为通带带宽，$N$为低通原型阶数（满足 $\alpha_p=1$dB、$\alpha_s=30$dB 所需的最小整数）
+
+根据MATLAB数值计算给出的结果，可知原型连续时间巴特沃茨带通滤波器的幅度平方响应为：
+$$|H_c(j\Omega)|^2 = \frac{1}{1 + [\frac{1.3195\Omega}{\Omega^2 - 2.0727}]^{28}}$$
+
+\subsubsection{级联的系统函数分解}
+在上述分析中我们将离散时间滤波器系统函数分解为了全零点子系统以及全极点子系统，并且利用两个字系统重建的原系统系统函数，与原系统的频率响应对比，两者完全一致，在图\ref{fig:8-31-H0}中可以清晰的看见。
 
 % ============================================================
 % 附录：MATLAB代码
@@ -306,304 +494,255 @@ MATLAB计算得到的滤波器参数：
 \newpage
 \section{附录：MATLAB代码}
 
-\subsection{实验一代码：7-25}
+\subsection{任务一代码：7-25}
 
 \begin{lstlisting}
-%% 7-25 实数序列的FFT运算
-% x[n] = n/10 + 0.2^n + 4*cos(0.2*pi*n), 0 <= n <= 31
+%% 7-25 
 clear; clc; close all;
 
 n = 0:31;
-x = n/10 + 0.2.^n + 4*cos(0.2*pi*n);
+x = n/10 + 0.2.^n + 4*cos(0.2*pi*n)
 
 %% (a) 采用32点FFT运算，求出并画出其32点DFT的实部和虚部
-X_32 = fft(x, 32);
+N_dft = 32;
+X_dft32 = fft(x, 32);
+k = 0:31;
 
-figure('Name', '7-25(a) 32点DFT', 'NumberTitle','off');
+figure('Name', '32点DFT', 'NumberTitle','off');
 t = tiledlayout(2,1, 'Padding','compact','TileSpacing','compact');
 
 nexttile;
-stem(0:31, real(X_32), 'filled');
+stem(k, real(X_dft32), 'filled');
 grid on;
 xlabel('k');
 ylabel('Re\{X[k]\}');
 title('32点DFT的实部');
 
 nexttile;
-stem(0:31, imag(X_32), 'filled');
+stem(k, imag(X_dft32), 'filled');
 grid on;
-xlabel('k');
+xlabel('k')
 ylabel('Im\{X[k]\}');
 title('32点DFT的虚部');
 
+
 %% (b) 对(a)的结果再采用32点FFT运算，求出并画出x[n]
-% IFFT = (1/N) * conj(FFT(conj(X)))，也可以直接用ifft
-x_recover = ifft(X_32, 32);
+X_dft32_conj = conj(X_dft32);
+X_dft32_conj_dft = fft(X_dft32_conj, 32);
+X_dft32_conj_dft32_conj = conj(X_dft32_conj_dft);
+x_recover = X_dft32_conj_dft32_conj/32;
 
-figure('Name', '7-25(b) IFFT恢复x[n]', 'NumberTitle','off');
+figure('Name', '信号重建', 'NumberTitle','off');
 t = tiledlayout(2,1, 'Padding','compact','TileSpacing','compact');
-
 nexttile;
-stem(0:31, x, 'filled');
+stem(n, x, 'filled');
 grid on;
-xlabel('n');
+xlabel('n'); 
 ylabel('x[n]');
-title('原始信号 x[n]');
+title('x[n]');
 
 nexttile;
-stem(0:31, real(x_recover), 'filled');
+stem(n, x_recover, 'filled');
 grid on;
-xlabel('n');
-ylabel('x_{recover}[n]');
-title('IFFT恢复的信号');
+xlabel('n'); 
+ylabel('x_{r}[n]');
+title('x_{r}[n]');
 
-%% (c) 采用一次16点FFT运算，求出并画出x[n]的32点DFT的实部和虚部
-% 利用实序列DFT的性质：将x[n]分成偶数点和奇数点
-% 构造复序列 y[n] = x[2n] + j*x[2n+1]
-% 然后用Y[k]恢复X[k]
-x_even = x(1:2:32);  % x[0], x[2], ..., x[30]
-x_odd = x(2:2:32);   % x[1], x[3], ..., x[31]
-y = x_even + 1j*x_odd;  % 16点复序列
+%% (c) 采用一次16点FFT运算，求出并画出x[n]的32点DFT的实部和虚部。
+x_even = x(1:2:32);
+x_odd = x(2:2:32);
 
-Y = fft(y, 16);  % 16点FFT
+y = x_even + 1j*x_odd;
+Y_dft16 = fft(y, 16);
 
-% 利用DFT性质恢复32点DFT
-% X[k] = (1/2)*(Y[k] + conj(Y[N-k])) - (j/2)*e^{-j*2*pi*k/2N}*(Y[k] - conj(Y[N-k]))
-% 其中 N = 16, 2N = 32
-X_32_from16 = zeros(1, 32);
-for k = 0:31
-    k16 = mod(k, 16);  % k mod 16
-    k16_neg = mod(16 - k16, 16);  % (-k) mod 16，用于DFT共轭对称性
-    
-    W = exp(-1j*2*pi*k/32);  % 旋转因子
-    
-    % 偶数部分DFT: X_even[k] = (Y[k mod 16] + conj(Y[(-k) mod 16])) / 2
-    X_even = (Y(k16+1) + conj(Y(k16_neg+1))) / 2;
-    % 奇数部分DFT: X_odd[k] = (Y[k mod 16] - conj(Y[(-k) mod 16])) / (2j)
-    X_odd = (Y(k16+1) - conj(Y(k16_neg+1))) / (2j);
-    
-    % X[k] = X_even[k] + W^k * X_odd[k]
-    X_32_from16(k+1) = X_even + W * X_odd;
+n_y = 0:15
+N_y = 16;
+neg_n_mod = mod(-n_y, N_y) + 1;  % 转为 1-based 索引
+Y_dft16_conj_filped = conj(Y_dft16(neg_n_mod));  % 取周期共轭
+
+X1 = 0.5*(Y_dft16 + Y_dft16_conj_filped);
+X2 = 0.5/1j*(Y_dft16 - Y_dft16_conj_filped);
+
+X_16 = zeros(1, 32);   % 创建 1×32 的行向量，全为 0
+
+for k = 1:16
+    X_16(k) = X1(k) + exp(-1*1j*2*pi/32*(k-1))*X2(k);
+    X_16(k+16) = X1(k) - exp(-1*1j*2*pi/32*(k-1))*X2(k);
 end
 
-figure('Name', '7-25(c) 16点FFT求32点DFT', 'NumberTitle','off');
+
+figure('Name', '32点DFT(快速计算)', 'NumberTitle','off');
 t = tiledlayout(2,1, 'Padding','compact','TileSpacing','compact');
 
 nexttile;
-stem(0:31, real(X_32_from16), 'filled');
+stem(0:31, real(X_16), 'filled');
 grid on;
-xlabel('k');
+xlabel('k')
 ylabel('Re\{X[k]\}');
-title('32点DFT的实部 (由16点FFT计算)');
+title('32点DFT的实部');
 
 nexttile;
-stem(0:31, imag(X_32_from16), 'filled');
+stem(0:31, imag(X_16), 'filled');
 grid on;
-xlabel('k');
+xlabel('k')
 ylabel('Im\{X[k]\}');
-title('32点DFT的虚部 (由16点FFT计算)');
-
-% 验证结果
-disp('(c)与(a)结果的最大误差:');
-disp(max(abs(X_32 - X_32_from16)));
+title('32点DFT的虚部');
 \end{lstlisting}
 
-\subsection{实验二代码：7-26}
+\subsection{任务二代码：7-26}
 
 \begin{lstlisting}
-%% 7-26 线性卷积的直接计算和FFT方法
+%% 7-26
 clear; clc; close all;
 
-%% (a) x1[n] = R_5[n], x2[n] = (-1)^n * R_7[n]
-x1a = ones(1, 5);  % R_5[n]
-n2a = 0:6;
-x2a = (-1).^n2a;  % (-1)^n * R_7[n]
+%% (a) 验证第一组循环卷积与线性卷积
+n1 = 0:4;
+n2 = 0:6;
+x1a = 1.^n1;
+x2a = (-1).^n2;
+disp(x1a);
+disp(x2a);
 
 % 直接计算线性卷积
 ya_direct = conv(x1a, x2a);
-na_direct = 0:(length(ya_direct)-1);
+disp('ya_direct')
+disp(ya_direct)
+% 通过循环卷积方式计算
+ya_byloop = ifft(fft(x1a, 11).*fft(x2a, 11));
+disp('ya_byloop')
+disp(ya_byloop)
+n_ya = 0:10;
 
-% FFT方法计算线性卷积
-% 补零到长度 L >= N1 + N2 - 1 = 5 + 7 - 1 = 11
-L_a = length(x1a) + length(x2a) - 1;
-X1a = fft(x1a, L_a);
-X2a = fft(x2a, L_a);
-Ya = X1a .* X2a;
-ya_fft = ifft(Ya);
-na_fft = 0:(L_a-1);
-
-figure('Name', '7-26(a) 线性卷积', 'NumberTitle','off');
-t = tiledlayout(2,2, 'Padding','compact','TileSpacing','compact');
+figure('Name', '线性卷积与循环卷积a组', 'NumberTitle','off');
+ta = tiledlayout(2,1, 'Padding','compact','TileSpacing','compact');
+nexttile;
+stem(n_ya, ya_direct, 'filled');
+grid on;
+xlabel('n'); 
+ylabel('y_{1}[n]');
+title('(a) 线性卷积');
 
 nexttile;
-stem(0:4, x1a, 'filled');
+stem(n_ya, ya_byloop, 'filled');
 grid on;
-xlabel('n');
-ylabel('x_1[n]');
-title('x_1[n] = R_5[n]');
+xlabel('n'); 
+ylabel('y_{2}[n]');
+title('(a) 循环卷积');
 
-nexttile;
-stem(n2a, x2a, 'filled');
-grid on;
-xlabel('n');
-ylabel('x_2[n]');
-title('x_2[n] = (-1)^n R_7[n]');
+%% (b) 验证第二组循环卷积与线性卷积
+n2 = 0:4;
+x1b = [2,1,1,2];
+x2b = (0.5).^n2;
+disp(x1b);
+disp(x2b);
 
-nexttile;
-stem(na_direct, ya_direct, 'filled');
-grid on;
-xlabel('n');
-ylabel('y[n]');
-title('直接计算 conv(x_1, x_2)');
-
-nexttile;
-stem(na_fft, real(ya_fft), 'filled');
-grid on;
-xlabel('n');
-ylabel('y[n]');
-title('FFT方法计算卷积');
-
-%% (b) x1[n] = {2,1,1,2} (n=0位置标记), x2[n] = 0.5^n * R_5[n]
-x1b = [2 1 1 2];  % n = 0, 1, 2, 3
-n2b = 0:4;
-x2b = 0.5.^n2b;  % 0.5^n * R_5[n]
-
-% 直接计算线性卷积
+% 直接计算线性卷积 
 yb_direct = conv(x1b, x2b);
-nb_direct = 0:(length(yb_direct)-1);
+disp('yb_direct')
+disp(yb_direct)
+% 通过循环卷积方式计算
+yb_byloop = ifft(fft(x1b, 8).*fft(x2b, 8));
+n_yb = 0:7;
+disp('yb_byloop')
+disp(yb_byloop)
 
-% FFT方法计算线性卷积
-L_b = length(x1b) + length(x2b) - 1;
-X1b = fft(x1b, L_b);
-X2b = fft(x2b, L_b);
-Yb = X1b .* X2b;
-yb_fft = ifft(Yb);
-nb_fft = 0:(L_b-1);
-
-figure('Name', '7-26(b) 线性卷积', 'NumberTitle','off');
-t = tiledlayout(2,2, 'Padding','compact','TileSpacing','compact');
+figure('Name', '线性卷积与循环卷积b组', 'NumberTitle','off');
+ta = tiledlayout(2,1, 'Padding','compact','TileSpacing','compact');
+nexttile;
+stem(n_yb, yb_direct, 'filled');
+grid on;
+xlabel('n'); 
+ylabel('y_{1}[n]');
+title('(b) 线性卷积');
 
 nexttile;
-stem(0:3, x1b, 'filled');
+stem(n_yb, yb_byloop, 'filled');
 grid on;
-xlabel('n');
-ylabel('x_1[n]');
-title('x_1[n] = \{2,1,1,2\}');
-
-nexttile;
-stem(n2b, x2b, 'filled');
-grid on;
-xlabel('n');
-ylabel('x_2[n]');
-title('x_2[n] = 0.5^n R_5[n]');
-
-nexttile;
-stem(nb_direct, yb_direct, 'filled');
-grid on;
-xlabel('n');
-ylabel('y[n]');
-title('直接计算 conv(x_1, x_2)');
-
-nexttile;
-stem(nb_fft, real(yb_fft), 'filled');
-grid on;
-xlabel('n');
-ylabel('y[n]');
-title('FFT方法计算卷积');
-
-% 验证两种方法的结果
-disp('7-26(a) 两种方法的最大误差:');
-disp(max(abs(ya_direct - real(ya_fft))));
-disp('7-26(b) 两种方法的最大误差:');
-disp(max(abs(yb_direct - real(yb_fft))));
+xlabel('n'); 
+ylabel('y_{2}[n]');
+title('(b) 循环卷积');
 \end{lstlisting}
 
-\subsection{实验三代码：8-30}
+\subsection{任务三代码：8-30}
 
 \begin{lstlisting}
-%% 8-30 脉冲响应不变法设计巴特沃思低通IIR滤波器
-% 通带截止频率 ωp = 0.4π rad
-% 阻带截止频率 ωs = 0.5π rad
-% 通带最多衰减 αp = 3dB
-% 阻带最小衰减 αs = 40dB
-% Td = 1
+%% 8-30
 clear; clc; close all;
 
 % 设计参数
-Td = 1;                    % 采样周期
-wp = 0.4*pi;               % 离散时间通带截止频率 (rad)
-ws = 0.5*pi;               % 离散时间阻带截止频率 (rad)
-Rp = 3;                    % 通带最大衰减 (dB)
-Rs = 40;                   % 阻带最小衰减 (dB)
+Td = 1;                    
+wp = 0.4*pi;
+ws = 0.5*pi;
+alpha_p = 3;
+alpha_s = 40;
 
-% 将数字频率转换为模拟频率（脉冲响应不变法）
-% Ω = ω / Td
-Wp_analog = wp / Td;       % 模拟通带截止频率 (rad/s)
-Ws_analog = ws / Td;       % 模拟阻带截止频率 (rad/s)
+% 将离散频率转换为模拟频率（脉冲响应不变法）
+Wp_analog = wp / Td;
+Ws_analog = ws / Td;
 
-% 确定巴特沃思滤波器阶数和截止频率
-[N, Wc] = buttord(Wp_analog, Ws_analog, Rp, Rs, 's');
-fprintf('巴特沃思滤波器阶数: N = %d\n', N);
-fprintf('模拟截止频率: Wc = %.4f rad/s\n', Wc);
-
-% 设计模拟巴特沃思滤波器
+% 确定巴特沃茨滤波器阶数和截止频率
+% 理解：滤波器类型已经确定为布莱克曼窗族中的巴特沃茨滤波器，不需要手动计算阶数
+[N, Wc] = buttord(Wp_analog, Ws_analog, alpha_p, alpha_s, 's');
+% N: 阶数, Wc: 截止频率
+disp("巴特沃茨滤波器阶数: ")
+disp(N)
+disp("巴特沃茨滤波器截止频率: ")
+disp(Wc)
+% 连续时间巴特沃茨滤波器
 [b_s, a_s] = butter(N, Wc, 's');
 
-% 显示模拟滤波器系统函数
-disp('模拟滤波器分子系数 (b_s):');
-disp(b_s);
-disp('模拟滤波器分母系数 (a_s):');
-disp(a_s);
-
-% 脉冲响应不变法转换为数字滤波器
+% 脉冲响应不变发求解离散时间巴特沃茨滤波器
 [b_z, a_z] = impinvar(b_s, a_s, 1/Td);
 
-% 显示数字滤波器系统函数
-disp('数字滤波器分子系数 (b_z):');
-disp(b_z);
-disp('数字滤波器分母系数 (a_z):');
-disp(a_z);
+figure('Name', '对数幅度响应', 'NumberTitle','off');
+t1 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
 
-% 绘图
-figure('Name', '8-30 巴特沃思滤波器设计', 'NumberTitle','off');
-t = tiledlayout(2,2, 'Padding','compact','TileSpacing','compact');
-
-% 模拟滤波器对数幅度响应
+% 连续时间滤波器对数幅度响应
 nexttile;
-w_analog = linspace(0, 3*Ws_analog, 1024);
+w_analog = linspace(0, pi, 1024);
 [H_s, w_s] = freqs(b_s, a_s, w_analog);
 plot(w_s, 20*log10(abs(H_s)));
 grid on;
+xlim([0, pi]);
+xticks(0:0.2*pi:pi);
+xticklabels(string(0:0.2:1) + "\pi");
 xlabel('\Omega (rad/s)');
 ylabel('幅度 (dB)');
-title('模拟滤波器对数幅度响应');
-xlim([0 3*Ws_analog]);
-ylim([-80 5]);
+title('模拟时间滤波器对数幅度响应');
+ylim([-180 5]);
 hold on;
-xline(Wp_analog, 'r--', '\Omega_p');
-xline(Ws_analog, 'g--', '\Omega_s');
-yline(-Rp, 'b--', '-R_p');
-yline(-Rs, 'm--', '-R_s');
+xline(wp, 'g--', '\Omega_p');
+xline(ws, 'r--', '\Omega_s');
+yline(-alpha_p, 'g--', '-\alpha_p');
+yline(-alpha_s, 'r--', '-\alpha_s');
 hold off;
 
-% 数字滤波器对数幅度响应
+
+% 离散时间滤波器对数幅度响应
 nexttile;
 [H_z, w_z] = freqz(b_z, a_z, 1024);
-plot(w_z/pi, 20*log10(abs(H_z)));
+plot(w_z, 20*log10(abs(H_z)));
 grid on;
-xlabel('\omega/\pi');
+xlim([0, pi]);
+xticks(0:0.2*pi:pi);
+xticklabels(string(0:0.2:1) + "\pi");
+xlabel('\Omega (rad)');
 ylabel('幅度 (dB)');
-title('数字滤波器对数幅度响应');
-xlim([0 1]);
-ylim([-80 5]);
+title('离散时间滤波器对数幅度响应');
+ylim([-100 5]);
 hold on;
-xline(wp/pi, 'r--', '\omega_p/\pi');
-xline(ws/pi, 'g--', '\omega_s/\pi');
-yline(-Rp, 'b--', '-R_p');
-yline(-Rs, 'm--', '-R_s');
+xline(wp, 'g--', '\omega_p');
+xline(ws, 'r--', '\omega_s');
+yline(-alpha_p, 'g--', '-\alpha_p');
+yline(-alpha_s, 'r--', '-\alpha_s');
 hold off;
 
-% 模拟滤波器单位脉冲响应
+
+figure('Name', '单位脉冲响应', 'NumberTitle','off');
+t2 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+
+
+% 连续时间滤波器单位脉冲响应
 nexttile;
 sys_s = tf(b_s, a_s);
 [h_s, t_s] = impulse(sys_s);
@@ -611,136 +750,247 @@ plot(t_s, h_s);
 grid on;
 xlabel('t (s)');
 ylabel('h(t)');
-title('模拟滤波器单位脉冲响应');
+title('模拟时间滤波器单位脉冲响应');
 
-% 数字滤波器单位脉冲响应
+% 离散时间滤波器单位脉冲响应
 nexttile;
 [h_z, n_z] = impz(b_z, a_z, 50);
 stem(n_z, h_z, 'filled');
 grid on;
 xlabel('n');
 ylabel('h[n]');
-title('数字滤波器单位脉冲响应');
+title('离散时间滤波器单位脉冲响应');
 \end{lstlisting}
 
-\subsection{实验四代码：8-32}
+\subsection{任务四代码：8-31}
 
 \begin{lstlisting}
-%% 8-32 切比雪夫II型离散时间IIR高通滤波器设计
-% 阻带截止频率 ωp = 0.6π rad (注意：题目中阻带截止频率标为ωp)
-% 通带截止频率 ωs = 0.7π rad (注意：题目中通带截止频率标为ωs)
-% 通带最大衰减 αp = 3dB
-% 阻带最小衰减 αs = 40dB
-% 分别采用脉冲响应不变法和双线性变换法
+%% 带通滤波器设计：脉冲响应不变法（巴特沃茨）
 clear; clc; close all;
 
-% 设计参数（高通滤波器）
-ws = 0.6*pi;               % 阻带截止频率 (rad)
-wp = 0.7*pi;               % 通带截止频率 (rad)
-Rp = 3;                    % 通带最大衰减 (dB)
-Rs = 40;                   % 阻带最小衰减 (dB)
+% 设计参数
+Td = 1;
+wp1 = 0.3 * pi;
+wp2 = 0.7 * pi;
+ws1 = 0.2 * pi;
+ws2 = 0.8 * pi;
+alpha_p = 1;
+alpha_s = 30;
 
-%% 方法一：脉冲响应不变法
-% 注意：脉冲响应不变法不适合设计高通滤波器，因为会产生频谱混叠
-Td = 1;  % 采样周期
+% 将离散时间频率转换为连续时间频率（脉冲响应不变法）
+Wp1_analog = wp1 / Td;
+Wp2_analog = wp2 / Td;
+Ws1_analog = ws1 / Td;
+Ws2_analog = ws2 / Td;
 
-% 将数字频率转换为模拟频率
-Ws_analog = ws / Td;
-Wp_analog = wp / Td;
+% 构造带通的通带和阻带边界（向量形式）
+Wp_analog = [Wp1_analog, Wp2_analog];
+Ws_analog = [Ws1_analog, Ws2_analog];
 
-% 确定切比雪夫II型滤波器阶数
-[N1, Wn1] = cheb2ord(Wp_analog, Ws_analog, Rp, Rs, 's');
-fprintf('脉冲响应不变法 - 滤波器阶数: N = %d\n', N1);
+% 确定巴特沃茨带通滤波器阶数和截止频率
+[N, Wn] = buttord(Wp_analog, Ws_analog, alpha_p, alpha_s, 's');
+disp("巴特沃茨滤波器阶数: ")
+disp(N)
+disp("巴特沃茨滤波器截止频率: ")
+disp(Wn)
+% 连续时间巴特沃茨带通滤波器
+[b_s, a_s] = butter(N, Wn, 'bandpass', 's');
 
-% 设计模拟切比雪夫II型高通滤波器
-[b_s1, a_s1] = cheby2(N1, Rs, Wn1, 'high', 's');
+% 脉冲响应不变法转换为离散时间滤波器
+[b_z, a_z] = impinvar(b_s, a_s, 1/Td);
 
-% 脉冲响应不变法转换
-% 注意：impinvar函数主要用于低通滤波器，高通滤波器会有问题
-[b_z1, a_z1] = impinvar(b_s1, a_s1, 1/Td);
 
-%% 方法二：双线性变换法
-% 预畸变
-Wp_prewarp = 2*tan(wp/2);   % 预畸变后的通带频率
-Ws_prewarp = 2*tan(ws/2);   % 预畸变后的阻带频率
+% 绘图
+figure('Name', '对数幅度响应', 'NumberTitle','off');
+t1 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
 
-% 确定切比雪夫II型滤波器阶数
-[N2, Wn2] = cheb2ord(Wp_prewarp, Ws_prewarp, Rp, Rs, 's');
-fprintf('双线性变换法 - 滤波器阶数: N = %d\n', N2);
-
-% 设计模拟切比雪夫II型高通滤波器
-[b_s2, a_s2] = cheby2(N2, Rs, Wn2, 'high', 's');
-
-% 双线性变换
-[b_z2, a_z2] = bilinear(b_s2, a_s2, 1);
-
-%% 或者直接使用数字滤波器设计函数
-% 直接设计数字切比雪夫II型高通滤波器（双线性变换法）
-[N_direct, Wn_direct] = cheb2ord(wp/pi, ws/pi, Rp, Rs);
-[b_z_direct, a_z_direct] = cheby2(N_direct, Rs, Wn_direct, 'high');
-fprintf('直接设计 - 滤波器阶数: N = %d\n', N_direct);
-
-%% 绘图比较
-figure('Name', '8-32 切比雪夫II型高通滤波器', 'NumberTitle','off');
-t = tiledlayout(2,1, 'Padding','compact','TileSpacing','compact');
-
-% 脉冲响应不变法的对数幅度响应
+%% 滤波器对数幅度响应
+% 连续时间滤波器对数幅度响应
 nexttile;
-[H_z1, w1] = freqz(b_z1, a_z1, 2048);
-plot(w1/pi, 20*log10(abs(H_z1)), 'b', 'LineWidth', 1.5);
+w_analog = linspace(0, pi, 2048);
+[H_s, w_s] = freqs(b_s, a_s, w_analog);
+plot(w_s, 20*log10(abs(H_s)));
 grid on;
-xlabel('\omega/\pi');
+xlim([0, pi]);
+xticks(0:0.2*pi:pi);
+xticklabels(string(0:0.2:1) + "\pi")
+xlabel('\Omega (rad/s)');
 ylabel('幅度 (dB)');
-title('脉冲响应不变法 - 对数幅度响应');
-xlim([0 1]);
-ylim([-80 10]);
+title('连续时间带通滤波器对数幅度响应');
+ylim([-80 5]);
 hold on;
-xline(ws/pi, 'r--', '\omega_s/\pi');
-xline(wp/pi, 'g--', '\omega_p/\pi');
-yline(-Rp, 'b--', '-R_p');
-yline(-Rs, 'm--', '-R_s');
+xline(wp1, 'g--', '\Omega_p1');
+xline(wp2, 'g--', '\Omega_p2');
+xline(ws1, 'r--', '\Omega_s1');
+xline(ws2, 'r--', '\Omega_s2');
+yline(-alpha_p, 'g--', '-\alpha_p');
+yline(-alpha_s, 'r--', '-\alpha_s');
 hold off;
 
-% 双线性变换法的对数幅度响应
+% 离散时间滤波器对数幅度响应
 nexttile;
-[H_z2, w2] = freqz(b_z_direct, a_z_direct, 2048);
-plot(w2/pi, 20*log10(abs(H_z2)), 'r', 'LineWidth', 1.5);
+[H_z, w_z] = freqz(b_z, a_z, 2048, 'whole');
+plot(w_z, 20*log10(abs(H_z)));
 grid on;
-xlabel('\omega/\pi');
+xlim([0, pi]);
+xticks(0:0.2*pi:pi);
+xticklabels(string(0:0.2:1) + "\pi");
+xlabel('\Omega (rad)');
+xlabel('\omega');
 ylabel('幅度 (dB)');
-title('双线性变换法 - 对数幅度响应');
-xlim([0 1]);
-ylim([-80 10]);
+title('离散时间带通滤波器对数幅度响应');
+ylim([-80 5]);
 hold on;
-xline(ws/pi, 'r--', '\omega_s/\pi');
-xline(wp/pi, 'g--', '\omega_p/\pi');
-yline(-Rp, 'b--', '-R_p');
-yline(-Rs, 'm--', '-R_s');
+xline(wp1, 'g--', '\omega_p1');
+xline(wp2, 'g--', '\omega_p2');
+xline(ws1, 'r--', '\omega_s1');
+xline(ws2, 'r--', '\omega_s2');
+yline(-alpha_p, 'g--', '-\alpha_p');
+yline(-alpha_s, 'r--', '-\alpha_s');
 hold off;
 
-% 两种方法对比图
-figure('Name', '8-32 两种方法对比', 'NumberTitle','off');
-[H_z1, w1] = freqz(b_z1, a_z1, 2048);
-[H_z2, w2] = freqz(b_z_direct, a_z_direct, 2048);
-plot(w1/pi, 20*log10(abs(H_z1)), 'b', 'LineWidth', 1.5);
-hold on;
-plot(w2/pi, 20*log10(abs(H_z2)), 'r', 'LineWidth', 1.5);
-grid on;
-xlabel('\omega/\pi');
-ylabel('幅度 (dB)');
-title('脉冲响应不变法 vs 双线性变换法');
-xlim([0 1]);
-ylim([-80 10]);
-legend('脉冲响应不变法', '双线性变换法', 'Location', 'best');
-xline(ws/pi, 'k--', '\omega_s/\pi');
-xline(wp/pi, 'k--', '\omega_p/\pi');
-hold off;
+%% 级联形式的系统函数
+[z, p, k] = tf2zp(b_z, a_z);
+disp("零点")
+disp(z)
+disp("极点")
+disp(p)
+disp("增益")
+disp(k)
+% 全零点系统（FIR）：H_z(z) = k_z * prod(z - z_i)
+b_allzero = k * poly(z);   % 注意增益分配需谨慎
+a_allzero = 1;
+[H_zero, w_zero] = freqz(b_allzero, a_allzero, 2048, 'whole');
+disp("全零点系统分子系数");
+disp(b_allzero);
 
-%% 分析说明
-fprintf('\n========== 分析 ==========\n');
-fprintf('脉冲响应不变法用于高通滤波器设计时，由于频谱混叠问题，\n');
-fprintf('会导致滤波器性能下降，无法满足设计指标。\n');
-fprintf('双线性变换法不存在频谱混叠问题，适合设计各种类型的滤波器。\n');
+% 全极点系统（IIR）：H_p(z) = 1 / prod(z - p_i)
+b_allpole = 1;
+a_allpole = poly(p);
+[H_pole, w_pole] = freqz(b_allpole, a_allpole, 2048, 'whole');
+disp("全零点系统分母系数");
+disp(a_allpole);
+
+% 绘制全零点系统
+figure('Name', '全零点系统', 'NumberTitle','off');
+t2 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+plot(w_zero, abs(H_zero)); hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('|H(e^{j\omega)}|')
+title(['幅度曲线']);
+
+% figure 2
+nexttile; 
+plot(w_zero, unwrap(angle(H_zero)));   % unwrap 去除 2π 跳变，使相位连续
+hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('\angle H(e^{j\omega})'); 
+title(['相位曲线']);
+
+% 绘制全极点系统
+figure('Name', '全极点系统', 'NumberTitle','off');
+t3 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+plot(w_pole, abs(H_pole)); hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('|H(e^{j\omega)}|')
+title(['幅度曲线']);
+
+% figure 2
+nexttile; 
+plot(w_pole, unwrap(angle(H_pole)));   % unwrap 去除 2π 跳变，使相位连续
+hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('\angle H(e^{j\omega})'); 
+title(['相位曲线']);
+
+% 级联全零点系统与全极点系统
+H0 = H_zero.*H_pole;
+figure('Name', '复原原系统', 'NumberTitle','off');
+t2 = tiledlayout(2,2, 'Padding','compact','TileSpacing','compact');
+nexttile; 
+plot(w_z, abs(H_z)); hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('|H(e^{j\omega)}|')
+title(['原离散滤波器幅度曲线']);
+
+% figure 2
+nexttile; 
+plot(w_z, unwrap(angle(H_z)));   % unwrap 去除 2π 跳变，使相位连续
+hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('\angle H(e^{j\omega})'); 
+title(['原离散滤波器相位曲线']);
+
+nexttile; 
+plot(w_z, abs(H0)); hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('|H(e^{j\omega)}|')
+title(['级联后的完整系统幅度曲线']);
+
+% figure 2
+nexttile; 
+plot(w_z, unwrap(angle(H0)));   % unwrap 去除 2π 跳变，使相位连续
+hold on;
+grid on; 
+xlim([0 2*pi]);
+xticks(0:0.5*pi:2*pi);
+xticklabels(string(0:0.5:2) + "\pi");
+xlabel('\omega'); 
+legend('\angle H(e^{j\omega})'); 
+title(['级联后的完整系统相位曲线']);
+%% 脉冲响应
+% 连续时间滤波器单位脉冲响应
+figure('Name', '单位脉冲响应', 'NumberTitle','off');
+t4 = tiledlayout(1,2, 'Padding','compact','TileSpacing','compact');
+nexttile;
+sys_s = tf(b_s, a_s);
+t_s = linspace(0, 50, 1000);
+h_s = impulse(sys_s, t_s);
+plot(t_s, h_s);
+grid on;
+xlabel('t (s)');
+ylabel('h(t)');
+title('连续时间滤波器单位脉冲响应');
+
+% 离散时间滤波器单位脉冲响应
+nexttile;
+n_z = 0:50;
+h_z = impz(b_z, a_z, length(n_z));
+stem(n_z, h_z, 'filled');
+grid on;
+xlabel('n');
+ylabel('h[n]');
+title('离散时间滤波器单位脉冲响应');
 \end{lstlisting}
 
 

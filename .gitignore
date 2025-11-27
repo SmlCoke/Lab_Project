@@ -32,3 +32,20 @@ _codeql_detected_source_root
 *.toc
 *.out
 *.synctex.gz
+
+# HSPICE temporary or outpu files
+*. tr0
+*.tr*
+*.sw0
+*.sw*
+*.mt0
+*.mt*
+*.pa0
+*.pa*
+*.st0
+*.st*
+*.ic0
+*.ic*
+*. lis
+*.ma0
+*.ms0

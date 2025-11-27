@@ -1,0 +1,79 @@
+* "simulator" "HSPICE" 
+* "version" "L-2016.03-2 win64"
+* "format" "HSP"
+* "rundate" "15:27:53 11/27/2025 "
+* "netlist" "task2_m2.sp "
+* "runtitle" "*****************************************************"
+* time =    0.            
+* temperature =   25.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc=   1.0000p       
+.nodeset
++ a0 = 750.0000m       
++ a1 = 750.0000m       
++ a2 = 750.0000m       
++ a3 =   0.            
++ buffer_out_0 = 749.9789m       
++ buffer_out_1 =  14.8352u       
++ buffer_out_2 = 749.9789m       
++ buffer_out_3 =  14.8352u       
++ load_out = 749.9792m       
++ na0 =  14.8254u       
++ na1 =  14.8254u       
++ na1_na0 = 749.9984m       
++ na1_pa0 = 749.9790m       
++ na2 =  14.8254u       
++ na3 = 749.9789m       
++ na3_na2 = 749.9816m       
++ na3_pa2 =  59.3334u       
++ pa0 = 749.9788m       
++ pa1 = 749.9790m       
++ pa1_na0 = 749.9816m       
++ pa1_pa0 =  59.3334u       
++ pa2 = 749.9788m       
++ pa3 =  14.8352u       
++ pa3_na2 = 749.9984m       
++ pa3_pa2 = 749.9790m       
++ vdd = 750.0000m       
++ word_0 = 835.1812n       
++ word_1 = 835.6376n       
++ word_10 = 835.5352n       
++ word_11 =  14.8140u       
++ word_12 = 835.1876n       
++ word_13 = 835.6440n       
++ word_14 = 835.5838n       
++ word_15 =  14.8231u       
++ word_2 = 835.5774n       
++ word_3 =  14.8219u       
++ word_4 =  12.3773u       
++ word_5 =  12.3843u       
++ word_6 =  12.3834u       
++ word_7 = 749.9165m       
++ word_8 = 835.1391n       
++ word_9 = 835.5954n       
++ xnand2_0.source1 =  56.4014m       
++ xnand2_1.source1 =  16.2334u       
++ xnand2_2.source1 = 695.2125m       
++ xnand2_3.source1 =  29.7002u       
++ xnand2_4.source1 = 695.2124m       
++ xnand2_5.source1 =  29.7002u       
++ xnand2_6.source1 =  56.4014m       
++ xnand2_7.source1 =  16.2334u       
++ xnor2_0.source_p1 = 685.4697m       
++ xnor2_1.source_p1 = 685.4862m       
++ xnor2_2.source_p1 = 685.4840m       
++ xnor2_3.source_p1 = 749.9810m       
++ xnor2_4.source_p1 =  62.7639m       
++ xnor2_5.source_p1 =  62.7794m       
++ xnor2_6.source_p1 =  62.7774m       
++ xnor2_7.source_p1 = 749.9583m       
++ xnor2_8.source_p1 = 685.4835m       
++ xnor2_9.source_p1 = 685.5000m       
++ xnor2_10.source_p1 = 685.4978m       
++ xnor2_11.source_p1 = 749.9810m       
++ xnor2_12.source_p1 = 685.4676m       
++ xnor2_13.source_p1 = 685.4841m       
++ xnor2_14.source_p1 = 685.4819m       
++ xnor2_15.source_p1 = 749.9810m       
+***   END: Saved Operating Point ***                     

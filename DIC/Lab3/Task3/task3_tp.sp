@@ -70,7 +70,7 @@ Xinv02 NA0 PA0 vdd gnd INV size = '1' Lg = '20n'
 * The third layer is 8 NAND2 gates. After this layer, we get 9 outputs
 * which is Cartesian Product of (PA4, NA4) with (PA3, NA3) and (PA2, NA2) with (PA1, NA1)
 * and NPA0
-XinvPA0 PA0 NPA0 vdd gnd INV size = '1' Lg = '20n'
+XinvPA0 PA0 NPA0 vdd gnd INV size = 'XinvPA0_size' Lg = '20n'
 
 XNAND2_0 NA2 NA1 NA2_NA1 vdd gnd NAND2 size = "{XNAND2_size}" Lg = '20n'
 XNAND2_1 NA2 PA1 NA2_PA1 vdd gnd NAND2 size = "{XNAND2_size}" Lg = '20n'
@@ -125,22 +125,30 @@ XNOR3_30 PA4_PA3 PA2_PA1 NPA0 word_30 vdd gnd NOR3 size="{XNOR3_size}" Lg='20n'
 XNOR3_31 PA4_PA3 PA2_PA1 PA0  word_31 vdd gnd NOR3 size="{XNOR3_size}" Lg='20n'  
 
 * About critical path, we can obviously see that the path which passes 3'inv(A0 -> NA0 -> PA0 -> NPA0) is the longest.
-* A0 -> Xinv01 -> NA0 -> Xinv02 -> PA0 -> XinvPA0 -> NPA0 -> XNOR2_15 -> word_15
-* Xinv31: g = 1, b = 1, f = Xinv32_size/Xinv31_size 
-* Xinv32: g = 1, b: (XNAND2_7, XNAND2_6), b = 2, f = XNAND2_7_size/Xinv32_size
-* XNAND2_7: g = 3/2, b = (XNOR2_12, XNOR2_13, XNOR2_14, XNOR2_15), b= 4, f = XNOR2_15_size/XNAND2_7_size
-* XNOR2_15: g = 3/2, b = 1
-* Then there are 2m invs, g = 1, b = 1, f = ratio of size stage by stage
-* G = 1 * 3/2 *3/2 * 1... = 9/4, B = 8, F = 128  
-* H = 2304
-* D = NH^(1/N) + p(Xinv32)(=1) + p(XNAND2_7) + p(XNOR2_15) + p(2m*inv)
-* D = (2m+3)2304^[1/(2m+3)] + 1 + 2 + 2 + 2m = (2m+4=3)2304**[1/(2m+3)] + 2m + 5 = NH**(1/N) + N + 1
-* solve critical point of NH**(1/N) + N + 1
+* Such paths we have two kinds, take A0/A1 as input for example:
+* A0 -> Xinv01 -> NA0 -> Xinv02 -> PA0 -> XinvPA0 -> NPA0 -> XNOR3_0 -> word_0
+* A1 -> Xinv11 -> NA1 -> Xinv12 -> PA1 -> XNAND2_1 -> NA2_PA1 -> XNOR3_2 -> word_2
+* Path1: 
+* Xinv02: p = 1, g = 1, f = XinvPA0_size/Xinv02_size, b = (16*XNOR3 + XinvPA0)/XinvPA0 C
+* XinvPA0: p = 1, g = 1, f = XNOR3_0_size/XinvPA0_size, b = 16
+* XNOR3_0: p = 3, g = 2, f = Xbuffer_0_size/XNOR3_0_size, b = 1
+* H1 = x1 + 16y + 16y/x1 + 2z_1/y + z_2/z_1 + ... + z_m/z_{m-1} + 256/zm
+* Then there are m inv
+* Path2:
+* Xinv12: p = 1, g = 1, f = XNAND2_1/Xinv12, b = 2 
+* XNAND2_1: p = 2, g = 2, f = XNOR3_2/XNAND2_1, b = 8
+* XNOR3_2: p = 3, g = 2, f = Xbuffer_0_size/XNOR3_2_size, b = 1
+* H2 = 2x2 + 16y/x2 + 2z_1/y + z_2/z_1 + ... + z_m/z_{m-1} + 256/zm
+* G2 = 4, B2 = 16, F2 = 256
+* H2min = 16384
+* P = (1 + 2 + 3 + m) + (m+3)16384**[1/(m+3)] = (m+3)16384**[1/(m+3)] + m + 6 = N16384**(1/N) + N + 3
+
+* x1 = XinvPA0_size, x2 = XNAND2_size, y = XNOR3_size
+
 {instance_lines}
 
-.tran 1p 20n 
+.tran 1p 10n 
 .probe V(*) I(*)
-.measure tran tpLH TRIG V(NA3) = '0.5*SUPPLY' RISE = 4 TARG V({output}) = '0.5*SUPPLY' RISE = 4
-.measure tran tpHL TRIG V(NA3) = '0.5*SUPPLY' FALL = 4 TARG V({output}) = '0.5*SUPPLY' FALL = 4
+{measure_lines}
 .measure tran tp param='(tpLH+tpHL)/2'
 .end

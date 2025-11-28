@@ -16,10 +16,10 @@ def main():
                 if pattern_file.match(file.name):
                     lis_file = file.with_suffix('.lis')
                     cmd = f"hspice {file.name} > {lis_file.name}"
-
+                    
                     print(f"工作目录: {subdir}")
                     print(f"正在执行: {cmd}")
-
+                    
                     # 在该目录下执行 hspice 命令
                     result = subprocess.run(cmd, shell=True, cwd=subdir)
 

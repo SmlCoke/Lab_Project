@@ -107,26 +107,26 @@ XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 size = "{XNOR2_size}" Lg = '20n'
 * Xinv32: g = 1, b: (XNAND2_7, XNAND2_6), b = 2, f = XNAND2_7_size/Xinv32_size
 * XNAND2_7: g = 3/2, b = (XNOR2_12, XNOR2_13, XNOR2_14, XNOR2_15), b= 4, f = XNOR2_15_size/XNAND2_7_size
 * XNOR2_15: g = 3/2, b = 1
-* Then there are 2m invs, g = 1, b = 1, f = ratio of size stage by stage
+* Then there are m invs, g = 1, b = 1, f = ratio of size stage by stage
 * G = 1 * 3/2 *3/2 * 1... = 9/4, B = 8, F = 128  
 * H = 2304
-* D = NH^(1/N) + p(Xinv32)(=1) + p(XNAND2_7) + p(XNOR2_15) + p(2m*inv)
-* D = (2m+3)2304^[1/(2m+3)] + 1 + 2 + 2 + 2m = (2m+4=3)2304**[1/(2m+3)] + 2m + 5 = NH**(1/N) + N + 1
+* D = NH^(1/N) + p(Xinv32)(=1) + p(XNAND2_7) + p(XNOR2_15) + p(m*inv)
+* D = (m+3)2304^[1/(m+3)] + 1 + 2 + 2 + m = (m+3)2304**[1/(m+3)] + m + 5 = NH**(1/N) + N + 1
 * solve critical point of NH**(1/N) + N + 1
+* N = 6.05, hopt = 3.59
 {instance_lines}
 
 .tran 1p 20n 
 .probe V(*) I(*)
-.measure tran tpLH TRIG V(NA3) = '0.5*SUPPLY' RISE = 4 TARG V({output}) = '0.5*SUPPLY' RISE = 4
-.measure tran tpHL TRIG V(NA3) = '0.5*SUPPLY' FALL = 4 TARG V({output}) = '0.5*SUPPLY' FALL = 4
+{measure_lines}
 .measure tran tp param='(tpLH+tpHL)/2'
 .end
 """
 
 # accurate的意思是，精确计算每个器件的尺寸和等效扇出，然后实际应用时再取整(四舍五入)，一定程度上防止向下取整的误差累计
 def load_parameter_accurate(m):
-    # generate instance lines up to m, m refers to the number of buffers(1 buffer = 2 inverter)
-    hopt = 2304**(1/(2*m+3))
+    # generate instance lines up to m, m refers to the number of buffers(1 buffer = 1 inverter)
+    hopt = 2304**(1/(m+3))
     Xinv2_f = hopt/1/2 # 先计算inv2等效扇出
     XNAND2_size = Xinv2_f # 然后计算NAND2的尺寸
     
@@ -140,7 +140,7 @@ def load_parameter_accurate(m):
         all_fs = [Xinv2_f, XNAND2_f, XNOR2_f]
         all_sizes = [1, XNAND2_size, XNOR2_size]
         all_sizes_for_use = [1, int(XNAND2_size+0.5), int(XNOR2_size+0.5)]
-        return int(XNAND2_size+0.5), int(XNOR2_size+0.5), all_fs, all_sizes, all_sizes_for_use, '\n'.join(inst_lines), "word_15"
+        return int(XNAND2_size+0.5), int(XNOR2_size+0.5), all_fs, all_sizes, all_sizes_for_use, '\n'.join(inst_lines), ".measure tran tpLH TRIG V(NA3) = '0.5*SUPPLY' FALL = 4 TARG V(word_15) = '0.5*SUPPLY' RISE = 4\n.measure tran tpHL TRIG V(NA3) = '0.5*SUPPLY' RISE = 4 TARG V(word_15) = '0.5*SUPPLY' FALL = 4\n"
 
     buffer_inv_fs = [hopt/1/1]  # 存储所有缓冲反相器的等效扇出
     buffer_inv_sizes = [X_inv_buffer_0_size] # 存储所有缓冲反相器的尺寸
@@ -151,7 +151,8 @@ def load_parameter_accurate(m):
     buffer_inv_size_for_use.append(int(X_inv_buffer_0_size+0.5))
 
     last_node = ["buffer_out_0"]
-    for i in range(2*m-1):
+
+    for i in range(m-1):
         buffer_inv_size = buffer_inv_sizes[-1] * buffer_inv_fs[-1] # 先计算当前缓冲反相器的尺寸
         f = hopt/1/1 # 计算当前缓冲反相器的等效扇出
         buffer_inv_fs.append(f)
@@ -168,24 +169,35 @@ def load_parameter_accurate(m):
     # 如果all_sizes_for_use中由任意一个元素值为0，判定为此种模式不行，因为 Nfin 必须大于 1。
     if any(size == 0 for size in all_sizes_for_use):
         return None
-    return int(XNAND2_size+0.5), int(XNOR2_size+0.5), all_fs, all_sizes, all_sizes_for_use, '\n'.join(inst_lines), last_node[-1]
+    
+    # 生成测量语句，如果插入反相器级数为偶数，那么输入和输出变化相反，否则相同
+    measure_lines = []
+    if (m % 2 == 0):
+        measure_lines.append(f".measure tran tpLH TRIG V(NA3) = '0.5*SUPPLY' FALL = 4 TARG V({last_node[-1]}) = '0.5*SUPPLY' RISE = 4\n")
+        measure_lines.append(f".measure tran tpHL TRIG V(NA3) = '0.5*SUPPLY' RISE = 4 TARG V({last_node[-1]}) = '0.5*SUPPLY' FALL = 4\n")
+    else:
+        measure_lines.append(f".measure tran tpLH TRIG V(NA3) = '0.5*SUPPLY' RISE = 4 TARG V({last_node[-1]}) = '0.5*SUPPLY' RISE = 4\n")
+        measure_lines.append(f".measure tran tpHL TRIG V(NA3) = '0.5*SUPPLY' FALL = 4 TARG V({last_node[-1]}) = '0.5*SUPPLY' FALL = 4\n")
+    measure_lines = "".join(measure_lines)
+
+    return int(XNAND2_size+0.5), int(XNOR2_size+0.5), all_fs, all_sizes, all_sizes_for_use, '\n'.join(inst_lines), measure_lines
 
 def write_for_N(m, outdir='.'):
     if (load_parameter_accurate(m) is None):
         print(f"Invalid configuration for m={m}, in this case, some gates have 0 Nfins.")
         return
-    XNAND2_size, XNOR2_size, all_fs, all_sizes, all_sizes_for_use, inst_lines, output = load_parameter_accurate(m)
+    XNAND2_size, XNOR2_size, all_fs, all_sizes, all_sizes_for_use, inst_lines, measure_lines = load_parameter_accurate(m)
     log_content = f'''
     When num of Inverters is {2*m}:
-    hopt = {2304**(1/(2*m+3))}
-    Dmin = {f(2*m+3)}
+    hopt = {2304**(1/(m+3))}
+    Dmin = {f(m+3)}
     XNAND2_size: {XNAND2_size}
     XNOR2_size: {XNOR2_size}
     All gate f(from Xinv2): {all_fs}
     All gate sizes(from Xinv2): {all_sizes}
     All gate sizes(for use, from Xinv2): {all_sizes_for_use}
     '''
-    content = TEMPLATE_TOP.format(XNAND2_size = XNAND2_size, XNOR2_size = XNOR2_size, instance_lines=inst_lines, output=output)
+    content = TEMPLATE_TOP.format(XNAND2_size = XNAND2_size, XNOR2_size = XNOR2_size, instance_lines=inst_lines, measure_lines = measure_lines)
 
     # 自动创建目录并保存脚本
     path_dir = Path(outdir) / f'm={m}'   # 目标文件夹，例如 ./N=4

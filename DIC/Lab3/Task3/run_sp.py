@@ -5,8 +5,8 @@ from pathlib import Path
 
 def main():
     root = Path(__file__).parent  # 当前脚本所在目录
-    pattern_dir = re.compile(r'^m=\d+$')   # 匹配 m=2, m=3 等文件夹
-    pattern_file = re.compile(r'^task2_m\d+\.sp$')  # 匹配 task2_m=2.sp 等文件
+    pattern_dir = re.compile(r'^H1_pro_m\d+$')   # 匹配 H1_pro_m6, H1_pro_m7 等文件夹
+    pattern_file = re.compile(r'^task3_H1_pro_m\d+\.sp$')  # 匹配 task3_H1_pro_m2.sp 等文件
 
     # 遍历所有子目录
     for subdir in root.iterdir():

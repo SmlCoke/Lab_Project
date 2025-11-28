@@ -97,7 +97,7 @@ def parse_mts(dir_path):
                 df.to_excel(excel_path, index=False)
                 csv_path = os.path.join(root, f"{Path(filename).stem}.csv")
                 df.to_csv(csv_path, index=False)
-                print(f"已保存 Excel 文件: {excel_path}")
+                # print(f"已保存 Excel 文件: {excel_path}")
                 print(f"已保存 CSV 文件: {csv_path}")
 
 if __name__ == "__main__":

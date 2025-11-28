@@ -232,5 +232,5 @@ def write_for_N(m, outdir='.'):
     print(f"Written {path_sp} done!")
 
 if __name__ == '__main__':
-    for i in range(0, 9):
+    for i in range(1, 9):
         write_for_N(i, outdir='.')

@@ -1,6 +1,0 @@
-$DATA1 SOURCE='HSPICE' VERSION='L-2016.03-2 win64' PARAM_COUNT=0
-.TITLE '*****************************************************'
- tplh             tphl             tp               temper          
- alter#          
-  6.348e-011       4.360e-011       5.354e-011        25.0000       
-1               

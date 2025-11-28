@@ -90,54 +90,7 @@
 
 
 
-
-
-% ------------------------- 代码展示 ----------------------------
-\begin{lstlisting}[language={C++}, basicstyle=\ttfamily\small]
-	main() {
-		int n, total, x, y, z;
-		scanf("%d",&n);
-		total = 3;
-		while(1){
-			for(x=1; x<=total-2; x++)
-			for(y=1; y<=total-x-1; y++){
-				z = total - x - y;
-				if( exp(x,n) + exp(y,n) == exp(z,n))
-				printf("hello, world\n");
-			}
-			total++;
-		}
-	}
-\end{lstlisting}
-
-
-% ------------------------- 表格 ----------------------------
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|}
-    \hline
-    数据集规模 & 100 & 1,000 & 10,000 & 100,000 & 1,000,000 \\
-    \hline
-    暴力搜索改良版 & 0.0443 & 0.9452 & 42.6917 & 4115 & 401570\\
-    \hline
-    先排序后扫描 & 0.0152 & 0.2597 & 2.4512 & 29.8881 & 381.301\\
-    \hline
-    分治算法 & 0.0731 & 0.6339 & 5.2765 & 52.9706 & 541.206\\
-    \hline
-    哈希表方法 & 0.003 & 0.0078 & 0.0422 & 0.3377 & 3.1189\\
-    \hline
-\end{tabular}
-\caption{五种算法在不同规模数据集下的运行时间测试(时间单位: ms)}
-\label{tab:time_results}
-\end{table}
-
-
-
-
-
-
-
-% % -------------------------- 双图 ---------------------------
+% % -------------------------- 双图模板 ---------------------------
 % \begin{figure}[htbp]
 %     \centering
 %     % 第一张子图

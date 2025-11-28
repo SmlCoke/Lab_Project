@@ -475,7 +475,7 @@ buffer\_3 & 78.78 & 1 & 1 & 3.25 \\
 \end{tabular}
 \end{table}
 
-理论计算：$G = 1 \times 1 \times 2 \times 1^4 = 2$，$B = 17 \times 16 = 272$，$F = 256$，$H = GBF = 2 \times 272 \times 256 = 139264$，$H_{min} = 16 \times 2 \times 256 = 8192$。
+理论计算：$G = 1 \times 1 \times 2 \times 1^4 = 2$，$B = 17 \times 16 = 272$，$F = 256$，$H = GBF = 2 \times 272 \times 256 = 139264$。根据理论分析，简化后的路径努力$H = 16 \times 2 \times 256 = 8192$。
 
 \textbf{H2路径}：$NA_1 \rightarrow Xinv12 \rightarrow PA_1 \rightarrow XNAND2\_1 \rightarrow NA2\_PA1 \rightarrow XNOR3\_2 \rightarrow word_2 \rightarrow buffer\_0 \rightarrow buffer\_1 \rightarrow buffer\_2 \rightarrow load$
 
@@ -522,7 +522,7 @@ buffer\_3 & 163.5 & 1 & 1 & 1.57 \\
 \end{tabular}
 \end{table}
 
-理论计算：$G = 1 \times \frac{4}{3} \times 2 \times 1^4 = \frac{8}{3}$，$B = 2 \times 8 = 16$，$F = 256$，$H = GBF = \frac{8}{3} \times 16 \times 256 = 10923$，$H_{min} = 3 \times 16 \times 256 = 12288$。
+理论计算：$G = 1 \times \frac{4}{3} \times 2 \times 1^4 = \frac{8}{3}$，$B = 2 \times 8 = 16$，$F = 256$，$H = GBF = \frac{8}{3} \times 16 \times 256 = 10923$。根据理论分析，简化后的路径努力$H = 3 \times 16 \times 256 = 12288$。
 
 以上给出的尺寸参数实现了两条关键路径的最优延迟。（待完善）
 

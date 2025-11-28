@@ -1,0 +1,164 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption}   % \caption*需要
+\usepackage{subcaption} % 子图布局
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+
+% ------------------- 自定义代码展示风格 -----------------
+\usepackage{listings}
+\usepackage{xcolor}
+\lstdefinestyle{hspice}{
+    language=C,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{brown},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    tabsize=2,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    escapeinside={\%*}{*)},
+    morekeywords={param, include, temp, option, probe, DC, dc, measure, alter, VDD, GND, gnd, NMOS, PMOS,FIND, WHEN, sweep, abs, I, SUPPLY, lg, fin_height, fin_width, tran, ac, op, model, end, subckt,ends,global, nmos, pmos, inv, data, +}, % 根据需要添加更多HSPICE关键字
+    comment=[l]{*} % 在这里设置注释
+}
+
+\lstset{style=hspice} % 只应用样式
+
+
+
+% ------------------- 设置超链接，便于跳转 -----------------
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfborder={0 0 0},    % 消除超链接边框
+    colorlinks=true,       % 将边框改为颜色标记（可选）
+    linkcolor=black,       % 内部链接颜色（目录、引用等）
+    citecolor=black,       % 引用颜色
+    urlcolor=blue          % URL链接颜色（保持蓝色以便区分）
+}
+
+
+
+
+% ------------------------ 标题区 ----------------------------
+\title{DIC Lab3 Report}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+
+
+% ------------------------ 页眉和页脚 ----------------------------
+\fancyhead[L]{冯峻}
+\fancyhead[C]{Lab3 Report}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+%\tableofcontents
+%\newpage
+
+
+
+
+
+% ------------------------- 代码展示 ----------------------------
+\begin{lstlisting}[language={C++}, basicstyle=\ttfamily\small]
+	main() {
+		int n, total, x, y, z;
+		scanf("%d",&n);
+		total = 3;
+		while(1){
+			for(x=1; x<=total-2; x++)
+			for(y=1; y<=total-x-1; y++){
+				z = total - x - y;
+				if( exp(x,n) + exp(y,n) == exp(z,n))
+				printf("hello, world\n");
+			}
+			total++;
+		}
+	}
+\end{lstlisting}
+
+
+% ------------------------- 表格 ----------------------------
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    数据集规模 & 100 & 1,000 & 10,000 & 100,000 & 1,000,000 \\
+    \hline
+    暴力搜索改良版 & 0.0443 & 0.9452 & 42.6917 & 4115 & 401570\\
+    \hline
+    先排序后扫描 & 0.0152 & 0.2597 & 2.4512 & 29.8881 & 381.301\\
+    \hline
+    分治算法 & 0.0731 & 0.6339 & 5.2765 & 52.9706 & 541.206\\
+    \hline
+    哈希表方法 & 0.003 & 0.0078 & 0.0422 & 0.3377 & 3.1189\\
+    \hline
+\end{tabular}
+\caption{五种算法在不同规模数据集下的运行时间测试(时间单位: ms)}
+\label{tab:time_results}
+\end{table}
+
+
+
+
+
+
+
+% % -------------------------- 双图 ---------------------------
+% \begin{figure}[htbp]
+%     \centering
+%     % 第一张子图
+%     \begin{subfigure}[b]{0.45\textwidth} % 子图宽度为总宽度的45%
+%         \centering
+%         \includegraphics[width=\textwidth]{figure/wv_Task1_Fin_NFET.png} 
+%         \caption{NMOS: $I_{\text{DS}}-V_{\text{DS}}$}
+%         \label{fig:NFET_I_V}
+%     \end{subfigure}
+%     \hfill % 添加水平间距
+%     % 第二张子图
+%     \begin{subfigure}[b]{0.45\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{figure/wv_Task1_Fin_PFET.png} 
+%         \caption{PMOS: $I_{\text{DS}}-V_{\text{DS}}$}
+%         \label{fig:PFET_I_V}
+%     \end{subfigure}
+%     % 总图标题
+%     \caption{$I_{\text{DS}}-V_{\text{DS}}$ curve}
+%     \label{fig:FET_IV}
+% \end{figure}
+
+
+\end{document}

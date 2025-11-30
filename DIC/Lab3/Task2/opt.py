@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import fsolve
 
 def f(N):
-    return N*2304**(1/N) + N + 1
+    return N*2304**(1/N) + N + 2
 
 def f_prime(N):
     # 原函数: N*2304**(1/N) + N + 2

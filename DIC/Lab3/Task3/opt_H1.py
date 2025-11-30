@@ -16,6 +16,6 @@ if __name__ == "__main__":
         H1 = lambda q: 8192/q**(m+1) + 128*2**(1/2)/(q**((m+1)/2)) + (m+1)*q
         H1_prime = lambda q: -8192*(m+1)/q**(m+2) - 64*(m+1)*2**(1/2)/(q**((m+3)/2)) + (m+1)
         root = fsolve(H1_prime, x0=3)
-        print(f"optimal_p = {root}")
+        print(f"optimal_q = {root}")
         print(f"H1_prime = {H1_prime(root)}")
         print(f"H1_min = {H1(root)}")

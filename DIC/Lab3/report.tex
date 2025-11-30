@@ -69,7 +69,8 @@
 }
 
 
-
+% ------------------------ 文件目录树 ------------------------
+\usepackage{dirtree}
 
 % ------------------------ 标题区 ----------------------------
 \title{DIC Lab3 Report}
@@ -89,8 +90,8 @@
 \fancyfoot[C]{\thepage}
 
 \maketitle
-%\tableofcontents
-%\newpage
+\tableofcontents
+\newpage
 
 %================================================================================
 % Introduction and background
@@ -112,16 +113,9 @@
 \end{enumerate}
 
 \subsection{逻辑门的HSPICE定义}
-\textbf{1. Inverter}
-\begin{lstlisting}
-* Sub circuit: Inverter definition
-.subckt INV in out vdd gnd size=1
-Mn out in gnd gnd nfet L='Lg' NFIN ='size'
-Mp out in vdd vdd pfet L='Lg' NFIN ='size'
-.ends INV
-\end{lstlisting}
+为了节省篇幅，这里仅给出2-NAND门的子电路定义作为示例，其余Inverter, 2-NOR, 3-NAND, 3-NOR们的子电路定义见附录。
 
-\textbf{2. 2-NAND}
+\textbf{2-NAND}
 \begin{lstlisting}
 * Sub circuit: 2-NAND
 .subckt NAND2 in1 in2 out vdd gnd size=1 Lg=20n
@@ -134,66 +128,22 @@ Mn2 source1 in2 gnd gnd nfet L='Lg' NFIN='size'
 .ends NAND2
 \end{lstlisting}
 
-
-\textbf{3. 2-NOR}
-\begin{lstlisting}
-* Sub circuit: 2-NOR
-.subckt NOR2 in1 in2 out vdd gnd size=1 Lg=20n
-*PUN
-Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='size'
-Mp2 source_p1 in2 vdd vdd pfet L='Lg' NFIN='size'
-*PDN
-Mn1 out in1 gnd gnd nfet L='Lg' NFIN='size'
-Mn2 out in2 gnd gnd nfet L='Lg' NFIN='size'
-.ends NOR2
-\end{lstlisting}
-
-\textbf{4. 3-NAND}
-\begin{lstlisting}
-* Sub circuit: 3-NAND
-.subckt NAND3 in1 in2 in3 out vdd gnd size=1 Lg=20n
-* PUN
-Mp1 out in1 vdd vdd pfet L='Lg' NFIN='size'
-Mp2 out in2 vdd vdd pfet L='Lg' NFIN='size'
-Mp3 out in3 vdd vdd pfet L='Lg' NFIN='size'
-* PDN
-Mn1 out in1 source1 gnd nfet L='Lg' NFIN='size'
-Mn2 source1 in2 source2 gnd nfet L='Lg' NFIN='size'
-Mn3 source2 in3 gnd gnd nfet L='Lg' NFIN='size'
-.ends NAND3
-\end{lstlisting}
-
-\textbf{5. 3-NOR}
-\begin{lstlisting}
-* Sub circuit: 3-NOR
-.subckt NOR3 in1 in2 in3 out vdd gnd size=1 Lg=20n
-*PUN
-Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='size'
-Mp2 source_p1 in2 source_p2 vdd pfet L='Lg' NFIN='size'
-Mp3 source_p2 in3 vdd vdd pfet L='Lg' NFIN='size'
-*PDN
-Mn1 out in1 gnd gnd nfet L='Lg' NFIN='size'
-Mn2 out in2 gnd gnd nfet L='Lg' NFIN='size'
-Mn3 out in3 gnd gnd nfet L='Lg' NFIN='size'
-.ends NOR3
-\end{lstlisting}
-
-Inverter, 2-NAND, 2-NOR的示意图分别见图\ref{fig:Inv}、\ref{fig:NAND2}、\ref{fig:NOR2}。
+Inverter, 2-NAND, 2-NOR的电路示意图分别见图\ref{fig:Inv}、\ref{fig:NAND2}、\ref{fig:NOR2}。
 \begin{figure}[htbp]
     \centering
-    \begin{subfigure}{0.32\textwidth}
+    \begin{subfigure}{0.25\textwidth}
         \centering
         \includegraphics[width=\linewidth]{Inv.pdf}
         \caption{Inverter示意图}
         \label{fig:Inv}
     \end{subfigure}
-    \begin{subfigure}{0.32\textwidth}
+    \begin{subfigure}{0.25\textwidth}
         \centering
         \includegraphics[width=\linewidth]{NAND2.pdf}
         \caption{2-NAND示意图}
         \label{fig:NAND2}
     \end{subfigure}
-    \begin{subfigure}{0.32\textwidth}
+    \begin{subfigure}{0.25\textwidth}
         \centering
         \includegraphics[width=\linewidth]{NOR2.pdf}
         \caption{2-NOR示意图}
@@ -204,13 +154,14 @@ Inverter, 2-NAND, 2-NOR的示意图分别见图\ref{fig:Inv}、\ref{fig:NAND2}�
 
 3-NAND, 3-NOR门的示意图分别见图\ref{fig:NAND3}、\ref{fig:NOR3}。
 \begin{figure}
-    \begin{subfigure}{0.48\textwidth}
+    \centering
+    \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{NAND3.pdf}
         \caption{3-NAND示意图}
         \label{fig:NAND3}
     \end{subfigure}
-    \begin{subfigure}{0.48\textwidth}
+    \begin{subfigure}{0.3\textwidth}
         \centering
         \includegraphics[width=\linewidth]{NOR3.pdf}
         \caption{3-NOR示意图}
@@ -219,7 +170,7 @@ Inverter, 2-NAND, 2-NOR的示意图分别见图\ref{fig:Inv}、\ref{fig:NAND2}�
     \caption{3-NAND, 3-NOR示意图}
 \end{figure}
 
-\subsection{仿真说明}
+\subsection{仿真配置说明}
 本次SPICE仿真过程中，有几点注意事项：
 
 1. 由于工艺库采用的是16hp FinFET，可以近似认为相同尺寸（$W, L$）的NMOS和PMOS具有相同的电流驱动能力（即具有相同的导通电阻），因此，在构建驱动能力相同的PUN和PDN时，确保PUN和PDN在最坏情况下拥有相同的导通电阻，就是要确保在最坏情况下，PUN和PDN具有相同的等效尺寸。
@@ -228,8 +179,9 @@ Inverter, 2-NAND, 2-NOR的示意图分别见图\ref{fig:Inv}、\ref{fig:NAND2}�
 
 3. 延时的测量方法：测量出在两种输入翻转（从高到低和从低到高）情况下，输出的$t_{\text{pHL}}$和$t_{\text{pLH}}$，然后用\textbf{平均延时}：
 $$t_{\text{p}} = \frac{t_{\text{pHL}} + t_{\text{pLH}}}{2}$$
-衡量该\textbf{critical path}的性能
+衡量该\textbf{critical path}的性能。
 
+4. 在Task2和Task3中，我们用$z_1 \sim z_m$代表插入的$m$级反相器及其尺寸。
 
 %================================================================================
 % Task 1: Use Logical Effort to Size Gates
@@ -252,9 +204,9 @@ $$a \rightarrow \text{inv(minimum size)} \rightarrow b \rightarrow \text{3-NAND}
 
 我们需要选择合适的3-NAND、2-NOR、inv2尺寸，以使得从a到e的延迟最小。衡量延时的方法为：$t_p = (t_{pHL} + t_{pLH})/2$。
 
-\subsection{理论优化分析}
+\subsection{理论优化阶段}
 
-\subsubsection{优化方法建模}
+\subsubsection{critical path延迟函数的极值求解}
 
 我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task1_metrics}（设第一个inv(minimum size)，3-NAND，2-NOR，inv2的参数下标分别为1, 2, 3, 4）
 
@@ -293,7 +245,7 @@ $$a \rightarrow \text{inv(minimum size)} \rightarrow b \rightarrow \text{3-NAND}
     \end{tabularx}
 \end{table}
 
-\subsubsection{理论优化结果}
+\subsubsection{critical path的理论最优尺寸参数组合}
 
 通过\textbf{AM-GM}不等式，得到best stage effort:
 $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
@@ -349,13 +301,13 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
 
 值得注意的是，理论得出的最优尺寸组合为$(s_2 = 4, s_3 = 7, s_4 = 17)$，的延迟为：$t_{\text{pLH}}=38.08$ps, $t_{\text{pHL}} = 48.04$ps, $t_{\text{p}} = 43.06$ps。
 
-但是仿真结果表明，仿真得出的最优尺寸组合为$S_2 = 6$，$S_3 = 5$，$S_4 = 15$，对应的延迟参数为$t_{\text{pLH}} = 33.28$ps，$t_{\text{pHL}} = 41.70$ps，$t_{\text{p}} = 37.49$ps < $43.06$ps。
+但是仿真结果表明，\textbf{仿真得出的最优尺寸组合}为$S_2 = 6$，$S_3 = 5$，$S_4 = 15$，对应的延迟参数为$t_{\text{pLH}} = 33.28$ps，$t_{\text{pHL}} = 41.70$ps，$t_{\text{p}} = 37.49$ps < $43.06$ps。
 
-理论仿真得出了不同的尺寸组合，并且看起来3-NAND门的尺寸取到了最大边界，而2-NOR门和inv2门的尺寸取到了最小边界。也就是说这个组合逻辑门链更加倾向于使用具有更大的尺寸的第二级逻辑门。
+理论仿真得出了不同的尺寸组合，并且看起来3-NAND门的尺寸取到了最大边界，而2-NOR门和inv2门的尺寸取到了最小边界。也就是说该链在最开始更加倾向于用具有更大输入栅电容的逻辑门作为驱动级。
 
 \begin{table}[htbp]
     \centering
-    \caption{Task1部分仿真结果（前16条与后16条）}
+    \caption{Task1部分仿真结果}
     \label{tab:task1_results}
     \begin{tabular}{cccccc|cccccc}
         \toprule
@@ -368,15 +320,11 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
         5 & 5 & 15 & 33.58 & 42.41 & 37.99 & 3 & 7 & 15 & 39.32 & 50.01 & 44.66 \\
         \textcolor{red}{6} & \textcolor{red}{5} & \textcolor{red}{15} & \textcolor{red}{33.28} & \textcolor{red}{41.70} & \textcolor{red}{37.49} & 4 & 7 & 15 & 37.99 & 47.42 & 42.71 \\
         2 & 6 & 15 & 40.28 & 53.33 & 46.80 & 5 & 7 & 15 & 37.27 & 45.98 & 41.63 \\
-        3 & 6 & 15 & 37.42 & 48.05 & 42.74 & 6 & 7 & 15 & 36.87 & 45.10 & 40.99 \\
-        4 & 6 & 15 & 36.14 & 45.56 & 40.85 & 2 & 8 & 15 & 44.06 & 57.27 & 50.66 \\
         \midrule
         % 中间省略号
         \multicolumn{6}{c}{\dots} & \multicolumn{6}{c}{\dots} \\
         \midrule
         % 后16条数据：左栏135-142，右栏143-150
-        6 & 6 & 19 & 35.01 & 44.04 & 39.52 & 4 & 8 & 19 & 40.05 & 50.56 & 45.31 \\
-        2 & 7 & 19 & 43.56 & 58.57 & 51.07 & 5 & 8 & 19 & 39.09 & 48.66 & 43.88 \\
         3 & 7 & 19 & 39.96 & 51.96 & 45.96 & 6 & 8 & 19 & 38.50 & 47.48 & 42.99 \\
         4 & 7 & 19 & 38.26 & 48.73 & 43.50 & 2 & 9 & 19 & 47.20 & 62.38 & 54.79 \\
         5 & 7 & 19 & 37.33 & 46.90 & 42.11 & 3 & 9 & 19 & 43.54 & 55.64 & 49.59 \\
@@ -386,8 +334,6 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
         \bottomrule
     \end{tabular}
 \end{table}
-
-可以观察到，仿真得到的最优尺寸($S_2 = 6$, $S_3 = 5$, $S_4 = 15$)与理论值($S_2 = 4$, $S_3 = 7$, $S_4 = 17$)存在差异。
 
 
 %================================================================================
@@ -400,13 +346,13 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
 
 本任务利用互补逻辑门搭建一个完整的4 to 16解码器。电路结构包含四层：
 
-第一层是4个反相器，输入$A_3$, $A_2$, $A_1$, $A_0$，输出$\overline{A_0}, \overline{A_1}, \overline{A_2}, \overline{A_3}$（我们分别记为：$NA_3$, $NA_2$, $NA_1$, $NA_0$）；
+第一层是4个反相器，输入$A_3$, $A_2$, $A_1$, $A_0$，输出$\overline{A_3}, \overline{A_2}, \overline{A_1}, \overline{A_0}$（我们分别记为：$NA_3$, $NA_2$, $NA_1$, $NA_0$）；
 
-第二层是4个反相器，输出$\overline{\overline{A_0}}, \overline{\overline{A_1}}, \overline{\overline{A_2}}, \overline{\overline{A_3}}$（我们分别记为：$PA_3$, $PA_2$, $PA_1$, $PA_0$）；
+第二层是4个反相器，输出$\overline{\overline{A_3}}, \overline{\overline{A_2}}, \overline{\overline{A_1}}, \overline{\overline{A_0}}$（我们分别记为：$PA_3$, $PA_2$, $PA_1$, $PA_0$）；
 
 第三层是8个NAND2门，实现$\{PA_3, NA_3\}$和$\{PA_2, NA_2\}$的笛卡尔积、以及$\{PA_1, NA_1\}$和$\{PA_0, NA_0\}$的笛卡尔积；这两组笛卡尔积会分别预编码：$\bar{A_3}\bar{A_2} \rightarrow A_{3}A_{2}$以及$\bar{A_1}\bar{A_0} \rightarrow A_{1}A_{0}$。
 
-最后一层是16个NOR2门，输出$\text{word}_0$到$\text{word}15$。负载电容等效于128倍最小反相器尺寸的反相器。
+最后一层是16个NOR2门，输出word0到word15。负载电容等效于128倍最小反相器尺寸的反相器。
 
 详细电路以及\textbf{待研究的critical path}见图\ref{fig:task2_ckt}以及图\ref{fig:task2_ckt_withcp}。
 \begin{figure}[htbp]
@@ -438,7 +384,7 @@ $A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32}
 
 \subsection{理论优化阶段}
 
-\subsubsection{优化方法建模}
+\subsubsection{critical path延迟函数的极值求解}
 
 我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task2_metrics}（设Xinv32, XNAND2\_7, XNOR2\_15的参数下标分别为1, 2, 3, 4，$z_1 \sim z_m$分别代表插入的$m$级反相器）
 
@@ -480,7 +426,7 @@ $A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32}
 因此我们有路径延迟：
 $$D = (m+3) \cdot 2304^{1/(m+3)} + m + 5$$
 
-\subsubsection{理论优化结果}
+\subsubsection{critical path的理论最优尺寸参数组合}
 
 理论上通过求导和数值计算，在：
 $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
@@ -506,7 +452,7 @@ $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
     \end{tabular}
 \end{table}
 
-其中，等效扇出$f$，逻辑门尺寸$s$的计算方法与Task1中完全相同，\textcolor{red}{取整方法依旧采用四舍五入}，因此这里不再展示详细细节，而是\textbf{直接给出计算结果以及取整结果}。
+其中，等效扇出$f$，逻辑门尺寸$s$的计算方法与Task1中完全相同，\textcolor{red}{取整方法依旧采用四舍五入}，因此这里不再展示详细细节，而是\textbf{直接给出计算结果以及取整结果}，见表\ref{tab:task2_theo_best_sf}。
 \begin{table}[htbp]
     \centering
     \caption{Task2 通过理论计算得到的$f$, $s$最优值以及取整近似值}
@@ -516,9 +462,9 @@ $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
     \toprule
     $m$ & Xinv31 & XNAND2\_7 & XNOR2\_15 & $z_1 \sim z_m$ \\
     \midrule
-    \multirow{2}{*}{$m=0$理论值} & $f_1 = 6.60$ & $f_2 = 2.20$ & $f_3 = 8.80$ & \multirow{2}{*}{[]} \\
-                                 & $s_1 = 1$ & $s_2 = 6.60$ & $s_3 = 14.54$ &  \\
-    $m=0$取整值 & $s_1 = 1$ & $s_2 = 7$ & $s_3 = 15$ & [] \\
+    \multirow{2}{*}{$m=0$理论值} & $f_1 = 6.60$ & $f_2 = 2.20$ & $f_3 = 8.80$ & $\emptyset$ \\
+                                 & $s_1 = 1$ & $s_2 = 6.60$ & $s_3 = 14.54$ & $\emptyset$ \\
+    $m=0$取整值 & $s_1 = 1$ & $s_2 = 7$ & $s_3 = 15$ & $\emptyset$ \\
     \midrule
     \multirow{2}{*}{$m=1$理论值} & $f_1 = 3.46$ & $f_2 = 1.15$ & $f_3 = 4.62$ & $f_4 = 6.93$ \\
                                  & $s_1 = 1$ & $s_2 = 3.46$ & $s_3 = 4.00$ & $s_4 = 18.48$ \\
@@ -664,20 +610,624 @@ $H = GBF = 9/4 \times 8 \times 127.96 \approx 2304$。
 
 \subsection{实验电路}
 
-本任务利用互补逻辑门搭建一个完整的5 to 32解码器。电路结构包含：第一层5个反相器，输入$A_4$, $A_3$, $A_2$, $A_1$, $A_0$，输出$NA_4$, $NA_3$, $NA_2$, $NA_1$, $NA_0$；第二层5个反相器，输出$PA_4$, $PA_3$, $PA_2$, $PA_1$, $PA_0$；第三层包含1个反相器（生成$NPA_0$）和8个NAND2门；最后一层是32个NOR3门，输出$word_0$到$word_{31}$。负载电容等效于256倍最小反相器尺寸的反相器。
+第一层是5个反相器，输入$A_4$, $A_3$, $A_2$, $A_1$, $A_0$，输出$\overline{A_4}, \overline{A_3}, \overline{A_2}, \overline{A_1}, \overline{A_0}$（我们分别记为：$NA_4$, $NA_3$, $NA_2$, $NA_1$, $NA_0$）；
+
+第二层是5个反相器，输出$\overline{\overline{A_4}}, \overline{\overline{A_3}}, \overline{\overline{A_2}}, \overline{\overline{A_1}}, \overline{\overline{A_0}}$（我们分别记为：$PA_4$, $PA_3$, $PA_2$, $PA_1$, $PA_0$）；
+
+第三层是8个NAND2门（对于$A_1 \sim A_4$）以及一个反相器（生成$\bar{A_0}$，我们在之后称为$NPA_0$）。实现$\{PA_4, NA_4\}$和$\{PA_3, NA_3\}$的笛卡尔积、以及$\{PA_2, NA_2\}$和$\{PA_1, NA_1\}$的笛卡尔积；这两组笛卡尔积会分别预编码：$\bar{A_4}\bar{A_3} \rightarrow A_{4}A_{3}$以及$\bar{A_2}\bar{A_1} \rightarrow A_{2}A_{1}$。$PA_0$以及$NPA_0$单独编码$A_0$和$\bar{A_0}$
+
+最后一层是32个NOR2门，利用第三层的8个NAND2门（对应$A_1 \sim A_4$）以及一个反相器（对应$A_0$）输出word0到word31。负载电容等效于256倍最小反相器尺寸的反相器。
+
+部分电路示意图见图\ref{fig:task3_ckt}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Task3_ckt.png}
+    \caption{Task3 电路}
+    \label{fig:task3_ckt}
+\end{figure}
 
 与Task 2不同的是，本任务存在两条不同的关键路径：
 
-关键路径1（H1\_pro）：$A_0 \rightarrow \text{Xinv01} \rightarrow \text{NA}_0 \rightarrow \text{Xinv02} \rightarrow \text{PA}_0 \rightarrow \text{XinvPA0} \rightarrow \text{NPA}_0 \rightarrow \text{XNOR3\_1} \rightarrow \text{word}_1$
+critical path1（图\ref{fig:task3_ckt}中蓝色线）：
 
-关键路径2（H2）：$A_1 \rightarrow \text{Xinv11} \rightarrow \text{NA}_1 \rightarrow \text{Xinv12} \rightarrow \text{PA}_1 \rightarrow \text{XNAND2\_1} \rightarrow \text{NA2\_PA1} \rightarrow \text{XNOR3\_2} \rightarrow \text{word}_2$
+$A_0 \rightarrow \text{Xinv01} \rightarrow NA_0 \rightarrow \text{Xinv02} \rightarrow PA_0 \rightarrow \text{XinvPA0} \rightarrow NPA_0 \rightarrow \text{XNOR3\_1} \rightarrow \text{word1} \rightarrow \text{Cload}(256\times \text{inv})$
 
-这两条关键路径独立考虑，给出对应两组最优参数。
+critical path2（\textcolor{red}{同}图\ref{fig:task3_ckt}中红色线）：
+
+$A_1 \rightarrow \text{Xinv11} \rightarrow NA_1 \rightarrow \text{Xinv12} \rightarrow PA_1 \rightarrow \text{XNAND2\_1} \rightarrow NA2\_PA1 \rightarrow \text{XNOR3\_2} \rightarrow \text{word2} \rightarrow \text{Cload}(256\times \text{inv})$
+
+其中：
+
+1. Xinv01, Xinv02, XinvPA0, XNOR3\_1分别代表$A_0 \rightarrow \text{word0}$路径上经过的第一、二、三级反相器以及3-NOR门；
+
+2. Xinv11, Xinv12, XNAND2\_1, XNOR3\_2分别代表$A_1 \rightarrow \text{word2}$路径上经过的第一、二级反相器、2-NAND门以及3-NOR门
+
+这两条关键路径独立考虑，给出对应两组最优参数（\textcolor{red}{依旧考虑从第一季反相器输出节点到负载电容前结点的最优延迟}）。
 
 \subsection{理论优化阶段}
 
-\subsubsection{优化方法建模}
+\subsubsection{critical path的延迟函数极值求解}
+
+\textbf{1. 对于critical path1}
+
+我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task3_p1_metrics}（设Xinv02, XinvPA0, XNOR3\_1的参数下标分别为1, 2, 3，$z_1 \sim z_m$分别代表插入的$m$级反相器）
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 critical path1的逻辑门关键指标}
+    \label{tab:task3_p1_metrics}
+    \begin{tabular}{ccccc}
+    \toprule
+    stage & Xinv02 & XinvPA0 & XNOR3\_1 & $z_1 \sim z_m$ \\
+    \midrule
+    $p$ & $p_1 = 1$ & $p_2 = 1$ & $p_3 = 3$ & $[1,1,\cdots ,1]$ \\
+    $g$ & $g_1 = 1$ & $g_2 = 1$ & $g_3 = 2$ & $[1,1,\cdots ,1]$ \\
+    $s$ & $s_1 = 1$ & $s_2 = x_1$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $f$ & $f_1 = x_1$ & $f_2 = y/x_1$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 256/z_{m}]$ \\
+    $b$ & $b_1 = (16y+x_1)/x_1$ & $b_2 = 16$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+因此，通过计算，得到该链的$G,B,F,H$值/变量表示参见表\ref{tab:task3_p1_path_metrics}。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 critical path1的路径关键指标}
+    \label{tab:task3_p1_path_metrics}
+    \begin{tabularx}{\linewidth}{XXXXX}
+    \toprule
+    Path logical effort($G$) & Branching effort($B$) &
+    Path electrical effort($F$) & Path effort($H$) &
+    Total parasitic delay($P$) \\
+    \midrule
+    $2$ & $16(16y+x_1)/x_1$ & 256 & $\sum_{i=1}^{m+3}{g_i f_i b_i}$ & $m+5$ \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+因此我们有路径努力：
+$$H_1 = x_1 + 16y + 16\frac{y}{x_1} + \frac{2z_1}{y} + \frac{z_2}{z_1} + \frac{z_3}{z_2} \cdots + \frac{z_m}{z_{m-1}} + \frac{256}{z_m}$$
+
+这是一个\textbf{连续-离散混合多元函数求极值问题}，我们先不考虑晶体管实际尺寸必须为整数，即我们在优化时先认为除了$m$必须为整数外，其余变量$x_1, y, z_1, z_2, \cdots z_m$可以为正实数。在这种情况下，我们求该函数的极值点，具体数学分析如下：
+
+\begin{enumerate}
+    \item 对于反相器链$z_1 \sim z_m$中的变量求偏导：
+    
+    $$\frac{\partial H_1}{\partial z_k}=0\quad (2\le k\le m-1)$$
+
+    可得递推关系：
+    \[
+    z_{k+1}=\frac{z_k^2}{z_{k-1}}
+    \]
+    本质上，这是\textbf{AM-GM}不等式的偏导解法，有：
+    \[
+    z_{k+1} = z_{k}q, \qquad k \geq 1, q>0
+    \]
+
+    由末端反相器条件$\partial H_1/\partial z_m=0$：
+    \[
+    z_m^2 = 256, z_{m-1}\quad\Rightarrow\quad z_1 q^{m}=256 \quad\Rightarrow\quad z_1=\frac{256}{q^{m}}
+    \]
+    由起始反相器条件$\partial H_1/\partial z_1=0$：
+    \[
+    q=\frac{2z_1}{y}.
+    \]
+    联立可得
+    \[
+    y=\frac{512}{q^{m+1}}.
+    \]
+
+    \item 对$x_1$求偏导：$\partial H_1/\partial x_1=0$给出：
+    
+    \[
+    x_1=4\sqrt{y},
+    \]
+
+    将以上代回$H_1$，可以把原问题化简为在\textbf{固定整数}下关于单一正变量$q$最小值问题：
+    \[
+    H(q;m)=\frac{8192}{q^{,m+1}}+\frac{128\sqrt{2}}{q^{(m+1)/2}}+(m+1)q
+    \]
+
+    \item 直到这里，我们还没有利用极值点条件：$\partial H_1/\partial y=0$，而是选择了直接将变量$y$代换掉，将原函数$H_1$化简为单变量$q_1$的函数，好处就是接下来我们会在不同整数$m$值下对这个单变量函数直接求导（数学上可以证明，此时求导的效果等价于$\partial H_1/\partial y=0$，证明从略）：
+
+    $$\frac{\partial H(q;m)}{\partial q}\bigg|_{m=m_0}=0$$
+
+    $\Rightarrow$
+
+    $$\frac{-8192(m+1)}{q^{m+2}} - \frac{64(m+1)\sqrt{2}}{q^{(m+3)/2}} + (m+1)q = 0$$
+
+    此时，我们借助数值方法求出不同整数$m$下的最优$q$值以及对应的最小$H_1$，当：
+    $$m = 7, q \approx 2.90$$
+
+    时，$H_{\text{1}}$有最小值27.40。
+\end{enumerate}
+
+\textbf{2. 考虑更准确的critical path1}
+
+在表\ref{tab:task3_p1_metrics}中我们认为反相器Xinv01的分支努力：
+
+$$b = \frac{(16y+x_1)}{x_1}$$
+
+但是事实上，当我们考虑从$A_0 \rightarrow word1$的关键路径时，$A_1$至$A_4$始终保持\textbf{低电平}，这也就意味着，所有连接到节点Xinv12但不在关键路径1上的15个NOR3门，其至少有一个输入端会处于高电平。这意味着无论A0电平如何切换，这些NOR3门的下拉网络必定导通，而上拉网络则保持关闭。因此，即使Xinv12的输出电平发生变化，与其输出端相连的所有NOR3门（路径上的那个除外）都将维持低电平输出。当Xinv12的输出电平切换时，这些NOR3门的输入门电容不会对延迟产生影响。换言之，在此条件下，我们可以认为Xinv12的分支努力等于1。
+
+此时，\textcolor{red}{我们可以将上述分析中的路径努力函数$H_1$进行进一步约简，记为$H_{\text{1pro}}$}。但是在此前，我们需要更新一下表\ref{tab:task3_p1_metrics}中的逻辑门参数，见表\ref{tab:task3_p1_pro_metrics}和表\ref{tab:task3_p1_pro_path_metrics}
 
 
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 critical path1的逻辑门关键指标（pro）}
+    \label{tab:task3_p1_pro_metrics}
+    \begin{tabular}{ccccc}
+    \toprule
+    stage & Xinv02 & XinvPA0 & XNOR3\_1 & $z_1 \sim z_m$ \\
+    \midrule
+    $p$ & $p_1 = 1$ & $p_2 = 1$ & $p_3 = 3$ & $[1,1,\cdots ,1]$ \\
+    $g$ & $g_1 = 1$ & $g_2 = 1$ & $g_3 = 2$ & $[1,1,\cdots ,1]$ \\
+    $s$ & $s_1 = 1$ & $s_2 = x_1$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $f$ & $f_1 = x_1$ & $f_2 = y/x_1$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 256/z_{m}]$ \\
+    $b$ & \textcolor{red}{$b_1 = 1$} & $b_2 = 16$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 critical path1的路径关键指标（pro）}
+    \label{tab:task3_p1_pro_path_metrics}
+    \begin{tabularx}{\linewidth}{XXXXXX}
+    \toprule
+    Path logical effort($G$) & Branching effort($B$) &
+    Path electrical effort($F$) & Path effort($H$) &
+    Total parasitic delay($P$) & $H_{\text{ming}}$\\
+    \midrule
+    $2$ & $16$ & 256 & $\sum_{i=1}^{m+3}{g_i f_i b_i}$ & $m+5$ & 8192 \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+此时我们有路径努力：
+
+$$H_{\text{1pro}} = 16 \times 2 \times 256 = 8192$$
+
+进而有延迟函数：
+
+$$D_{\text{1pro}} = (m+3) \cdot 8192^{1/(m+3)} + m + 5$$
+
+进而：$h_{\text{opt}} \approx 3.59, m \approx 4.04, D_{\text{min}} \approx 35.36$
+
+
+\textbf{3. 对于critical path2}
+
+我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task3_p2_metrics}（设Xinv12, XNAND2\_1, XNOR3\_2的参数下标分别为1, 2, 3，$z_1 \sim z_m$分别代表插入的$m$级反相器）
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 critical path2的逻辑门关键指标}
+    \label{tab:task3_p2_metrics}
+    \begin{tabular}{ccccc}
+    \toprule
+    stage & Xinv12 & XNAND2\_1 & XNOR3\_2 & $z_1 \sim z_m$ \\
+    \midrule
+    $p$ & $p_1 = 1$ & $p_2 = 1$ & $p_3 = 3$ & $[1,1,\cdots ,1]$ \\
+    $g$ & $g_1 = 1$ & $g_2 = 3/2$ & $g_3 = 2$ & $[1,1,\cdots ,1]$ \\
+    $s$ & $s_1 = 1$ & $s_2 = x_2$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $f$ & $f_1 = x_2$ & $f_2 = y/x_2$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 256/z_{m}]$ \\
+    $b$ & $b_1 = 2$ & $b_2 = 8$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+因此，通过计算，得到该链的$G,B,F,H$值/变量表示参见表\ref{tab:task3_p2_path_metrics}。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 critical path2的路径关键指标}
+    \label{tab:task3_p2_path_metrics}
+    \begin{tabularx}{\linewidth}{XXXXXX}
+    \toprule
+    Path logical effort($G$) & Branching effort($B$) &
+    Path electrical effort($F$) & Path effort($H$) &
+    Total parasitic delay($P$) & $H_{\text{min}}$\\
+    \midrule
+    3 & 16 & 256 & $\sum_{i=1}^{m+3}{g_i f_i b_i}$ & $m+5$ & 12288\\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+此时我们有路径努力：
+
+$$H_{\text{1pro}} = 3 \times 16 \times 256 = 12288$$
+
+进而有延迟函数：
+
+$$D_{\text{1pro}} = (m+3) \cdot 12288^{1/(m+3)} + m + 5$$
+
+进而：$h_{\text{opt}} \approx 3.59, m \approx 4.37, D_{\text{min}} \approx 36.81$
+
+
+\subsubsection{critical path的理论最优尺寸参数组合}
+
+\textbf{1. critical path1}
+
+为了更精确的分析，我们使用Task3/opt\_H1.py脚本，获得了在$m=7$附近的几个$m$值（m=1 to 9）对应的$q$以及$H_1(\text{min})$。
+
+\textbf{2. critical path1 pro}
+
+为了更精确的分析，我们使用Task3/opt\_H1\_pro.py脚本，获得了在$m=4$附近的几个$m$值（m=1 to 8）对应的$h_{\text{opt}}$以及$D_{\text{min}}$。
+
+\textbf{3. critical path2}
+
+为了更精确的分析，我们使用Task3/opt\_H2.py脚本，获得了在$m=4$附近的几个$m$值（m=2 to 8）对应的$h_{\text{opt}}$以及$D_{\text{min}}$。
+
+这三组路径的理论优化数据汇总见表\ref{tab:task3_theo_opt_all}。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 三条关键路径的理论优化数据汇总}
+    \label{tab:task3_theo_opt_all}
+    \small
+    \begin{tabular}{ccc|ccc|ccc}
+    \toprule
+    \multicolumn{3}{c|}{\textbf{Critical Path 1}} & \multicolumn{3}{c|}{\textbf{Critical Path 1 (Pro)}} & \multicolumn{3}{c}{\textbf{Critical Path 2}} \\
+    $m$ & $q$ & $H_{1}(\text{min})$ & $m$ & $h_{\text{opt}}$ & $D_{\text{min}}$ & $m$ & $h_{\text{opt}}$ & $D_{\text{min}}$ \\
+    \midrule
+    1 & 21.65 & 69.14 & 1 & 9.51 & 45.05 & 1 & 10.53 & 49.11 \\
+    2 & 10.28 & 43.87 & 2 & 6.06 & 38.31 & 2 & 6.58 & 40.88 \\
+    3 & 6.55 & 34.87 & 3 & 4.49 & 35.94 & 3 & 4.80 & 37.82 \\
+    4 & 4.84 & 30.80 & \textcolor{red}{4} & \textcolor{red}{3.62} & \textcolor{red}{35.36} & \textcolor{red}{4} & \textcolor{red}{3.84} & \textcolor{red}{36.87} \\
+    5 & 3.89 & 28.78 & 5 & 3.08 & 35.68 & 5 & 3.24 & 36.96 \\
+    6 & 3.30 & 27.80 & 6 & 2.72 & 36.49 & 6 & 2.85 & 37.62 \\
+    \textcolor{red}{7} & \textcolor{red}{2.90} & \textcolor{red}{27.40} & 7 & 2.46 & 37.62 & 7 & 2.56 & 38.64 \\
+    \textcolor{red}{8} & \textcolor{red}{2.62} & \textcolor{red}{27.36} & 8 & 2.27 & 38.95 & 8 & 2.35 & 39.89 \\
+    9 & 2.40 & 27.57 & 9 & 2.12 & 40.43 & 9 & 2.19 & 41.30 \\
+    10 & 3.00 & 33.48 & 10 & 2.00 & 42.00 & 10 & 2.06 & 42.82 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{HSPICE仿真阶段}
+
+\subsubsection{插入反相器级数的进一步确定}
+
+对两条关键路径分别进行了不同$m$值的仿真。H1路径扫描$m=1$到$m=9$，H1\_pro路径扫描$m = 1$到$m = 8$，H2路径扫描$m = 2$到$m = 8$。
+
+\textbf{此外，需要注意的是}，我们在搭建sp脚本时，搭建了全部的5 $\times$ 32 decoder，也就是说在仿真时需要为每一个逻辑门分配合适尺寸。在仿真critical path1的最优级数m时，我们认为所有的2-NAND门尺寸与XinvPA0尺寸一致；在仿真critical path2的最优级数m时，我们认为XinvPA0门尺寸与所有2-NAND门尺寸一致；
+
+每一次仿真时，\textcolor{red}{选取的逻辑门尺寸参数组合都是当前$m$值下理论分析计算出来的最优尺寸参数组合}。
+
+仿真结果如表\ref{tab:task3_sim_m_all}所示。其中蓝色部分数据为当前路径不同$m$值下的的最优延迟数据。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 不同反相器级数m的仿真延迟结果汇总（单位：ps）}
+    \label{tab:task3_sim_m_all}
+    \scriptsize % 缩小字体以适应页面宽度
+    \setlength{\tabcolsep}{1.5pt} % 减小列间距
+    \begin{tabular}{cccc|cccc|cccc}
+    \toprule
+    \multicolumn{4}{c|}{\textbf{Critical Path 1}} & \multicolumn{4}{c|}{\textbf{Critical Path 1 (Pro)}} & \multicolumn{4}{c}{\textbf{Critical Path 2}} \\
+    $m$ & $t_{pLH}$ & $t_{pHL}$ & $t_p$ & $m$ & $t_{pLH}$ & $t_{pHL}$ & $t_p$ & $m$ & $t_{pLH}$ & $t_{pHL}$ & $t_p$ \\
+    \midrule
+    1 & 79.67 & 103.90 & 91.79 & 1 & 151.80 & 167.90 & 159.90 & - & - & - & - \\
+    2 & 78.33 & 69.22 & 73.78 & 2 & 90.62 & 78.44 & 84.53 & 2 & 62.43 & 47.15 & 54.79 \\
+    3 & 68.47 & 72.35 & 70.41 & \textcolor{blue}{3} & \textcolor{blue}{60.15} & \textcolor{blue}{68.99} & \textcolor{blue}{64.57} & \textcolor{blue}{3} & \textcolor{blue}{44.16} & \textcolor{blue}{52.57} & \textcolor{blue}{48.37} \\
+    \textcolor{blue}{4} & \textcolor{blue}{71.62} & \textcolor{blue}{66.31} & \textcolor{blue}{68.96} & 4 & 67.98 & 62.36 & 65.17 & 4 & 52.36 & 44.58 & 48.47 \\
+    5 & 67.94 & 71.99 & 69.97 & 5 & 63.25 & 68.02 & 65.63 & 5 & 45.37 & 51.95 & 48.66 \\
+    6 & 80.27 & 76.68 & 78.48 & 6 & 69.23 & 64.15 & 66.69 & 6 & 56.06 & 47.06 & 51.56 \\
+    7 & 79.39 & 82.13 & 80.76 & 7 & 69.19 & 73.39 & 71.29 & 7 & 48.75 & 56.98 & 52.86 \\
+    8 & 83.51 & 79.99 & 81.75 & 8 & 75.07 & 70.60 & 72.84 & 8 & 59.41 & 51.00 & 55.20 \\
+    9 & 82.45 & 85.85 & 84.15 & & & & & & & & \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+可以发现，H1在$m=4$时获得最优延迟（$t_p = 68.96$ps），H1\_pro在$m = 3$时获得最优延迟（$t_p = 64.57$ps），H2在$m = 3$时获得最优延迟（$t_p = 48.37$ps）。
+
+三种情况的最优尺寸参数及对应延迟如下（或者参见表\ref{tab:task3_parc_best_tp}）：
+
+H1 ($m=4$)：XinvPA0\_size = 2，XNAND2\_size = 2，XNOR3\_size = 1, $z_1 \sim z_4$ = [1, 2, 11, 53]。
+
+H1\_pro ($m=3$)：XinvPA0\_size = 4，XNAND2\_size = 4，XNOR3\_size = 1, $z_1 \sim z_3$ = [3, 13, 57]。
+
+H2 ($m=3$)：XinvPA0\_size = 2，XNAND2\_size = 2，XNOR3\_size = 1, $z_1 \sim z_3$ = [2, 8, 40]。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 各路径对应的最优延迟以及尺寸参数组合}
+    \label{tab:task3_parc_best_tp}
+    \small
+    \begin{tabular}{cccccccc}
+    \toprule
+    Path & $m$ & XinvPA0 & XNAND2 & XNOR3 & $z_1 \sim z_m$ & $t_p$(ps) \\
+    \midrule
+    H1 & 4 & 2 & 2 & 1 & $[1, 2, 11, 53]$ & 68.96 \\
+    H1\_pro & 3 & 4 & 2 & 1 & $[3, 13, 57]$ & 64.57 \\
+    H2 & 3 & 2 & 2 & 1 & $[2, 8, 40]$ & 48.37 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{尺寸参数的精细扫描}
+
+由于计算资源有限，下面我们仅考虑H1\_pro（因为在之研究critical path1，而不是全部输入动态变化时，H1\_pro比H1更合理）以及H2，并且\textbf{仅在最优$m$值时进行精细参数扫描}。
+
+\textbf{此外，需要注意的是}，我们在搭建sp脚本时，搭建了全部的5 $\times$ 32 decoder，也就是说在仿真时需要为每一个逻辑门分配合适尺寸。方便起见，我们认为所有的2-NAND门尺寸一致，所有的3-NOR门尺寸一致。
+
+以每种情况的通过上述仿真得出的“最优尺寸组合”为中心参数组合，设置一定步长和半径，得到的待扫描参数范围如下：
+
+\textbf{1. 对于H1\_pro（$m = 3$），一共有1134种参数组合需要仿真}
+\begin{enumerate}
+    \item XinvPA0尺寸扫描范围为[3, 4, 5]
+    \item 全部XNAND2尺寸扫描范围为[3, 4, 5]
+    \item 全部XNOR3尺寸扫描范围为[1, 2]
+    \item $z_1$尺寸扫描范围为[2, 3, 4]
+    \item $z_2$尺寸扫描范围为[11, 13, 15]
+    \item $z_3$尺寸扫描范围为[48, 51, 54, 57, 60, 63, 66]。
+\end{enumerate}
+
+\textbf{2. 对于H2（$m = 3$），一共有1134种参数组合需要仿真}
+\begin{enumerate}
+    \item XinvPA0尺寸扫描范围为[1, 2, 3]
+    \item 全部XNAND2尺寸扫描范围为[1, 2, 3]
+    \item 全部XNOR3尺寸扫描范围为[1, 2]
+    \item $z_1$尺寸扫描范围为[1, 2, 3]
+    \item $z_2$尺寸扫描范围为[6, 8, 10]
+    \item $z_3$尺寸扫描范围为[31, 34, 37, 40, 43, 46, 49]。
+\end{enumerate}
+
+
+\subsubsection{仿真结果与分析}
+
+\textbf{精细扫描后的最优结果}如下：
+
+H1\_pro路径：XinvPA0\_size = 5，XNAND2\_size = 3，XNOR3\_size = 1，z1\_size = 3，z2\_size = 11，z3\_size = 48，得到$t_{pLH} = 59.77$ps，$t_{pHL} = 68.62$ps，$t_p = 64.19$ps。
+
+H2路径：XinvPA0\_size = 1，XNAND2\_size = 2，XNOR3\_size = 1，z1\_size = 3，z2\_size = 10，z3\_size = 43，得到$t_{pLH} = 43.06$ps，$t_{pHL} = 53.52$ps，$t_p = 48.29$ps。
+
+更加详细的数据参加附录代码中的task3\_opt\_H1\_pro.csv和task3\_opt\_H2.csv。
+
+汇总表格如表\ref{tab:task3_final_best_tp}所示。
+
+\begin{table}[htbp]
+\centering
+\caption{Task3 精细扫描后各路径对应的最优延迟以及尺寸参数组合}
+\label{tab:task3_final_best_tp}
+\small
+\begin{tabular}{cccccccc}
+\toprule
+Path & $m$ & XinvPA0 & XNAND2 & XNOR3 & $z_1 \sim z_m$ & $t_p$(ps) \\
+\midrule
+critical path1 & 3 & 5 & 3 & 1 & $[3, 11, 48]$ & 64.19 \\
+critical path2 & 3 & 1 & 2 & 1 & $[3, 10, 43]$ & 48.29 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+在最优解情况下，\textbf{电路详细尺寸参数分析如下：}
+
+\textbf{1. 对于Critical Path 1 (H1\_pro)}
+
+路径为：$A_0 \rightarrow \text{Xinv01} \rightarrow NA_0 \rightarrow \text{Xinv02} \rightarrow PA_0 \rightarrow \text{XinvPA0} \rightarrow NPA_0 \rightarrow \text{XNOR3\_1} \rightarrow \text{word1} \rightarrow z_1 \rightarrow z_2 \rightarrow z_3 \rightarrow \text{Cload}$。
+
+各门的逻辑努力、尺寸等参数如表\ref{tab:task3_h1_best_gate_params}所示。
+
+\begin{table}[htbp]
+\centering
+\caption{Task3 Critical Path 1 (H1\_pro) 各逻辑门最优尺寸参数组合}
+\label{tab:task3_h1_best_gate_params}
+\begin{tabular}{ccccc}
+\toprule
+逻辑门 & 尺寸$s$ & 逻辑努力$g$ & 分支努力$b$ & 等效扇出$f$ \\
+\midrule
+Xinv02    & 1 & 1 & 1 & 5 \\
+XinvPA0   & 5 & 1 & 16 & 0.2 \\
+XNOR3\_1  & 1 & 2 & 1 & 3 \\
+$z_1$     & 3 & 1 & 1 & 3.67 \\
+$z_2$     & 11 & 1 & 1 & 4.36 \\
+$z_3$     & 48 & 1 & 1 & 5.33 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Critical Path 1 (H1\_pro) 路径参数见表\ref{tab:task3_h1_best_path_params}。
+其中$G = 1 \times 1 \times 2 \times 1 \times 1 \times 1 = 2$，$B = 1 \times 16 \times 1 \dots = 16$，
+$F = 5 \times 0.2 \times 3 \times 3.67 \times 4.36 \times 5.33 \approx 256$，
+$H = GBF = 2 \times 16 \times 256 = 8192$。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 Critical Path 1 (H1\_pro) 最优路径参数}
+    \label{tab:task3_h1_best_path_params}
+    \begin{tabularx}{\linewidth}{XXXXXX}
+    \toprule
+    Path logical effort($G$) & Branching effort($B$) &
+    Path electrical effort($F$) & Path effort($H$) &
+    Total parasitic delay($P$) & $D_{\text{min}}$(Theory) \\
+    \midrule
+    2 & 16 & 256 & 8192 & 8 & 34.94 \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+\textbf{2. 对于Critical Path 2 (H2)}
+
+路径为：$A_1 \rightarrow \text{Xinv11} \rightarrow NA_1 \rightarrow \text{Xinv12} \rightarrow PA_1 \rightarrow \text{XNAND2\_1} \rightarrow NA2\_PA1 \rightarrow \text{XNOR3\_2} \rightarrow \text{word2} \rightarrow z_1 \rightarrow z_2 \rightarrow z_3 \rightarrow \text{Cload}$。
+
+各门的逻辑努力、尺寸等参数如表\ref{tab:task3_h2_best_gate_params}所示。
+
+\begin{table}[htbp]
+\centering
+\caption{Task3 Critical Path 2 (H2) 各逻辑门最优尺寸参数组合}
+\label{tab:task3_h2_best_gate_params}
+\begin{tabular}{ccccc}
+\toprule
+逻辑门 & 尺寸$s$ & 逻辑努力$g$ & 分支努力$b$ & 等效扇出$f$ \\
+\midrule
+Xinv12    & 1 & 1 & 2 & 2 \\
+XNAND2\_1 & 2 & 3/2 & 8 & 0.5 \\
+XNOR3\_2  & 1 & 2 & 1 & 3 \\
+$z_1$     & 3 & 1 & 1 & 3.33 \\
+$z_2$     & 10 & 1 & 1 & 4.30 \\
+$z_3$     & 43 & 1 & 1 & 5.95 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Critical Path 2 (H2) 路径参数见表\ref{tab:task3_h2_best_path_params}。
+其中$G = 1 \times 1.5 \times 2 \times 1 \times 1 \times 1 = 3$，$B = 2 \times 8 \times 1 \dots = 16$，
+$F = 2 \times 0.5 \times 3 \times 3.33 \times 4.30 \times 5.95 \approx 256$，
+$H = GBF = 3 \times 16 \times 256 = 12288$。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task3 Critical Path 2 (H2) 最优路径参数}
+    \label{tab:task3_h2_best_path_params}
+    \begin{tabularx}{\linewidth}{XXXXXX}
+    \toprule
+    Path logical effort($G$) & Branching effort($B$) &
+    Path electrical effort($F$) & Path effort($H$) &
+    Total parasitic delay($P$) & $D_{\text{min}}$(Theory) \\
+    \midrule
+    3 & 16 & 256 & 12288 & 9 & 37.80 \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+
+\section{Observations and conclusions}
+
+对于本次实验任务的三个critical path的研究，我们能够得出的最重要的结论是：
+
+\textbf{最小化crtical path延迟时，必须先经过手工模型的分析，得到一个粗略的最小延迟参数组合。然后在借助于仿真工具，在这个点附近进行扫描，可以快速收敛到仿真意义下的最优延迟。}
+
+这里有两个重要的结论需要注意：
+\begin{enumerate}
+    \item 理论模型分析的重要性
+    
+    虽然我们能够借助仿真工具，让仿真工具在一系列参数下计算，最终返回给我们一个最优解。但是在没有至少一个粗略的参数范围的前提下，盲目的让仿真工具取遍历穷举所有解非常耗时，尤其是电路结果比较复杂的情况下。比如Task3中，一个5 to 32 decoder，\textbf{在通过理论分析确定大致范围的前提下}，依然有上千组点需要计算和仿真，这相当耗时。因此，通过理论分析，虽然往往不能直接给我们一个精确解，但是能够缩小我们扫描参数的范围，进而大幅缩短仿真工具求解的时间。
+
+    \item 理论模型和实际的不一致性
+
+    理论模型往往不能完全反映实际电路的行为，其给出的“最优解”在实际情况下往往也不是最优解，例如在Task1 to Task3中，所有逻辑努力分析法得出的最优解结果，都与仿真最优解有一定出入。因为我们在做理论分析时，对实际的电路元件进行了大幅简化，例如忽略部分小电容($C_{sb}, C_{db}$)，认为$\gamma = 1$等。一方面，这提示我们需要借助更加精确和繁琐的方法求解，这一点就是仿真工具所要帮助我们做的。另一方面，我们可以在可接受范围内不断精确我们的数学模型，从而提高其与实际电路行为的吻合度。
+\end{enumerate}
+
+\clearpage
+\appendix
+\section*{附录}
+\addcontentsline{toc}{section}{附录}
+
+\section{逻辑门的子电路定义}
+\textbf{1. Inverter}
+\begin{lstlisting}
+* Sub circuit: INVerter definition
+.subckt INV in out vdd gnd size=1
+Mn out in gnd gnd nfet L='Lg' NFIN ='size'
+Mp out in vdd vdd pfet L='Lg' NFIN ='size'
+.ends INV
+\end{lstlisting}
+
+\textbf{2. 2-NOR}
+\begin{lstlisting}
+* Sub circuit: 2-NOR
+.subckt NOR2 in1 in2 out vdd gnd size=1 Lg=20n
+*PUN
+Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='size'
+Mp2 source_p1 in2 vdd vdd pfet L='Lg' NFIN='size'
+*PDN
+Mn1 out in1 gnd gnd nfet L='Lg' NFIN='size'
+Mn2 out in2 gnd gnd nfet L='Lg' NFIN='size'
+.ends NOR2
+\end{lstlisting}
+
+\textbf{3. 3-NAND}
+\begin{lstlisting}
+* Sub circuit: 3-NAND
+.subckt NAND3 in1 in2 in3 out vdd gnd size=1 Lg=20n
+* PUN
+Mp1 out in1 vdd vdd pfet L='Lg' NFIN='size'
+Mp2 out in2 vdd vdd pfet L='Lg' NFIN='size'
+Mp3 out in3 vdd vdd pfet L='Lg' NFIN='size'
+* PDN
+Mn1 out in1 source1 gnd nfet L='Lg' NFIN='size'
+Mn2 source1 in2 source2 gnd nfet L='Lg' NFIN='size'
+Mn3 source2 in3 gnd gnd nfet L='Lg' NFIN='size'
+.ends NAND3
+\end{lstlisting}
+
+\textbf{4. 3-NOR}
+\begin{lstlisting}
+* Sub circuit: 3-NOR
+.subckt NOR3 in1 in2 in3 out vdd gnd size=1 Lg=20n
+*PUN
+Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='size'
+Mp2 source_p1 in2 source_p2 vdd pfet L='Lg' NFIN='size'
+Mp3 source_p2 in3 vdd vdd pfet L='Lg' NFIN='size'
+*PDN
+Mn1 out in1 gnd gnd nfet L='Lg' NFIN='size'
+Mn2 out in2 gnd gnd nfet L='Lg' NFIN='size'
+Mn3 out in3 gnd gnd nfet L='Lg' NFIN='size'
+.ends NOR3
+\end{lstlisting}
+
+\section{实验代码的相关说明}
+
+本实验借助HSPICE和大量Python脚本完成自动化sp脚本编写、数值求解以及hspice仿真完成，实验中用到的py脚本以及sp脚本的文件目录树见下方：
+\dirtree{%
+.1 Code/.
+.2 Task1/ : sp and py of Task1.
+.3 opt.py : 求解各逻辑门的等效扇出、尺寸的理论最优解.
+.3 task1.sp : 仿真脚本.
+.3 task1.csv : HSPICE多参数扫描给出的不同参数组合的解.
+.2 Task2/ : sp and py of Task2（级数优化）.
+.3 m=0\textasciitilde m=5/.
+.4 task2\_m0\textasciitilde 5.sp : 仿真脚本.
+.4 task2\_m0\textasciitilde 5.log : 该种参数组合的参数配置.
+.4 task2\_m0\textasciitilde 5.csv : HSPICE的仿真结果.
+.3 generate\_sp.py : 自动生成对应不同m值sp脚本的python脚本.
+.3 merge\_csv.py : 合并不同m值的csv文件.
+.3 opt.py : 求解各逻辑门的等效扇出、尺寸的理论最优解.
+.3 run\_sp : 批量运行sp脚本.
+.3 task2\_s\_opt\_m\_optimal.log : 仿真得到的具有最优延迟的m值即延迟.
+.2 Task2\_opt/ : sp and py of Task2（精细扫描）.
+.3 generate\_sp\_m1\textasciitilde 3.py : 自动生成对应不同m值sp脚本、并且包含sweep data的python脚本.
+.3 task2\_s\_opt\_m1\textasciitilde 3.sp : 仿真脚本.
+.3 task2\_s\_opt\_m1\textasciitilde 3.csv : HSPICE的仿真结果.
+.3 task2\_s\_opt\_m1\textasciitilde 3\_optimal.log : 不同m值下的最优延迟参数组合.
+.2 Task3/ : sp and py of Task2（级数优化）.
+.3 H1\_m1\textasciitilde 9/.
+.4 task3\_H1\_m1\textasciitilde 9.sp : 仿真脚本.
+.4 task3\_H1\_m1\textasciitilde 9.log : 该种参数组合的参数配置.
+.4 task3\_H1\_m1\textasciitilde 9.csv : HSPICE的仿真结果.
+.3 H1\_pro\_m1\textasciitilde 8/.
+.4 task3\_H1\_pro\_m1\textasciitilde 8.sp : 仿真脚本.
+.4 task3\_H1\_pro\_m1\textasciitilde 8.log : 该种参数组合的参数配置.
+.4 task3\_H1\_pro\_m1\textasciitilde 8.csv : HSPICE的仿真结果.
+.3 H2\_m2\textasciitilde 8/.
+.4 task3\_H2\_m2\textasciitilde 8.sp : 仿真脚本.
+.4 task3\_H2\_m2\textasciitilde 8.log : 该种参数组合的参数配置.
+.4 task3\_H2\_m2\textasciitilde 8.csv : HSPICE的仿真结果.
+.3 generate\_sp\_H1\_simplification.py : 自动化生成不同m值的理论最优尺寸组合的H1\_pro脚本.
+.3 generate\_sp\_H1.py : 自动化生成path1不同m值的理论最优尺寸组合的python脚本.
+.3 generate\_sp\_H2.py : 自动化生成path2不同m值的理论最优尺寸组合的python脚本.
+.3 opt\_H1\_pro.py : 求解H1\_pro的最优尺寸组合.
+.3 opt\_H1.py : 求解H1的最优尺寸组合.
+.3 opt\_H2.py : 求解H2的最优尺寸组合.
+.3 run\_sp : 批量运行sp脚本.
+.2 Task3\_opt/ : sp and py of Task2（精细扫描）.
+.3 generate\_sp\_H1\_pro.py : 自动生成path1不同m值、并且包含sweep data的python脚本.
+.3 generate\_sp\_H2.py : 自动生成path2不同m值、并且包含sweep data的python脚本.
+.3 task3\_opt\_H1\_pro.sp : path1仿真脚本.
+.3 task3\_opt\_H1\_pro.csv : path1HSPICE的仿真结果.
+.3 task3\_opt\_H1\_pro\_optimal.log : 仿真得到的path1的尺寸最优配置.
+.3 task3\_opt\_H2.sp : path2仿真脚本.
+.3 task3\_opt\_H2.csv : path2HSPICE的仿真结果.
+.3 task3\_opt\_H2\_optimal.log : 仿真得到的path2的尺寸最优配置.
+.2 parser\_mt.py : 将hspice仿真输出.mt文件解析为.csv文件.
+.2 stat\_optimal.py : 统计.csv文件中的最优延迟对应的参数组合.
+}
 
 \end{document}

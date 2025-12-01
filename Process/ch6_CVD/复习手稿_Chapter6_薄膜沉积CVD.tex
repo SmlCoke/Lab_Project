@@ -56,4 +56,951 @@
 
 % ------------------------ 正文区 ----------------------------
 
+\section{CVD概述}
+
+\subsection{薄膜沉积技术分类}
+
+薄膜沉积技术是集成电路制造中的核心工艺之一，主要分为两大类：
+
+\subsubsection{物理方法（Physical Methods）}
+
+\begin{enumerate}
+    \item \textbf{蒸发（Evaporation）}
+    \begin{itemize}
+        \item 热蒸发（Thermal）
+        \item 电子束蒸发（Electron Beam）
+    \end{itemize}
+    
+    \item \textbf{溅射（Sputtering）}
+    \begin{itemize}
+        \item 直流溅射（DC）
+        \item 射频溅射（RF）
+        \item 磁控溅射（Magnetron）
+        \item 离子镀（Ion Plating）
+    \end{itemize}
+    
+    \item \textbf{其他方法}
+    \begin{itemize}
+        \item 激光烧蚀（Laser ablation）
+        \item 分子束外延（MBE）
+        \item 离子束溅射（IBS）
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{化学方法（Chemical Methods）}
+
+\begin{enumerate}
+    \item \textbf{化学气相沉积（CVD）}
+    \begin{itemize}
+        \item 热CVD（Thermal CVD）
+        \item 常压CVD（APCVD）
+        \item 低压CVD（LPCVD）
+        \item 等离子体增强CVD（PECVD）
+        \item 金属有机化合物CVD（MOCVD）
+        \item 原子层沉积（ALD）
+    \end{itemize}
+    
+    \item \textbf{电镀（Plating）}
+    \begin{itemize}
+        \item 电镀（Electroplating）
+        \item 化学镀（Electroless）
+    \end{itemize}
+    
+    \item \textbf{溶胶-凝胶法（Sol-gel）}
+    \begin{itemize}
+        \item 浸涂（Dipping）
+        \item 喷涂（Spraying）
+        \item 旋涂（Spin Coating）
+    \end{itemize}
+\end{enumerate}
+
+\subsection{CVD的定义与特点}
+
+\textbf{CVD（Chemical Vapor Deposition）}：化学气相沉积，是指通过气相化学反应在衬底表面沉积固态薄膜的方法。
+
+\subsubsection{CVD反应体系的三个必要条件}
+
+\begin{enumerate}
+    \item 在沉积温度下，\textbf{反应物具有足够的蒸气压}，并能以适当的速度被引入反应室
+    \item 反应产物除了形成固态薄膜物质外，都必须是\textbf{挥发性的}
+    \item 沉积薄膜和基体材料必须具有\textbf{足够低的蒸气压}
+\end{enumerate}
+
+\subsection{CVD的分类及应用}
+
+\begin{longtable}{|L{3cm}|L{12cm}|}
+\hline
+\textbf{CVD类型} & \textbf{应用领域} \\
+\hline
+\endfirsthead
+\hline
+\textbf{CVD类型} & \textbf{应用领域} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+
+流通式CVD & 材料的精制（Ge、Si、III-V族元素等） \\
+\hline
+
+常压CVD (APCVD) & 
+\begin{itemize}[leftmargin=*,nosep]
+    \item 卤化物气体原料：Ge、Si、GaAs等III-V族化合物、混晶，Si$_3$N$_4$、Al$_2$O$_3$等绝缘膜
+    \item 氢化物气体原料：Ge、Si、SiO$_2$、Si$_3$N$_4$等
+    \item MOCVD：III-V、II-VI族化合物
+\end{itemize} \\
+\hline
+
+低压CVD (LPCVD) & Si、SiO$_2$、Si$_3$N$_4$等 \\
+\hline
+
+等离子体CVD (PECVD) & 非晶态Si、SiO$_2$、Si$_3$N$_4$、金刚石薄膜等 \\
+\hline
+
+封闭式CVD & Ge、Si、III-V族化合物及混晶等 \\
+\hline
+
+\end{longtable}
+
+\newpage
+
+\section{CVD原理}
+
+\subsection{热力学分析}
+
+\subsubsection{反应方向的判断}
+
+CVD反应的热力学分析主要用于判断反应能否自发进行及反应方向：
+
+\begin{itemize}
+    \item 通过吉布斯自由能变化$\Delta G$判断反应方向
+    \item $\Delta G < 0$：反应可自发进行
+    \item $\Delta G > 0$：反应不能自发进行
+    \item 热力学分析可确定反应温度范围
+\end{itemize}
+
+\subsection{CVD基本过程}
+
+CVD薄膜沉积包含以下步骤：
+
+\begin{enumerate}
+    \item \textbf{反应剂的输送}：载气将反应气体输送至反应腔
+    \item \textbf{反应剂从主气流区扩散到衬底表面}
+    \item \textbf{前驱体吸附到衬底表面}
+    \item \textbf{前驱体朝衬底扩散}
+    \item \textbf{前驱体反应}：在衬底表面发生化学反应
+    \item \textbf{衬底表面发生反应}：形成薄膜
+    \item \textbf{副产物脱附}
+    \item \textbf{副产物抽走}：被真空系统排出
+\end{enumerate}
+
+\subsection{CVD动力学描述——Grove模型}
+
+\subsubsection{基本原理}
+
+Grove模型是基于反应物输运和化学反应建立的CVD动力学模型。
+
+\textbf{CVD过程主要受两个因素控制：}
+\begin{enumerate}
+    \item \textbf{气相输运过程控制}：反应剂在边界层中的输运
+    \item \textbf{表面化学反应控制}：
+    \begin{itemize}
+        \item 反应剂在衬底表面的化学反应（成核控制）
+        \item 衬底对成核的影响
+        \item 化学势的影响
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{关键参数}
+
+\begin{itemize}
+    \item $N_1$：形成单位体积薄膜所需要的原子数量
+    \item $h_g$：气相质量输运系数
+    \item $K_s$：表面化学反应速率常数
+    \item $C_g$：气体中反应剂浓度
+\end{itemize}
+
+\subsubsection{控制机制}
+
+\begin{itemize}
+    \item 当$h_g \ll K_s$时，过程受\textbf{质量输运控制}（Mass transfer limited）
+    \item 当$K_s \ll h_g$时，过程受\textbf{反应速率控制}（Reaction rate limited）
+\end{itemize}
+
+\newpage
+
+\section{CVD设备}
+
+\subsection{CVD设备基本构成}
+
+CVD设备主要由以下三部分组成：
+
+\begin{enumerate}
+    \item \textbf{气体输送系统}
+    \begin{itemize}
+        \item 反应气体（Reactant gas）
+        \item 载气（Carrier gas）
+        \item 流量控制器（MFC）
+    \end{itemize}
+    
+    \item \textbf{反应腔}
+    \begin{itemize}
+        \item 提供反应发生的空间
+        \item 加热系统
+        \item 衬底托架
+    \end{itemize}
+    
+    \item \textbf{真空系统}
+    \begin{itemize}
+        \item 将脱附的副产物抽走
+        \item 维持所需的工作压力
+    \end{itemize}
+\end{enumerate}
+
+\subsection{CVD设备的关键参数}
+
+影响薄膜质量的主要因素包括：
+
+\begin{itemize}
+    \item $T_s$：衬底温度（Substrate temperature）
+    \item Deposition rate：沉积速率
+    \item Uniformity：均匀性
+    \item Surface morphology：表面形貌
+    \item Electric and mechanical property：电学和机械性能
+    \item Composition：薄膜成分
+\end{itemize}
+
+\subsection{PECVD（等离子体增强CVD）}
+
+\subsubsection{工作原理}
+
+\begin{itemize}
+    \item 在高温下，向真空腔中通入前驱气体
+    \item 高频电源产生等离子体
+    \item 通过吸附结合，在基片上生成薄膜
+    \item \textbf{沉积温度低}：100$\sim$400°C
+\end{itemize}
+
+\subsubsection{腔室清洗（RPSC）}
+
+\textbf{RPSC作用：}
+\begin{itemize}
+    \item 基片和腔室内壁都会被镀膜
+    \item 需要定期清理，否则后续脱落会影响镀膜质量
+\end{itemize}
+
+\textbf{主要清洗反应：}
+\begin{equation}
+\text{NF}_3 \rightarrow \text{N}_2 + \text{F}^-
+\end{equation}
+\begin{equation}
+\text{Si}(s) + \text{F}^- \rightarrow \text{SiF}_4(\uparrow)
+\end{equation}
+
+\subsection{APCVD与LPCVD}
+
+\subsubsection{APCVD（常压CVD）}
+
+\begin{itemize}
+    \item 工作压力：大气压（约760 Torr）
+    \item 优点：设备简单，成本低
+    \item 缺点：薄膜均匀性相对较差
+    \item 应用：钝化层沉积
+\end{itemize}
+
+\subsubsection{LPCVD（低压CVD）}
+
+\begin{itemize}
+    \item 工作压力：0.1$\sim$10 Torr
+    \item \textbf{优点：}
+    \begin{itemize}
+        \item 薄膜厚度均匀一致
+        \item 台阶覆盖性好
+        \item 生产效率高，成本低
+        \item 批处理（Batch processing）：100$\sim$200片/次
+    \end{itemize}
+\end{itemize}
+
+\subsection{MOCVD（金属有机化合物CVD）}
+
+\subsubsection{定义}
+
+MOCVD（Metal-organic Chemical Vapor Deposition）是在气相外延生长（VPE）的基础上发展起来的一种新型气相外延生长技术。
+
+\subsubsection{特点}
+
+\begin{itemize}
+    \item 反应物质全部以有机金属化合物的气体分子形式
+    \item 主要用于III-V族和II-VI族化合物的异质外延
+\end{itemize}
+
+\subsubsection{典型应用}
+
+\textbf{GaAs材料：}
+\begin{equation}
+\text{Ga}(\text{CH}_3)_3 + \text{AsH}_3 \rightarrow \text{GaAs} + 3\text{CH}_4
+\end{equation}
+
+\textbf{AlGaAs材料：}
+\begin{itemize}
+    \item 镓源：Ga(CH$_3$)$_3$
+    \item 铝源：Al(C$_2$H$_5$)$_3$
+\end{itemize}
+
+\textbf{掺杂剂：}
+\begin{itemize}
+    \item P型：Zn(C$_2$H$_5$)$_3$、Cd(C$_2$H$_5$)$_3$
+    \item N型：SiH$_4$、H$_2$S、H$_2$Se
+\end{itemize}
+
+\newpage
+
+\section{CVD沉积薄膜}
+
+\subsection{硅薄膜（Si Thin Films）}
+
+\subsubsection{气相外延（VPE）生长硅薄膜}
+
+\textbf{硅源（Source）：}
+\begin{itemize}
+    \item SiCl$_4$（四氯化硅）
+    \item SiHCl$_3$（三氯氢硅）
+    \item SiH$_2$Cl$_2$（二氯氢硅）
+    \item SiH$_4$（硅烷）
+\end{itemize}
+
+\textbf{氢还原反应：}
+\begin{equation}
+\text{SiCl}_4 + \text{H}_2 \rightarrow \text{Si}(s) + 4\text{HCl}
+\end{equation}
+
+\textbf{原位清洗腐蚀：}
+\begin{equation}
+\text{SiCl}_4 \rightleftharpoons \text{Si}(s) + 2\text{SiCl}_2
+\end{equation}
+
+\textbf{工业典型生长条件：}
+\begin{itemize}
+    \item Y（生长速率因子）= 0.005$\sim$0.01
+    \item 温度：B区高温区（常用）
+    \item 气体流速大，生长快
+\end{itemize}
+
+\textbf{工业流程：}
+\begin{enumerate}
+    \item N$_2$预冲洗
+    \item H$_2$预冲洗
+    \item 升温1至850°C
+    \item 升温2至1170°C
+    \item HCl排空
+    \item HCl腐蚀抛光
+    \item H$_2$冲洗
+    \item 降温
+    \item N$_2$冲洗
+\end{enumerate}
+
+\subsubsection{多晶硅薄膜（Poly-Si）}
+
+\textbf{应用领域：}
+\begin{itemize}
+    \item Poly-Si栅极
+    \item 用作扩散源，制备浅结
+    \item 制备欧姆接触
+    \item 制备高值电阻器及导体
+\end{itemize}
+
+\textbf{LPCVD沉积多晶硅：}
+
+\textbf{反应式：}
+\begin{equation}
+\text{SiH}_4 \xrightarrow{600\sim650°C} \text{Si} + 2\text{H}_2
+\end{equation}
+
+\textbf{温度范围：}
+\begin{itemize}
+    \item 600$\sim$650°C：最佳范围
+    \item <600°C：淀积速率低（形成无定形膜）
+    \item >650°C：表面粗糙，粘附性和均匀性差
+\end{itemize}
+
+\textbf{影响因素：}压力、温度、硅烷及杂质浓度
+
+\textbf{LPCVD优点：}
+\begin{itemize}
+    \item 薄膜均匀性好
+    \item 产量高
+    \item 批处理能力强
+\end{itemize}
+
+\subsection{二氧化硅薄膜（SiO$_2$）}
+
+\subsubsection{应用}
+
+淀积SiO$_2$薄膜不能替代热生长，它与热生长氧化膜是互补的：
+
+\begin{itemize}
+    \item 金属布线的绝缘层
+    \item 离子注入或扩散的掩膜
+    \item 增加场氧化物厚度
+    \item 器件或IC的钝化层
+    \item 扩散源（含As、P或B的氧化物）
+\end{itemize}
+
+\textbf{特点：}淀积氧化膜的保形性好（6:1）、粘度低
+
+\subsubsection{低温淀积（300$\sim$500°C）}
+
+\textbf{三种主要方法：}
+
+\textbf{方法一：硅烷氧化法}
+\begin{equation}
+\text{SiH}_4 + \text{O}_2 \rightarrow \text{SiO}_2 + 2\text{H}_2
+\end{equation}
+
+\textbf{方法二：TEOS分解法}（常用于Al膜上淀积SiO$_2$）
+
+TEOS（正硅酸乙酯，Tetraethyl orthosilicate）：Si(OC$_2$H$_5$)$_4$
+
+\begin{equation}
+\text{Si}(\text{OC}_2\text{H}_5)_4 \rightarrow \text{SiO}_2 + \text{副产物}
+\end{equation}
+
+\textbf{方法三：硅烷与氧化剂反应}
+
+\subsubsection{中温淀积（500$\sim$800°C）}
+
+\textbf{应用：}制备均匀性和台阶覆盖性好的多晶硅栅的绝缘层
+
+\textbf{淀积速率的影响因素：}
+\begin{itemize}
+    \item 反应温度：$\text{淀积速率} \propto \exp(-E_a/kT)$
+    \item TEOS分压：$\text{淀积速率} \propto (1-\exp(P/P_0))$，其中$P_0$=30Pa
+\end{itemize}
+
+\textbf{活化能$E_a$：}
+\begin{itemize}
+    \item 硅烷：0.6 eV / 0 eV
+    \item 二氯硅烷：1.9 eV / 1.4 eV
+\end{itemize}
+
+\subsubsection{高温淀积（$\sim$900°C）}
+
+\begin{equation}
+\text{SiCl}_2\text{H}_2 + 2\text{N}_2\text{O} \rightarrow \text{SiO}_2 + 2\text{N}_2 + 2\text{HCl}
+\end{equation}
+
+\textbf{优点：}
+\begin{itemize}
+    \item 介电强度高
+    \item 薄膜均匀性高
+    \item 台阶覆盖性好
+    \item 常用于多晶硅栅上的绝缘层
+\end{itemize}
+
+\textbf{缺点：}会释放Cl
+
+\subsubsection{SiO$_2$薄膜性质对比}
+
+不同沉积方法得到的SiO$_2$薄膜性质有所差异，需根据具体应用选择合适的方法。
+
+\subsection{氮化硅薄膜（Si$_3$N$_4$/SiN$_x$）}
+
+\subsubsection{应用}
+
+\begin{itemize}
+    \item \textbf{钝化层（Passivation layer）：}薄膜致密，抗划伤能力强，可有效阻挡水汽和Na$^+$扩散
+    \item \textbf{作为掩膜（As a mask）：}作为选择氧化的掩膜，SiN$_x$的氧化速率慢
+    \item \textbf{其他应用：}MOSFETs侧墙、CMP的刻蚀停止层等
+\end{itemize}
+
+\subsubsection{LPCVD技术}
+
+\textbf{反应式：}
+\begin{equation}
+3\text{SiCl}_2\text{H}_2 + 4\text{NH}_3 \rightarrow \text{Si}_3\text{N}_4 + 6\text{HCl} + 6\text{H}_2
+\end{equation}
+
+\textbf{优点：}薄膜均匀性好、产量高
+
+\textbf{影响因素：}
+\begin{itemize}
+    \item 淀积速率和薄膜性质受温度、压力与反应剂浓度的控制
+    \item SiCl$_2$H$_2$/SiCl$_2$H$_2$ ratio $\uparrow$ → R$\uparrow$
+    \item NH$_3$ ratio $\uparrow$ → R$\downarrow$
+\end{itemize}
+
+\subsubsection{PECVD技术}
+
+\textbf{特点：}沉积温度低，淀积速率随温度、输入功率与反应剂压强的增加而增大
+
+\subsubsection{LPCVD与PECVD氮化硅对比}
+
+\begin{longtable}{|M{2cm}|M{1.5cm}|M{1.8cm}|M{1.5cm}|M{2cm}|M{1.5cm}|M{1.5cm}|M{2cm}|}
+\hline
+\textbf{技术} & \textbf{化学式} & \textbf{含氢量(at\%)} & \textbf{密度(g/cm$^3$)} & \textbf{应力(Dyn/cm$^2$)} & \textbf{电阻率($\Omega\cdot$cm)} & \textbf{介电常数} & \textbf{介电强度(V/cm)} \\
+\hline
+LPCVD & Si$_3$N$_4$ & 8 & 2.9$\sim$3.1 & 10$^{10}$ & 10$^{16}$ & 7 & 10$^7$ \\
+\hline
+PECVD & SiNH & 20$\sim$25 & 2.4$\sim$2.8 & 10$^9$ & 10$^5$-10$^{21}$ & — & 1-6$\times$10$^6$ \\
+\hline
+\end{longtable}
+
+\subsection{金属薄膜（Metal Films）}
+
+\subsubsection{CVD沉积金属}
+
+\textbf{W（钨塞）：}
+\begin{itemize}
+    \item 用于短程互连中的孔填充
+    \item 钨源：WF$_6$、WCl$_6$
+\end{itemize}
+
+\textbf{TiN：}
+\begin{itemize}
+    \item 用作扩散阻挡层、粘结层
+    \item LPCVD温度：600°C以上
+\end{itemize}
+
+\subsection{台阶覆盖性（Step Coverage）}
+
+不同反应剂的台阶覆盖性比较：
+
+\begin{itemize}
+    \item \textbf{TEOS/SiCl$_2$H$_2$：}台阶覆盖性好，保形性优异
+    \item \textbf{SiH$_4$：}台阶覆盖性相对较差
+\end{itemize}
+
+\newpage
+
+\section{原子层沉积（ALD）}
+
+\subsection{ALD基本原理}
+
+\textbf{ALD（Atomic Layer Deposition）}：一种基于有序、表面自饱和反应的化学气相沉积薄膜的方法。
+
+ALD实现了先进芯片制造中新材料的使用。
+
+\subsubsection{ALD的优点}
+
+\begin{enumerate}
+    \item \textbf{膜厚度可被良好控制}，并在晶圆上实现出色的均匀性
+    \item \textbf{极好的保形性：}ALD可以制造出与晶圆形状高度吻合的薄膜层，而且器件图形顶部、侧面和底部沉积的膜厚度都是相同的。这种极好的保形性是形成高纵横比和3D结构的关键
+    \item \textbf{原子级光滑度：}ALD产生的膜表面由易控制的化学成份组成，可达到原子级的光滑度
+    \item \textbf{精确控制：}约1埃/cycle（每周期沉积约1埃厚度）
+\end{enumerate}
+
+\subsection{PEALD}
+
+\textbf{PEALD（Plasma Enhanced ALD）}：等离子体增强原子层沉积
+
+\textbf{特点：}
+\begin{itemize}
+    \item 生长速率快，周期短
+    \item 可使用在线椭偏仪监测厚度及折射率变化
+\end{itemize}
+
+\subsection{ALD沉积薄膜}
+
+\subsubsection{高K介质（High-k Dielectric）}
+
+常见高K介质材料及其介电常数：
+
+\begin{itemize}
+    \item Al$_2$O$_3$：$\varepsilon$ $\approx$ 13
+    \item HfO$_2$：$\varepsilon$ $\approx$ 25
+    \item ZrO$_2$：$\varepsilon$ $\approx$ 27
+    \item Ta$_2$O$_5$：$\varepsilon$ $\approx$ 25
+    \item TiO$_2$：$\varepsilon$ $\approx$ 40
+\end{itemize}
+
+\textbf{等效氧化层厚度（EOT）：}
+\begin{equation}
+\text{EOT} = \text{厚度} \times \frac{\varepsilon_{ox}}{\varepsilon_{HK}}
+\end{equation}
+
+\subsubsection{金属栅}
+
+\begin{itemize}
+    \item TiN/TiAl等金属
+    \item 替代传统多晶硅栅
+\end{itemize}
+
+\subsection{ALD应用}
+
+\subsubsection{自对准图形技术（Self Aligned Pattern）}
+
+\begin{itemize}
+    \item ALD在自对准图形技术中起到关键作用
+    \item 能比当前的光刻技术形成更小的图形
+    \item 这层间隔膜必须高度保形并且非常均匀，因为它将限定最终图形的关键尺寸
+\end{itemize}
+
+\subsubsection{3D NAND（闪存芯片）}
+
+\begin{itemize}
+    \item 在存储器孔的侧壁上形成介电膜
+    \item 金属ALD也被用来替代栅格方案中的字线填充
+\end{itemize}
+
+\subsubsection{FinFET}
+
+\begin{itemize}
+    \item FinFET的薄栅极侧壁的间隔物必须形成极其均匀的厚度并没有小孔
+    \item ALD能把控制栅极和三维鳍结构分开，是沉积该层的绝佳方式
+\end{itemize}
+
+\newpage
+
+\section{分子束外延（MBE）}
+
+\subsection{MBE基本原理}
+
+\textbf{MBE（Molecular Beam Epitaxy）}：在超高真空条件（$\sim$10$^{-8}$Pa）下，由一种或几种加热原子或分子束与晶片表面反应生长超薄外延层的工艺。
+
+\textbf{应用：}第二代、第三代半导体薄膜制备
+
+\subsubsection{MBE的特点}
+
+\begin{enumerate}
+    \item 生长速率低（$\sim$1 $\mu$m/hr）
+    \item 外延层厚度可控制在原子层量级
+    \item 精确控制化学配比
+    \item 精确控制掺杂分布
+\end{enumerate}
+
+\subsection{超高真空的必要性}
+
+高纯薄膜的淀积必须在超高真空系统中进行，原因如下：
+
+\begin{enumerate}
+    \item \textbf{保证直线输运：}源材料的气相原子和分子在真空中的输运必须直线运动，以保证源材料原子和分子有效淀积在衬底上。真空度太低，蒸发的气相原子或分子将会不断和残余气体分子碰撞，改变方向
+    \item \textbf{防止氧化：}残余气体中的氧和水汽会使金属和衬底氧化
+    \item \textbf{减少杂质：}残余气体和其他杂质原子/分子也会淀积在衬底
+\end{enumerate}
+
+\subsection{MBE设备}
+
+\textbf{MBE结构示意图主要部件：}
+
+系统集成了电子枪、质谱仪、蒸发源及杂质源等部件，可同时进行薄膜淀积、清洗及原位化学表征等功能。
+
+\textbf{原位清洗方法：}
+\begin{itemize}
+    \item 低能离子轰击
+    \item 高温烘烤
+\end{itemize}
+
+\subsection{外延类型}
+
+\subsubsection{按材料分类}
+
+\begin{enumerate}
+    \item \textbf{同质外延（Homoepitaxy）：}外延层和衬底材料完全相同
+    \begin{itemize}
+        \item 例：n-Si/N$^+$-Si sub
+    \end{itemize}
+    
+    \item \textbf{异质外延（Heteroepitaxy）：}外延层和衬底材料不同
+    \begin{itemize}
+        \item 例：AlGaAs/GaAs-sub
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{按晶格匹配分类}
+
+\begin{enumerate}
+    \item \textbf{晶格匹配外延：}外延层和衬底的晶格常数相同
+    \begin{itemize}
+        \item 例：n-Si/N$^+$-Si sub，In$_{0.53}$Ga$_{0.47}$As/InP
+    \end{itemize}
+    
+    \item \textbf{应变层外延：}外延层和衬底的晶格常数不同
+    \begin{itemize}
+        \item 例：Al$_x$Ga$_{1-x}$As/GaAs-sub，SiGe$_x$/Si-sub
+    \end{itemize}
+\end{enumerate}
+
+\subsection{外延层缺陷}
+
+与熔体生长类似，外延生长也会产生各种缺陷，降低器件性能（迁移率下降、漏电流增大、成品率降低）。
+
+\textbf{主要缺陷类型：}
+
+\begin{enumerate}
+    \item \textbf{源于衬底的缺陷}
+    \item \textbf{界面缺陷}——界面的无序簇或堆垛层错
+    \item \textbf{沉淀物或位错环}——掺杂过饱和引入的杂质沉积
+    \item \textbf{低角度晶界和孪晶}
+    \item \textbf{刃位错}——异质外延的晶格失配过大或超过临界厚度
+\end{enumerate}
+
+\textbf{临界厚度：}
+\begin{itemize}
+    \item 外延层超过临界厚度时，释放应力，形成刃位错
+    \item 应变层外延必须控制在临界厚度以内
+\end{itemize}
+
+\newpage
+
+\section{CVD技术对比总结}
+
+\subsection{各种CVD技术对比}
+
+\begin{longtable}{|L{2cm}|L{2.5cm}|L{3cm}|L{7cm}|}
+\hline
+\textbf{技术} & \textbf{工作压力} & \textbf{温度范围} & \textbf{特点与应用} \\
+\hline
+\endfirsthead
+\hline
+\textbf{技术} & \textbf{工作压力} & \textbf{温度范围} & \textbf{特点与应用} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+
+APCVD & 常压 & 300$\sim$500°C & 设备简单，用于钝化层 \\
+\hline
+
+LPCVD & 0.1$\sim$10 Torr & 500$\sim$900°C & 均匀性好，批处理，用于poly-Si、SiO$_2$、Si$_3$N$_4$ \\
+\hline
+
+PECVD & 低压 & 100$\sim$400°C & 低温沉积，用于a-Si、SiO$_2$、SiN$_x$ \\
+\hline
+
+MOCVD & 低压$\sim$常压 & 500$\sim$800°C & III-V族化合物外延 \\
+\hline
+
+ALD & 低压 & 低温 & 原子级控制，高保形性，用于高K介质、金属栅 \\
+\hline
+
+MBE & 超高真空 & — & 原子级控制，用于III-V族异质结构 \\
+\hline
+
+\end{longtable}
+
+\subsection{核心概念对照}
+
+\begin{longtable}{|L{4cm}|L{11cm}|}
+\hline
+\textbf{概念} & \textbf{关键要点} \\
+\hline
+\endfirsthead
+\hline
+\textbf{概念} & \textbf{关键要点} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+
+CVD定义 & 通过气相化学反应在衬底表面沉积固态薄膜的方法 \\
+\hline
+
+CVD三个必要条件 & 反应物足够蒸气压、副产物挥发、薄膜和基体低蒸气压 \\
+\hline
+
+Grove模型 & 质量输运控制或反应速率控制，取决于$h_g$和$K_s$的相对大小 \\
+\hline
+
+PECVD & 等离子体增强，100$\sim$400°C低温沉积 \\
+\hline
+
+LPCVD & 低压CVD，均匀性好，批处理能力强 \\
+\hline
+
+MOCVD & 有机金属源，用于III-V族化合物外延 \\
+\hline
+
+多晶硅沉积 & SiH$_4$热分解，600$\sim$650°C，用于栅极、导体 \\
+\hline
+
+SiO$_2$沉积 & 低温（TEOS）、中温、高温（DCS+N$_2$O）多种方法 \\
+\hline
+
+Si$_3$N$_4$沉积 & 钝化层，阻挡水汽和Na$^+$，LPCVD更致密 \\
+\hline
+
+ALD & 原子层沉积，1埃/cycle，极好保形性，用于高K/金属栅 \\
+\hline
+
+高K介质 & Al$_2$O$_3$、HfO$_2$、ZrO$_2$等，EOT=$t \times \varepsilon_{ox}/\varepsilon_{HK}$ \\
+\hline
+
+MBE & 分子束外延，超高真空，原子级控制，III-V族外延 \\
+\hline
+
+同质/异质外延 & 同材料/不同材料，晶格匹配/应变层 \\
+\hline
+
+临界厚度 & 超过则释放应力形成位错 \\
+\hline
+
+台阶覆盖性 & TEOS > SiH$_4$，保形性是3D结构关键 \\
+\hline
+
+\end{longtable}
+
+\newpage
+
+\section{常见考点与复习建议}
+
+\subsection{重点掌握内容}
+
+\begin{enumerate}
+    \item CVD反应体系的三个必要条件
+    \item CVD基本过程的八个步骤
+    \item Grove模型：质量输运控制vs反应速率控制
+    \item 各种CVD技术的特点和应用场景（APCVD、LPCVD、PECVD、MOCVD）
+    \item 多晶硅LPCVD沉积：反应式、温度范围、应用
+    \item SiO$_2$沉积的三种温度区间和对应方法
+    \item Si$_3$N$_4$的应用（钝化层、掩膜）
+    \item ALD的原理、优点和应用（高K介质、FinFET、3D NAND）
+    \item MBE的特点和外延类型（同质/异质、晶格匹配/应变层）
+\end{enumerate}
+
+\subsection{重要公式}
+
+\begin{enumerate}
+    \item 硅烷热分解：$\text{SiH}_4 \xrightarrow{600\sim650°C} \text{Si} + 2\text{H}_2$
+    \item 等效氧化层厚度：EOT = 厚度 $\times$ $\varepsilon_{ox}/\varepsilon_{HK}$
+    \item LPCVD氮化硅反应：$3\text{SiCl}_2\text{H}_2 + 4\text{NH}_3 \rightarrow \text{Si}_3\text{N}_4 + 6\text{HCl} + 6\text{H}_2$
+    \item 高温SiO$_2$沉积：$\text{SiCl}_2\text{H}_2 + 2\text{N}_2\text{O} \rightarrow \text{SiO}_2 + 2\text{N}_2 + 2\text{HCl}$
+\end{enumerate}
+
+\subsection{常见对比题}
+
+\begin{enumerate}
+    \item LPCVD vs PECVD氮化硅的差异
+    \item CVD SiO$_2$ vs 热生长SiO$_2$的应用场景
+    \item 同质外延 vs 异质外延
+    \item 晶格匹配外延 vs 应变层外延
+    \item ALD vs 传统CVD的优势
+\end{enumerate}
+
+\subsection{与前后章节的联系}
+
+\begin{itemize}
+    \item \textbf{与氧化章节：}CVD SiO$_2$与热氧化SiO$_2$互补使用
+    \item \textbf{与扩散章节：}多晶硅可作为扩散源
+    \item \textbf{与离子注入章节：}CVD薄膜可作为注入掩膜
+    \item \textbf{与光刻章节：}ALD用于自对准图形技术
+    \item \textbf{与刻蚀章节：}Si$_3$N$_4$作为刻蚀停止层
+    \item \textbf{与器件章节：}高K介质/金属栅用于先进CMOS
+\end{itemize}
+
+\newpage
+
+\section{Homework参考}
+
+\subsection{DC等离子体辉光放电的适用范围}
+
+\textbf{题目：}DC等离子体辉光放电适合沉积哪类薄膜，不适合沉积哪类薄膜，为什么？
+
+\subsubsection{DC等离子体辉光放电原理}
+
+DC（直流）等离子体辉光放电是通过在两个电极之间施加直流电压，使气体电离产生等离子体的方法。电子从阴极发射，在电场作用下加速并与气体分子碰撞，产生电离，形成稳定的辉光放电。
+
+\subsubsection{适合沉积的薄膜类型}
+
+\textbf{DC等离子体适合沉积\underline{导电薄膜}：}
+
+\begin{enumerate}
+    \item \textbf{金属薄膜：}
+    \begin{itemize}
+        \item Al（铝）
+        \item Cu（铜）
+        \item Ti（钛）
+        \item W（钨）
+        \item Au（金）
+        \item Cr（铬）等
+    \end{itemize}
+    
+    \item \textbf{导电化合物薄膜：}
+    \begin{itemize}
+        \item TiN（氮化钛）
+        \item TaN（氮化钽）等
+    \end{itemize}
+\end{enumerate}
+
+\textbf{原因：}
+\begin{itemize}
+    \item 导电靶材可以形成完整的电流回路
+    \item 电子能够从靶材表面持续发射
+    \item 离子轰击靶材时产生的二次电子可维持放电
+    \item 靶材表面不会积累电荷
+\end{itemize}
+
+\subsubsection{不适合沉积的薄膜类型}
+
+\textbf{DC等离子体不适合沉积\underline{绝缘薄膜}：}
+
+\begin{enumerate}
+    \item \textbf{氧化物薄膜：}
+    \begin{itemize}
+        \item SiO$_2$（二氧化硅）
+        \item Al$_2$O$_3$（氧化铝）
+        \item HfO$_2$（氧化铪）等
+    \end{itemize}
+    
+    \item \textbf{氮化物薄膜：}
+    \begin{itemize}
+        \item Si$_3$N$_4$（氮化硅）
+        \item AlN（氮化铝）等
+    \end{itemize}
+\end{enumerate}
+
+\textbf{原因：}
+\begin{itemize}
+    \item \textbf{电荷积累问题：}绝缘靶材表面会积累正电荷（离子轰击后），无法通过导电消散
+    \item \textbf{电场屏蔽：}积累的电荷会屏蔽外加电场，降低离子轰击能量
+    \item \textbf{放电熄灭：}严重时会导致辉光放电熄灭，无法维持稳定的溅射过程
+    \item \textbf{靶材损伤：}局部电荷积累可能导致电弧放电，损坏靶材
+\end{itemize}
+
+\subsubsection{解决方案}
+
+对于绝缘薄膜的沉积，应采用以下方法：
+
+\begin{enumerate}
+    \item \textbf{RF（射频）溅射：}
+    \begin{itemize}
+        \item 使用交变电场（通常13.56 MHz）
+        \item 电子在每个周期内能够中和靶材表面积累的正电荷
+        \item 可以有效溅射绝缘靶材
+    \end{itemize}
+    
+    \item \textbf{反应溅射：}
+    \begin{itemize}
+        \item 使用金属靶材（导电）+ 反应气体（如O$_2$、N$_2$）
+        \item 在衬底表面形成化合物薄膜
+        \item 例：Ti靶 + O$_2$ → TiO$_2$薄膜
+    \end{itemize}
+    
+    \item \textbf{脉冲DC溅射：}
+    \begin{itemize}
+        \item 周期性反转电极极性
+        \item 部分解决电荷积累问题
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{总结}
+
+\begin{longtable}{|L{3cm}|L{4cm}|L{7.5cm}|}
+\hline
+\textbf{等离子体类型} & \textbf{适用薄膜} & \textbf{原因} \\
+\hline
+
+DC等离子体 & 导电薄膜（金属等） & 电流回路完整，无电荷积累 \\
+\hline
+
+RF等离子体 & 绝缘薄膜（氧化物、氮化物） & 交变电场中和电荷，避免电荷积累 \\
+\hline
+
+\end{longtable}
+
 \end{document}

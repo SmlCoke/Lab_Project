@@ -1,7 +1,7 @@
 * "simulator" "HSPICE" 
 * "version" "L-2016.03-2 win64"
 * "format" "HSP"
-* "rundate" "19:21:50 11/26/2025 "
+* "rundate" "22:10:58 12/01/2025 "
 * "netlist" "task1.sp "
 * "runtitle" "*****************************************************"
 * time =    0.            
@@ -11,13 +11,13 @@
 + gmindc=   1.0000p       
 .nodeset
 + inv1_out = 749.9787m       
-+ inv2_out =  14.8650u       
++ inv2_out =  14.8450u       
 + inv_load_out = 749.9792m       
-+ nand3_out = 133.4135u       
-+ nor2_out = 749.9152m       
++ nand3_out =  53.5586u       
++ nor2_out = 749.9579m       
 + vdd = 750.0000m       
 + vpulse =   0.            
-+ xnand3.source1 =  89.0091u       
-+ xnand3.source2 =  44.5379u       
-+ xnor2.source_p1 = 749.9576m       
++ xnand3.source1 =  35.7728u       
++ xnand3.source2 =  17.9199u       
++ xnor2.source_p1 = 749.9790m       
 ***   END: Saved Operating Point ***                     

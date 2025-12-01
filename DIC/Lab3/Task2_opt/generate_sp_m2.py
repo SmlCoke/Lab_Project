@@ -1,4 +1,16 @@
 # gen_sp.py
+# 
+# 本脚本用于生成Task2优化版本（m=2个缓冲反相器）的SPICE仿真文件
+# 
+# 关键概念：
+# - CM (CMulti): 逻辑门的输入栅电容相对于参考反相器的输入栅电容倍数
+# - SN, SP: NMOS和PMOS晶体管的尺寸(NFIN参数)
+# 
+# CM到SN/SP的转换关系（来自Relation.md）：
+# - INV:   SN = CM, SP = CM
+# - NAND2: SN = CM/1.5*2, SP = CM/1.5  (g = 1.5)
+# - NOR2:  SN = CM/1.5, SP = CM/1.5*2  (g = 1.5)
+#
 from pathlib import Path
 
 TEMPLATE_TOP = """*****************************************************
@@ -9,10 +21,10 @@ TEMPLATE_TOP = """*****************************************************
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n 
-.param XNAND2_size = 1
-.param XNOR2_size = 1
-.param buffer_0_size = 1
-.param buffer_1_size = 1
+.param CM_NAND2 = 1
+.param CM_NOR2 = 1
+.param CM_buffer_0 = 1
+.param CM_buffer_1 = 1
 
 * lib
 .include '../../16nfet.pm'
@@ -28,77 +40,86 @@ VA0 A0 0 DC 'SUPPLY'
 * We believe that the bulk of all PMOS transistors should be connected to VDD, and the bulk of all NMOS transistors should be connected to GND.
 
 * Sub circuit: INVerter definition
-.subckt INV in out vdd gnd size=1 Lg=20n
-Mn out in gnd gnd nfet L='Lg' NFIN ='size'
-Mp out in vdd vdd pfet L='Lg' NFIN ='size'
+* CM到SN/SP转换: SN = CM, SP = CM
+.subckt INV in out vdd gnd SN=1 SP=1 Lg=20n
+Mn out in gnd gnd nfet L='Lg' NFIN ='SN'
+Mp out in vdd vdd pfet L='Lg' NFIN ='SP'
 .ends INV
 
 * Sub circuit: 2-NAND
-.subckt NAND2 in1 in2 out vdd gnd size=1 Lg=20n
+* g = 1.5
+* CM到SN/SP转换: SN = CM/1.5*2, SP = CM/1.5
+.subckt NAND2 in1 in2 out vdd gnd SN=1 SP=1 Lg=20n
 * PUN
-Mp1 out in1 vdd vdd pfet L='Lg' NFIN='size'
-Mp2 out in2 vdd vdd pfet L='Lg' NFIN='size'
+Mp1 out in1 vdd vdd pfet L='Lg' NFIN='SP'
+Mp2 out in2 vdd vdd pfet L='Lg' NFIN='SP'
 * PDN
-Mn1 out in1 source1 gnd nfet L='Lg' NFIN='size'
-Mn2 source1 in2 gnd gnd nfet L='Lg' NFIN='size'
+Mn1 out in1 source1 gnd nfet L='Lg' NFIN='SN'
+Mn2 source1 in2 gnd gnd nfet L='Lg' NFIN='SN'
 .ends NAND2
 
 * Sub circuit: 2-NOR
-.subckt NOR2 in1 in2 out vdd gnd size=1 Lg=20n
+* g = 1.5
+* CM到SN/SP转换: SN = CM/1.5, SP = CM/1.5*2
+.subckt NOR2 in1 in2 out vdd gnd SN=1 SP=1 Lg=20n
 *PUN
-Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='size'
-Mp2 source_p1 in2 vdd vdd pfet L='Lg' NFIN='size'
+Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='SP'
+Mp2 source_p1 in2 vdd vdd pfet L='Lg' NFIN='SP'
 *PDN
-Mn1 out in1 gnd gnd nfet L='Lg' NFIN='size'
-Mn2 out in2 gnd gnd nfet L='Lg' NFIN='size'
+Mn1 out in1 gnd gnd nfet L='Lg' NFIN='SN'
+Mn2 out in2 gnd gnd nfet L='Lg' NFIN='SN'
 .ends NOR2
 
 * Circuit: 4 to 16 decoder
 * The first layer is 4 inverters. After this layer, we get 4 outputs
 * which are NA3, NA2, NA1, NA0
-Xinv31 A3 NA3 vdd gnd INV size = '1' Lg = '20n'
-Xinv21 A2 NA2 vdd gnd INV size = '1' Lg = '20n'
-Xinv11 A1 NA1 vdd gnd INV size = '1' Lg = '20n'
-Xinv01 A0 NA0 vdd gnd INV size = '1' Lg = '20n'
+Xinv31 A3 NA3 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv21 A2 NA2 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv11 A1 NA1 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv01 A0 NA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 
 * The second layer is 4 inverters. After this layer, we get 4 outputs
 * which are PA3, PA2, PA1, PA0
-Xinv32 NA3 PA3 vdd gnd INV size = '1' Lg = '20n'
-Xinv22 NA2 PA2 vdd gnd INV size = '1' Lg = '20n'
-Xinv12 NA1 PA1 vdd gnd INV size = '1' Lg = '20n'
-Xinv02 NA0 PA0 vdd gnd INV size = '1' Lg = '20n'
+Xinv32 NA3 PA3 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv22 NA2 PA2 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv12 NA1 PA1 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv02 NA0 PA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 
 * The third layer is 8 NAND2 gates. After this layer, we get 8 outputs
 * which is Cartesian Product of (PA3, NA3) with (PA2, NA2) and (PA1, NA1) with (PA0, NA0)
-.param x = 1
-XNAND2_0 NA1 NA0 NA1_NA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_1 NA1 PA0 NA1_PA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_2 PA1 NA0 PA1_NA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_3 PA1 PA0 PA1_PA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_4 NA3 NA2 NA3_NA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_5 NA3 PA2 NA3_PA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_6 PA3 NA2 PA3_NA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_7 PA3 PA2 PA3_PA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
+* NAND2: SN_NAND2 = CM_NAND2/1.5*2, SP_NAND2 = CM_NAND2/1.5
+.param SN_NAND2 = 'int(CM_NAND2/1.5*2+0.5)'
+.param SP_NAND2 = 'int(CM_NAND2/1.5+0.5)'
+XNAND2_0 NA1 NA0 NA1_NA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_1 NA1 PA0 NA1_PA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_2 PA1 NA0 PA1_NA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_3 PA1 PA0 PA1_PA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_4 NA3 NA2 NA3_NA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_5 NA3 PA2 NA3_PA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_6 PA3 NA2 PA3_NA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_7 PA3 PA2 PA3_PA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 
 * The last layer is 16 NOR2 gates. After this layer, we get 16 outputs
 * which is A3'A2'A1'A0', A3'A2'A1'A0, to A3A2A1A0
-.param y = 1
-XNOR2_0  NA3_NA2 NA1_NA0 word_0  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_1  NA3_NA2 NA1_PA0 word_1  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_2  NA3_NA2 PA1_NA0 word_2  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_3  NA3_NA2 PA1_PA0 word_3  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_4  NA3_PA2 NA1_NA0 word_4  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_5  NA3_PA2 NA1_PA0 word_5  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_6  NA3_PA2 PA1_NA0 word_6  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_7  NA3_PA2 PA1_PA0 word_7  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_8  PA3_NA2 NA1_NA0 word_8  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_9  PA3_NA2 NA1_PA0 word_9  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_10 PA3_NA2 PA1_NA0 word_10 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_11 PA3_NA2 PA1_PA0 word_11 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_12 PA3_PA2 NA1_NA0 word_12 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_13 PA3_PA2 NA1_PA0 word_13 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_14 PA3_PA2 PA1_NA0 word_14 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'   
+* NOR2: SN_NOR2 = CM_NOR2/1.5, SP_NOR2 = CM_NOR2/1.5*2
+.param SN_NOR2 = 'int(CM_NOR2/1.5+0.5)'
+.param SP_NOR2 = 'int(CM_NOR2/1.5*2+0.5)'
+XNOR2_0  NA3_NA2 NA1_NA0 word_0  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_1  NA3_NA2 NA1_PA0 word_1  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_2  NA3_NA2 PA1_NA0 word_2  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_3  NA3_NA2 PA1_PA0 word_3  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_4  NA3_PA2 NA1_NA0 word_4  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_5  NA3_PA2 NA1_PA0 word_5  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_6  NA3_PA2 PA1_NA0 word_6  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_7  NA3_PA2 PA1_PA0 word_7  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_8  PA3_NA2 NA1_NA0 word_8  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_9  PA3_NA2 NA1_PA0 word_9  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_10 PA3_NA2 PA1_NA0 word_10 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_11 PA3_NA2 PA1_PA0 word_11 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_12 PA3_PA2 NA1_NA0 word_12 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_13 PA3_PA2 NA1_PA0 word_13 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_14 PA3_PA2 PA1_NA0 word_14 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'   
 
 * About critical path, we can obviously see that the path which passes 2'inv is the longest.
 * Such path has an general feature, it has PA!
@@ -115,9 +136,12 @@ XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
 * D = (m+3)2304^[1/(m+3)] + 1 + 2 + 2 + m = (m+3)2304**[1/(m+3)] + m + 5 = NH**(1/N) + N + 1
 * solve critical point of NH**(1/N) + N + 1
 * N = 6.05, hopt = 3.59
-Xinv_buffer_0 word_15 buffer_out_0 vdd gnd INV size = 'buffer_0_size' Lg = '20n'
-Xinv_buffer_1 buffer_out_0 buffer_out_1 vdd gnd INV size = 'buffer_1_size' Lg = '20n'
-Xinv_load buffer_out_1 load_out vdd gnd INV size = '128' Lg = '20n'
+
+* Buffer inverters (m=2)
+* INV: SN = SP = CM
+Xinv_buffer_0 word_15 buffer_out_0 vdd gnd INV SN='CM_buffer_0' SP='CM_buffer_0' Lg = '20n'
+Xinv_buffer_1 buffer_out_0 buffer_out_1 vdd gnd INV SN='CM_buffer_1' SP='CM_buffer_1' Lg = '20n'
+Xinv_load buffer_out_1 load_out vdd gnd INV SN='128' SP='128' Lg = '20n'
 
 {sweepdata}
 
@@ -134,32 +158,35 @@ def load_parameter_lists():
     """
     生成参数扫描列表，在最优值附近进行精细扫描
     
-    最优值参考：
-    - XNAND2_size = 2 (小值，步长±1)
-    - XNOR2_size = 2 (小值，步长±1)
-    - buffer_0_size = 6 (中等值，步长±1)
-    - buffer_1_size = 27 (大值，步长±2或±3)
+    注意：这里扫描的是CM（输入栅电容倍数），不是直接的晶体管尺寸
+    SPICE中会通过.param语句自动计算对应的SN和SP
+    
+    最优值参考（基于CM）：
+    - CM_NAND2 = 2 (小值，步长±1)
+    - CM_NOR2 = 2 (小值，步长±1)
+    - CM_buffer_0 = 6 (中等值，步长±1)
+    - CM_buffer_1 = 27 (大值，步长±3)
     """
-    # 最优值中心点
+    # 最优值中心点（使用CM）
     center = {
-        'XNAND2_size': 2,
-        'XNOR2_size': 2,
-        'buffer_0_size': 6,
-        'buffer_1_size': 27
+        'CM_NAND2': 2,
+        'CM_NOR2': 2,
+        'CM_buffer_0': 6,
+        'CM_buffer_1': 27
     }
     
     # 定义每个参数的扫描范围和步长
     # 格式：参数名: (中心值, 扫描半径, 步长)
     scan_config = {
-        'XNAND2_size': (center['XNAND2_size'], 1, 1),      # 2±1, 步长1 -> [1, 2, 3]
-        'XNOR2_size': (center['XNOR2_size'], 1, 1),        # 2±1, 步长1 -> [1, 2, 3]
-        'buffer_0_size': (center['buffer_0_size'], 2, 1),  # 6±2, 步长1 -> [4, 5, 6, 7, 8]
-        'buffer_1_size': (center['buffer_1_size'], 6, 3),  # 27±6, 步长3 -> [21, 24, 27, 30, 33]
+        'CM_NAND2': (center['CM_NAND2'], 1, 1),      # 2±1, 步长1 -> [1, 2, 3]
+        'CM_NOR2': (center['CM_NOR2'], 1, 1),        # 2±1, 步长1 -> [1, 2, 3]
+        'CM_buffer_0': (center['CM_buffer_0'], 2, 1),  # 6±2, 步长1 -> [4, 5, 6, 7, 8]
+        'CM_buffer_1': (center['CM_buffer_1'], 6, 3),  # 27±6, 步长3 -> [21, 24, 27, 30, 33]
     }
     
     # 生成每个参数的扫描值列表
     param_ranges = {}
-    for param_name, (center_val, radius, step) in scan_config. items():
+    for param_name, (center_val, radius, step) in scan_config.items():
         min_val = max(1, center_val - radius)  # 确保最小值≥1
         max_val = center_val + radius
         param_ranges[param_name] = list(range(min_val, max_val + 1, step))
@@ -167,15 +194,15 @@ def load_parameter_lists():
     
     # 生成笛卡尔积（所有参数组合）
     parameter_lists = []
-    for xnand2 in param_ranges['XNAND2_size']:
-        for xnor2 in param_ranges['XNOR2_size']:
-            for buf0 in param_ranges['buffer_0_size']:
-                for buf1 in param_ranges['buffer_1_size']:
+    for cm_nand2 in param_ranges['CM_NAND2']:
+        for cm_nor2 in param_ranges['CM_NOR2']:
+            for cm_buf0 in param_ranges['CM_buffer_0']:
+                for cm_buf1 in param_ranges['CM_buffer_1']:
                     parameter_lists.append({
-                        'XNAND2_size': xnand2,
-                        'XNOR2_size': xnor2,
-                        'buffer_0_size': buf0,
-                        'buffer_1_size': buf1
+                        'CM_NAND2': cm_nand2,
+                        'CM_NOR2': cm_nor2,
+                        'CM_buffer_0': cm_buf0,
+                        'CM_buffer_1': cm_buf1
                     })
     print(f"\nGenerated {len(parameter_lists)} parameter combinations")
     print(f"Example parameter combinations:")
@@ -187,16 +214,21 @@ def load_parameter_lists():
     
 
 def GenSpiceScripts(outdir='.'):
+    """
+    生成SPICE仿真脚本
+    """
     parameter_lists = load_parameter_lists()
-    sweepdata_content = [".data sweepdata XNAND2_size XNOR2_size buffer_0_size buffer_1_size\n"]
+    sweepdata_content = [".data sweepdata CM_NAND2 CM_NOR2 CM_buffer_0 CM_buffer_1\n"]
     for i, param_dict in enumerate(parameter_lists, 1):
-        content = sweepdata_content.append(f"+ {param_dict['XNAND2_size']} {param_dict['XNOR2_size']} {param_dict['buffer_0_size']} {param_dict['buffer_1_size']}\n")
+        sweepdata_content.append(f"+ {param_dict['CM_NAND2']} {param_dict['CM_NOR2']} {param_dict['CM_buffer_0']} {param_dict['CM_buffer_1']}\n")
+    sweepdata_content.append(".enddata\n")
     
     sweepdata_content = "".join(sweepdata_content)
-    content = TEMPLATE_TOP.format(sweepdata = sweepdata_content)
+    content = TEMPLATE_TOP.format(sweepdata=sweepdata_content)
     file_name = f"task2_s_opt_m2.sp"
     path_sp = Path(outdir) / file_name
     path_sp.write_text(content, encoding='utf-8')
+    print(f"Generated {file_name}")
 
 if __name__ == '__main__':
     GenSpiceScripts()

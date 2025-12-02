@@ -68,7 +68,7 @@
 [main] init_layout 返回的 pp_ary 长度: 8
 [main] init_layout 返回的 np_ary 长度: 8
 [main] fj: mos_num = 8
-[main] 退火参数 t0= 160000.0 tt= 0.1 decrease= 0.7 times= 8000
+[main] 退火参数 t0= 80000.0 tt= 0.1 decrease= 0.88 times= 16000
 [main] sa_core.run_sa 返回 PMOS 数量: 4
 [main] sa_core.run_sa 返回 NMOS 数量: 4
 [placement_str] 进入 placement_str

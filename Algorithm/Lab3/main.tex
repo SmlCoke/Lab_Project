@@ -39,6 +39,22 @@
 	language=c++,
 }
 
+% 定义终端日志样式
+\lstdefinestyle{terminal}{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!5},   % 浅灰背景
+    frame=single,                     % 加边框
+    breaklines=true,                  % 自动换行
+    keepspaces=true,                  % 保留空格（对齐重要）
+    literate={ }{{\ }}1,              % 防止中文空格被吞（可选）
+    tabsize=4,
+    showstringspaces=false,
+    extendedchars=true,
+    columns=fixed,
+    inputencoding=utf8,
+    escapeinside={(*@}{@*)},          % 如需在代码中插入 LaTeX 命令
+}
+
 \title{算法原理 Lab3 模拟退火算法}
 \author{
 	姓名：\underline{冯峻}~~~~~~
@@ -116,7 +132,7 @@ e^{\Delta E / T} & \text{if } \Delta E \leq 0 \text{ （新解较差）}
 
 \subsubsection{TODO 1: 随机选择位置并调用is\_legal}
 
-从占用位置列表\texttt{occupy}和空位置列表\texttt{empty}中各随机选择一个位置，调用\texttt{is\_legal}函数判断将MOS管从占用位置（即occupy[i]）移动到空位置（即empty[j]）是否合法。is_legal()函数内部会自动尝试各种翻转组合来找到合法布局。
+从占用位置列表\texttt{occupy}和空位置列表\texttt{empty}中各随机选择一个位置，调用\texttt{is\_legal}函数判断将MOS管从占用位置（即occupy[i]）移动到空位置（即empty[j]）是否合法。is\_legal()函数内部会自动尝试各种翻转组合来找到合法布局。
 \begin{lstlisting}
 // 创建随机分布
 std::uniform_int_distribution<int> dist_occ(0, 
@@ -304,7 +320,7 @@ data_file = args.data_file
 
 \subsection{迭代曲线绘制脚本}
 
-编写了Python脚本\texttt{plot\_iter.py}，用于可视化退火过程中的收敛曲线。该脚本读取CSV数据文件，绘制历史最佳分数随温度变化的曲线。同时，该脚本接受\texttt{x_mode}参数，支持绘图时更改横坐标为对数模式（指数速率降温）或者线性模式（线性速率降温）。
+编写了Python脚本\texttt{plot\_iter.py}，用于可视化退火过程中的收敛曲线。该脚本读取CSV数据文件，绘制历史最佳分数随温度变化的曲线。同时，该脚本接受\texttt{x\_mode}参数，支持绘图时更改横坐标为对数模式（指数速率降温）或者线性模式（线性速率降温）。
 
 \begin{lstlisting}[language=Python]
 # 计算历史最佳分数曲线，该曲线必定连续，能够很直白的看出算法优化效果
@@ -328,14 +344,14 @@ if x_mode == 'log':
 
 \subsection{其他}
 
-由于后续会将程序在终端打印出的信息保存到文件，为了防止中文乱码，在\texttt{set_up.py}中，做出如下更改
+由于后续会将程序在终端打印出的信息保存到文件，为了防止中文乱码，在\texttt{set\_up.py}中，做出如下更改
 \begin{lstlisting}[language=Python]
 extra_compile_args = []
 if sys.platform == "win32":
 	extra_compile_args = ["/std:c++17", "/O2", "/utf-8"]
 \end{lstlisting}
 
-增加了utf-8参数，否则在执行命令\texttt{python setup.py build_ext --inplace}时会出现：“warning C4819: 该文件包含不能在当前代码页(936)中表示的字符”。因为源文件是 UTF-8 编码，但 Windows 的中文命令行默认使用 GBK (代码页 936)。
+增加了utf-8参数，否则在执行命令\texttt{python setup.py build\_ext --inplace}时会出现：“warning C4819: 该文件包含不能在当前代码页(936)中表示的字符”。因为源文件是 UTF-8 编码，但 Windows 的中文命令行默认使用 GBK (代码页 936)。
 
 \newpage
 \section{实验过程及数据}
@@ -344,7 +360,7 @@ if sys.platform == "win32":
 
 \begin{itemize}
 	\item \textbf{操作系统}：Windows 11 
-	\item \textbf{编程语言}：C++17、Python 311.13
+	\item \textbf{编程语言}：C++17、Python 3.11.13
 	\item \textbf{编译工具}：pybind11用于C++与Python绑定
 	\item \textbf{测试单元}：AN2D2（8个MOS管：4个PMOS + 4个NMOS）
 \end{itemize}
@@ -354,25 +370,27 @@ if sys.platform == "win32":
 
 \textbf{1. 编译}
 
-\texttt{python setup.py build\_ext --inplace}：编译C++扩展模块。
+\texttt{python setup.py build\_ext --inplace}：
 
-该命令会告诉 setup.py 把编译好的 .pyd 文件直接放在当前源代码目录下，这样 eda.py 就能直接引用。
+编译C++扩展模块，该命令会告诉 setup.py 把编译好的 .pyd 文件直接放在当前源代码目录下，这样 eda.py 就能直接引用。
 
 \textbf{2. 运行模拟退火算法}
 
-\texttt{python eda.py cells.spi AN2D2 "results\20000_1_88_2000\data.csv" > "results\20000_1_88_2000\process.log"}
+\verb|python eda.py cells.spi AN2D2 "results\20000\_1\_88\_2000\data.csv"| 
+\verb|"results\20000\_1\_88\_2000\process.log"|
 
-将eda.py打印的退火日志信息保存到log文件，将退火过程中的评分保存到.csv文件， data_file用于记录模拟退火过程中的数据文件。
+将eda.py打印的退火日志信息保存到log文件，将退火过程中的评分保存到.csv文件， data\_file用于记录模拟退火过程中的数据文件。
 
 \textbf{3. 评分}
 
-\texttt{python evaluator.py AN2D2.json AN2D2 cells.spi > "results\20000_1_88_2000\score.log"}
+\verb|python evaluator.py AN2D2.json AN2D2 cells.spi| 
+\verb|> "results\20000\_1\_88\_2000\score.log"|
 
 将评分的信息保存到.log文件。
 
 \textbf{4. 绘制迭代曲线}
 
-\texttt{python plot\_iter.py "results\20000_1_88_2000\data.csv" log}
+\verb|python plot\_iter.py "results\20000\_1\_88\_2000\data.csv" log|
 
 \subsection{实验参数设置}
 
@@ -383,6 +401,96 @@ if sys.platform == "win32":
 	\item 降温因子$\alpha$：$0.z$，如88表示0.88
 	\item 每温度迭代次数$times$：$w \times \text{mos\_num}$
 \end{enumerate}
+
+\subsection{运行结果展示示例}
+
+\textbf{1. 模拟退火算法运行日志}
+\begin{lstlisting}[style=terminal,caption={模拟退火算法运行日志（2000\_1\_88\_2000示例）}]
+[main] netlist = cells.spi cell = AN2D2
+[main] data_file = results\20000_1_88_2000\data.csv
+[read_cell] 打开网表文件: cells.spi
+[read_cell] 找到 .SUBCKT: ['.SUBCKT', 'AN2D2', 'A1', 'A2', 'Z', 'VDD', 'VSS']
+[read_cell] 找到 .ENDS，子电路读取结束
+[read_cell] 子电路内容行数: 10
+[main] read_cell 返回行数: 10
+[init] 处理 cell: AN2D2
+[pro_head] pins: ['A1', 'A2', 'Z', 'VDD', 'VSS']
+[pro_row] 输入行: ['MM9', 'net14', 'A2', 'VSS', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14']
+[pro_row] 输入行: ['MM8', 'net26', 'A1', 'net14', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM5', 'Z', 'net26', 'VSS', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM5_2', 'Z', 'net26', 'VSS', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM6', 'net26', 'A1', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=170.0n']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM7', 'net26', 'A2', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=0.17u']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM4', 'Z', 'net26', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=0.17u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM4_2', 'Z', 'net26', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=0.17u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_middle] nets: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[init] pins: ['A1', 'A2', 'Z', 'VDD', 'VSS']
+[init] nets: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[init] 行 1 name= MM9 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 2 name= MM8 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 3 name= MM5 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 4 name= MM5_2 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 5 name= MM6 tp_bool= True int_num= 170 拆分个数= 1
+[init] 行 6 name= MM7 tp_bool= True int_num= 170 拆分个数= 1
+[init] 行 7 name= MM4 tp_bool= True int_num= 170 拆分个数= 1
+[init] 行 8 name= MM4_2 tp_bool= True int_num= 170 拆分个数= 1
+[order_moslst] 重新编号后数量: 4
+[order_moslst] 重新编号后数量: 4
+[init] 最终 NMOS 数量: 4
+[init] 最终 PMOS 数量: 4
+[init] w_ref = 8
+[main] pins_idx: [0, 1, 2, 3, 4]
+[main] nets: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[main] 初始 NMOS 数量: 4 PMOS 数量: 4
+[main] w_ref = 8
+[main] mos_num = 8
+[init_layout] 输入 PMOS 数量: 4 NMOS 数量: 4 mos_num = 8
+[complete_lst] 原长度: 7 目标长度: 8 结果长度: 8
+[complete_lst] 原长度: 8 目标长度: 8 结果长度: 8
+[init_layout] 初始 pmos_place 长度: 8
+[init_layout] 初始 nmos_place 长度: 8
+[update_place_ary] 处理完空列, 最终长度: 8
+[init_layout] 压缩后 pplace_ary 长度: 8
+[init_layout] 压缩后 nplace_ary 长度: 8
+[update_mos_ary] 已根据 place 更新 mos_ary
+[update_mos_ary] 已根据 place 更新 mos_ary
+[init_layout] 完成布局, 返回
+[main] init_layout 返回的 pmos_ary 长度: 4
+[main] init_layout 返回的 nmos_ary 长度: 4
+[main] init_layout 返回的 pp_ary 长度: 8
+[main] init_layout 返回的 np_ary 长度: 8
+[main] fj: mos_num = 8
+[main] 退火参数 t0= 160000.0 tt= 0.1 decrease= 0.88 times= 16000
+[main] sa_core.run_sa 返回 PMOS 数量: 4
+[main] sa_core.run_sa 返回 NMOS 数量: 4
+[placement_str] 进入 placement_str
+[mos_ary_str] PMOS 数量: 4 NMOS 数量: 4
+[mos_ary_str] 合并后总长度: 1466
+[write_to_file] 写入文件: AN2D2.json
+[write_to_file] 写入内容长度: 1494
+Placement written to AN2D2.json
+\end{lstlisting}
+
+\textbf{2. 评分程序运行日志}
+\begin{lstlisting}[style=terminal,caption={评分程序运行日志（2000\_1\_88\_2000示例）}]
+Cell score 96.685586 (width: 4, bbox: 3.500000, pin_access: 0.062500, symmetric: 10, drc: 10, runtime: 0s)
+\end{lstlisting}
 
 \subsection{实验数据}
 
@@ -418,13 +526,14 @@ if sys.platform == "win32":
 
 例如，在退火模式：\texttt{results/20000\_1\_88\_2000/}下，生成的收敛曲线如下所示：
 
-\begin{center}
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{results/20000_1_88_2000/data.pdf}
 	\caption{参数组合20000\_1\_88\_2000的收敛曲线}
 	\label{fig:convergence_curve}
-\end{center}
+\end{figure}
 
+\newpage
 \section{分析与讨论}
 
 \subsection{参数影响分析}

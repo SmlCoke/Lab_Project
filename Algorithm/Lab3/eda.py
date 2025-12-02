@@ -422,10 +422,16 @@ def main() -> None:
     parser.add_argument("netlist", help="Path of the netlist file")
     parser.add_argument("cell_name", help="Name of the cell to process")
     parser.add_argument("data_file", help="File to log annealing data")
+    parser.add_argument("x_t0", type=int)
+    parser.add_argument("z_decrease", type=float)
+    parser.add_argument("w_times", type=int)
     args = parser.parse_args()
     cells = args.netlist
     cell = args.cell_name
     data_file = args.data_file
+    x_t0 = args.x_t0
+    z_decrease = args.z_decrease
+    w_times = args.w_times
 
     # args = sys.argv[1:]
     # if len(args) < 2 or len(args) > 3: # fj_pro: 支持可选的第三个参数 data_file, 且该参数可选。用于记录退火过程分数数据
@@ -469,14 +475,10 @@ def main() -> None:
     np_ary_sa = [None if m is None else to_sa_mos(m) for m in np_ary]
 
     print("[main] fj: mos_num =", mos_num)
-    t0 = float(mos_num) * 20000.0
-    tt = 0.1
-    decrease = 0.7
-    times = mos_num * 1000
-    # t0 = float(mos_num) * 10000.0  # fj: 调整初始温度参数
-    # tt = 0.1                     # fj: 调整终止温度参数
-    # decrease = 0.7                # fj: 调整降温速率参数
-    # times = mos_num * 1000        # fj: 调整每个温度的move次数
+    t0 = float(mos_num) * x_t0  # fj: 调整初始温度参数
+    tt = 0.1                     # fj: 调整终止温度参数
+    decrease = z_decrease                # fj: 调整降温速率参数
+    times = mos_num * w_times        # fj: 调整每个温度的move次数
     print("[main] 退火参数 t0=", t0, "tt=", tt, "decrease=", decrease, "times=", times)
 
     new_pary_sa, new_nary_sa, new_pp_sa, new_np_sa = sa_core.run_sa(

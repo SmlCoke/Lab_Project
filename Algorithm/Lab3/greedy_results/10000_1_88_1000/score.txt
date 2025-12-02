@@ -1,0 +1,1 @@
+Cell score 92.227252 (width: 6, bbox: 9.500000, pin_access: 0.125000, symmetric: 10, drc: 10, runtime: 0s)

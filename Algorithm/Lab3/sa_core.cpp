@@ -996,10 +996,13 @@ simulated_annealing_cpp(
                 } else {
                     // 新解更差，以一定概率接受
                     // 概率 = e^(delta/t)，因为分数越高越好，因此delta为负数，t越大概率越高
-                    double threshold = std::exp(delta / t);
-                    if (dist01(rng) < threshold) {
-                        accept = true;
-                    }
+                    // double threshold = std::exp(delta / t);
+                    // if (dist01(rng) < threshold) {
+                    //     accept = true;
+                    // }
+
+                    // 贪心策略，如果新解更差，直接舍弃
+                    accept = false;
                 }
                 
                 // fj_pro: 将当前温度、当前分数、候选分数、是否接受记录到数据文件中，用于绘图

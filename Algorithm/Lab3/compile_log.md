@@ -29,6 +29,10 @@ python evaluator.py AN2D2.json AN2D2 cells.spi > "results\20000_1_88_2000\score.
 ```
 将评分的信息保存到.log文件
 
+### cmd4
+```bash
+python plot_iter.py results\10000_1_8_1000\data.csv log
+```
 ## setup.py的修改：
 ```python
 extra_compile_args = []

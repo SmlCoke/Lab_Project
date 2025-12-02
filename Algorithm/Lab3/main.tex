@@ -362,6 +362,7 @@ if __name__ == "__main__":
                 for time in times:
                     # 构造目录名
                     dir_name = f'{t0}_{t}_{d}_{time}'
+                    # 'greedy_results'可改为'results'用于SA实验
                     result_dir = os.path.join('greedy_results', dir_name)
                     
                     # 如果目录不存在则创建

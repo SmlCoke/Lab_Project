@@ -223,12 +223,8 @@ def solve_q(m):
     else:
         raise ValueError(f"Unsupported m={m}")
     
-# =============================================================================
+
 # accurate的意思是，精确计算每个器件的尺寸和等效扇出，然后实际应用时再取整(四舍五入)
-# 一定程度上防止向下取整的误差累计
-# 
-# 注意：现在计算的是CM（输入栅电容倍数），然后通过转换函数得到SN和SP
-# =============================================================================
 def load_parameter_accurate(m):
     """
     生成参数配置
@@ -242,35 +238,35 @@ def load_parameter_accurate(m):
     q = solve_q(m)
     
     # 计算NOR3的CM（输入栅电容倍数）
-    CM_NOR3 = 512/(q**(m+1))
+    CM_NOR3 = 512/(q**(m+1)) # 数学公式：z1 = 256/q^m, y = 2z1/q
     
-    # 将CM_NOR3转换为SN和SP
+    # 将CM_NOR3转换为SN和SP 
     SN_NOR3_raw, SP_NOR3_raw = cm_to_sn_sp_nor3(CM_NOR3)
     SN_NOR3 = max(1, int(SN_NOR3_raw + 0.5))
     SP_NOR3 = max(1, int(SP_NOR3_raw + 0.5))
 
     # 计算XinvPA0的CM（输入栅电容倍数）
     # 对于INV，CM = 尺寸
-    CM_XinvPA0 = 4*CM_NOR3**(1/2)
+    CM_XinvPA0 = 4*CM_NOR3**(1/2) # 数学公式：x1 = 2(y)^0.5
     SN_XinvPA0, SP_XinvPA0 = cm_to_sn_sp_inv(CM_XinvPA0)
     SN_XinvPA0 = max(1, int(SN_XinvPA0 + 0.5))
     SP_XinvPA0 = max(1, int(SP_XinvPA0 + 0.5))
     
-    # NAND2的CM与XinvPA0相同（在原代码中这样设置）
+    # NAND2的CM与XinvPA0相同（即假设所有的NAND2门与XINVPA0具有相同输入栅电容，简化分析）
     CM_NAND2 = CM_XinvPA0
     SN_NAND2_raw, SP_NAND2_raw = cm_to_sn_sp_nand2(CM_NAND2)
     SN_NAND2 = max(1, int(SN_NAND2_raw + 0.5))
     SP_NAND2 = max(1, int(SP_NAND2_raw + 0.5))
 
     # 逐级计算buffer尺寸（INV的CM = 尺寸）
-    buffer_cm = [q*CM_NOR3/2]
+    buffer_cm = [q*CM_NOR3/2] # 数学公式：z1 = qy/2
     buffer_size_for_use = [max(1, int(size+0.5)) for size in buffer_cm]
 
     for i in range(1, m):
         buffer_cm.append(q*buffer_cm[-1])
         buffer_size_for_use.append(max(1, int(buffer_cm[-1]+0.5)))
 
-    last_node = [f"buffer_out_{0}"]
+    last_node = [f"buffer_out_{0}"] # 标记output结点
     # 对于buffer INV，SN = SP = CM
     instances_lines = [f"Xbuffer_0 word_1 buffer_out_0 vdd gnd INV SN='{buffer_size_for_use[0]}' SP='{buffer_size_for_use[0]}' Lg='20n'\n"]
     for i in range(1, m):
@@ -316,23 +312,23 @@ def write_for_N(m, outdir='.'):
     best_q: {solve_q(m)}
     
     XinvPA0 (INV):
-      CM_XinvPA0: {CM_XinvPA0}
-      SN_XinvPA0: {SN_XinvPA0}
-      SP_XinvPA0: {SP_XinvPA0}
+        CM_XinvPA0: {CM_XinvPA0}
+        SN_XinvPA0（已取整）: {SN_XinvPA0}
+        SP_XinvPA0（已取整）: {SP_XinvPA0}
     
     NAND2:
-      CM_NAND2: {CM_NAND2}
-      SN_NAND2: {SN_NAND2}
-      SP_NAND2: {SP_NAND2}
-    
+        CM_NAND2: {CM_NAND2}
+        SN_NAND2（已取整）: {SN_NAND2}
+        SP_NAND2（已取整）: {SP_NAND2}
+
     NOR3:
-      CM_NOR3: {CM_NOR3}
-      SN_NOR3: {SN_NOR3}
-      SP_NOR3: {SP_NOR3}
-    
-    Buffer sizes (CM, for INV: SN=SP=CM):
-      CM values: {buffer_cm}
-      Sizes for use: {buffer_size_for_use}
+        CM_NOR3: {CM_NOR3}
+        SN_NOR3（已取整）: {SN_NOR3}
+        SP_NOR3（已取整）: {SP_NOR3}
+
+    反相器链: (CM, for INV: SN=SP=CM):
+        CM values: {buffer_cm}
+        Sizes for use: {buffer_size_for_use}
     '''
     
     content = TEMPLATE_TOP.format(

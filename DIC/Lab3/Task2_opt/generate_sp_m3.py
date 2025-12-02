@@ -1,10 +1,7 @@
 # gen_sp.py
 # 
-# 本脚本用于生成Task2优化版本（m=3个缓冲反相器）的SPICE仿真文件
+# 本脚本用于生成Task2二阶段——参数扫描（m=1个缓冲反相器）的SPICE仿真文件
 # 
-# 关键概念：
-# - CM (CMulti): 逻辑门的输入栅电容相对于参考反相器的输入栅电容倍数
-# - SN, SP: NMOS和PMOS晶体管的尺寸(NFIN参数)
 # 
 # CM到SN/SP的转换关系（来自Relation.md）：
 # - INV:   SN = CM, SP = CM
@@ -12,6 +9,7 @@
 # - NOR2:  SN = CM/1.5, SP = CM/1.5*2  (g = 1.5)
 #
 from pathlib import Path
+import itertools
 
 TEMPLATE_TOP = """*****************************************************
 * Lab3 - Task 2: Use Logical Effort to Optimize 4×16 Decoder
@@ -21,12 +19,16 @@ TEMPLATE_TOP = """*****************************************************
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n 
-.param CM_NAND2 = 1
-.param CM_NOR2 = 1
-.param CM_buffer_0 = 1
-.param CM_buffer_1 = 1
-.param CM_buffer_2 = 1
-
+.param SN_NAND2 = 1
+.param SP_NAND2 = 1
+.param SN_NOR2 = 1
+.param SP_NOR2 = 1
+.param SN_buffer_0 = 1
+.param SP_buffer_0 = 1
+.param SN_buffer_1 = 1
+.param SP_buffer_1 = 1
+.param SN_buffer_2 = 1
+.param SP_buffer_2 = 1
 
 * lib
 .include '../../16nfet.pm'
@@ -90,8 +92,6 @@ Xinv02 NA0 PA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 * The third layer is 8 NAND2 gates. After this layer, we get 8 outputs
 * which is Cartesian Product of (PA3, NA3) with (PA2, NA2) and (PA1, NA1) with (PA0, NA0)
 * NAND2: SN_NAND2 = CM_NAND2/1.5*2, SP_NAND2 = CM_NAND2/1.5
-.param SN_NAND2 = 'int(CM_NAND2/1.5*2+0.5)'
-.param SP_NAND2 = 'int(CM_NAND2/1.5+0.5)'
 XNAND2_0 NA1 NA0 NA1_NA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 XNAND2_1 NA1 PA0 NA1_PA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 XNAND2_2 PA1 NA0 PA1_NA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
@@ -104,8 +104,6 @@ XNAND2_7 PA3 PA2 PA3_PA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 * The last layer is 16 NOR2 gates. After this layer, we get 16 outputs
 * which is A3'A2'A1'A0', A3'A2'A1'A0, to A3A2A1A0
 * NOR2: SN_NOR2 = CM_NOR2/1.5, SP_NOR2 = CM_NOR2/1.5*2
-.param SN_NOR2 = 'int(CM_NOR2/1.5+0.5)'
-.param SP_NOR2 = 'int(CM_NOR2/1.5*2+0.5)'
 XNOR2_0  NA3_NA2 NA1_NA0 word_0  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
 XNOR2_1  NA3_NA2 NA1_PA0 word_1  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
 XNOR2_2  NA3_NA2 PA1_NA0 word_2  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
@@ -141,9 +139,9 @@ XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20
 
 * Buffer inverters (m=3)
 * INV: SN = SP = CM
-Xinv_buffer_0 word_15 buffer_out_0 vdd gnd INV SN='CM_buffer_0' SP='CM_buffer_0' Lg = '20n'
-Xinv_buffer_1 buffer_out_0 buffer_out_1 vdd gnd INV SN='CM_buffer_1' SP='CM_buffer_1' Lg = '20n'
-Xinv_buffer_2 buffer_out_1 buffer_out_2 vdd gnd INV SN='CM_buffer_2' SP='CM_buffer_2' Lg = '20n'
+Xinv_buffer_0 word_15 buffer_out_0 vdd gnd INV SN="SN_buffer_0" SP="SP_buffer_0" Lg = '20n'
+Xinv_buffer_1 buffer_out_0 buffer_out_1 vdd gnd INV SN="SN_buffer_1" SP="SP_buffer_1" Lg = '20n'
+Xinv_buffer_2 buffer_out_1 buffer_out_2 vdd gnd INV SN="SN_buffer_2" SP="SP_buffer_2" Lg = '20n'
 Xinv_load buffer_out_2 load_out vdd gnd INV SN='128' SP='128' Lg = '20n'
 
 {sweepdata}
@@ -158,86 +156,108 @@ Xinv_load buffer_out_2 load_out vdd gnd INV SN='128' SP='128' Lg = '20n'
 
 """
 
-def load_parameter_lists():
+def load_parameter_accurate():
     """
-    生成参数扫描列表，在最优值附近进行精细扫描
-    
-    注意：这里扫描的是CM（输入栅电容倍数），不是直接的晶体管尺寸
-    SPICE中会通过.param语句自动计算对应的SN和SP
-    
-    最优值参考（基于CM）：
-    - CM_NAND2 = 2 (小值，步长±1)
-    - CM_NOR2 = 1 (小值，步长±1)
-    - CM_buffer_0 = 3 (中等值，步长±1)
-    - CM_buffer_1 = 10 (大值，步长±3)
-    - CM_buffer_2 = 35 (大值，步长±5)
+    生成参数扫描列表。
+    根据逻辑门类型自动计算匹配的SP尺寸，确保PDN和PUN导通电阻相同。
+    配置方式：指定SN变量名、逻辑门类型、SN扫描范围。
     """
-    # 最优值中心点（使用CM）
-    center = {
-        'CM_NAND2': 2,
-        'CM_NOR2': 1,
-        'CM_buffer_0': 3,
-        'CM_buffer_1': 10,
-        'CM_buffer_2': 35
+    '''
+    best value:
+    NAND2:
+        CM_NAND2 (输入栅电容倍数): 1.8171205928321394
+        SN_NAND2 (NMOS尺寸): 2
+        SP_NAND2 (PMOS尺寸): 1
+
+    NOR2:
+        CM_NOR2 (输入栅电容倍数): 1.1006424162982087
+        SN_NOR2 (NMOS尺寸): 1
+        SP_NOR2 (PMOS尺寸): 1
+
+    反相器链：
+        缓冲反相器数量 m: 3
+        缓冲反相器输入栅电容: [2.666666666666666, 9.691309828438074, 35.220557321542664]
+        缓冲反相器实际用到的尺寸: [3, 10, 35]
+    '''
+    # 1. 配置区域
+    # 格式： "SN变量名": ("逻辑门类型", [SN扫描值列表])
+    # 程序会自动推导对应的 SP变量名 (将SN替换为SP)
+    # 支持的逻辑门类型: INV, NAND2, NOR2, NAND3, NOR3
+    gate_configs = {
+        "SN_NAND2": ("NAND2", [1, 2, 3]), 
+        "SN_NOR2": ("NOR2", [1, 2]),
+        "SN_buffer_0": ("INV",   [2, 3, 4]),
+        "SN_buffer_1": ("INV",   [8, 10, 12]),
+        "SN_buffer_2": ("INV",   [33, 35, 37]),
     }
+
+    # ---------------- 以下逻辑自动处理 ----------------
     
-    # 定义每个参数的扫描范围和步长
-    # 格式：参数名: (中心值, 扫描半径, 步长)
-    scan_config = {
-        'CM_NAND2': (center['CM_NAND2'], 1, 1),      # 2±1, 步长1 -> [1, 2, 3]
-        'CM_NOR2': (center['CM_NOR2'], 1, 1),        # 1±1, 步长1 -> [1, 2]
-        'CM_buffer_0': (center['CM_buffer_0'], 1, 1),  # 3±1, 步长1 -> [2, 3, 4]
-        'CM_buffer_1': (center['CM_buffer_1'], 2, 3),  # 10±2, 步长3 -> [8, 11, 14]
-        'CM_buffer_2': (center['CM_buffer_2'], 7, 5),  # 35±7, 步长5 -> [28, 33, 38]
-    }
+    param_names = []      # 存储 .data 的表头变量名
+    stage_combinations = [] # 存储每一级逻辑门的 (SN, SP) 组合列表
+
+    # 遍历配置，生成每一级的参数对
+    for sn_name, (gate_type, sn_values) in gate_configs.items():
+        sp_name = sn_name.replace("SN", "SP")
+        
+        # 添加到表头 (顺序必须与后面数据生成的顺序一致)
+        param_names.append(sn_name)
+        param_names.append(sp_name)
+        
+        # 计算该级逻辑门所有可能的 (SN, SP) 组合，在这一步必须确保PUN和PDN的等效电阻相同，也就是说是P管和N管的尺寸是有一定关系的，关系如下：
+        current_stage_pairs = []
+        for sn in sn_values:
+            sp = 0
+            if gate_type == "INV":
+                sp = sn
+            elif gate_type == "NAND2":
+                sp = sn / 2.0
+            elif gate_type == "NOR2":
+                sp = sn * 2.0
+            elif gate_type == "NAND3":
+                sp = sn / 3.0
+            elif gate_type == "NOR3":
+                sp = sn * 3.0
+            else:
+                raise ValueError(f"Unknown gate type: {gate_type}")
+            
+            # 强制保留整数
+            sp = int(sp+0.5)
+            current_stage_pairs.append((sn, sp))
+        
+        stage_combinations.append(current_stage_pairs)
+
+    # 生成所有级逻辑门的笛卡尔积组合
+    combinations = list(itertools.product(*stage_combinations))
+
+    # 构造 .data 语句
+    lines = []
+    lines.append(f".data sweepdata {' '.join(param_names)}")
     
-    # 生成每个参数的扫描值列表
-    param_ranges = {}
-    for param_name, (center_val, radius, step) in scan_config.items():
-        min_val = max(1, center_val - radius)  # 确保最小值≥1
-        max_val = center_val + radius
-        param_ranges[param_name] = list(range(min_val, max_val + 1, step))
-        print(f"{param_name}: {param_ranges[param_name]}")
+    for combo in combinations:
+        # 展平元组: ((sn2, sp2), (sn3, sp3)) -> (sn2, sp2, sn3, sp3)
+        flat_combo = []
+        for pair in combo:
+            flat_combo.extend(pair)
+            
+        # 将数字转换为字符串并用空格连接
+        line = f"+ {' '.join(map(str, flat_combo))}"
+        lines.append(line)
     
-    # 生成笛卡尔积（所有参数组合）
-    parameter_lists = []
-    for cm_nand2 in param_ranges['CM_NAND2']:
-        for cm_nor2 in param_ranges['CM_NOR2']:
-            for cm_buf0 in param_ranges['CM_buffer_0']:
-                for cm_buf1 in param_ranges['CM_buffer_1']:
-                    for cm_buf2 in param_ranges['CM_buffer_2']:
-                        parameter_lists.append({
-                            'CM_NAND2': cm_nand2,
-                            'CM_NOR2': cm_nor2,
-                            'CM_buffer_0': cm_buf0,
-                            'CM_buffer_1': cm_buf1,
-                            'CM_buffer_2': cm_buf2
-                        })
-    print(f"\nGenerated {len(parameter_lists)} parameter combinations")
-    print(f"Example parameter combinations:")
-    for i, params in enumerate(parameter_lists[:3]):
-        print(f"  {i+1}. {params}")
-    print(f"  ...")
-    
-    return parameter_lists
+    return "\n".join(lines)
     
 
 def GenSpiceScripts(outdir='.'):
     """
     生成SPICE仿真脚本
     """
-    parameter_lists = load_parameter_lists()
-    sweepdata_content = [".data sweepdata CM_NAND2 CM_NOR2 CM_buffer_0 CM_buffer_1 CM_buffer_2\n"]
-    for i, param_dict in enumerate(parameter_lists, 1):
-        sweepdata_content.append(f"+ {param_dict['CM_NAND2']} {param_dict['CM_NOR2']} {param_dict['CM_buffer_0']} {param_dict['CM_buffer_1']} {param_dict['CM_buffer_2']}\n")
-    sweepdata_content.append(".enddata\n")
 
-    sweepdata_content = "".join(sweepdata_content)
+    sweepdata_content = load_parameter_accurate()
     content = TEMPLATE_TOP.format(sweepdata=sweepdata_content)
     file_name = f"task2_s_opt_m3.sp"
     path_sp = Path(outdir) / file_name
     path_sp.write_text(content, encoding='utf-8')
-    print(f"Generated {file_name}")
+    print(f"Generated {file_name} !")
 
 if __name__ == '__main__':
     GenSpiceScripts()

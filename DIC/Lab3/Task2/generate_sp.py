@@ -135,18 +135,15 @@ XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 SN="{SN_NOR2}" SP="{SP_NOR2}" Lg =
 * N = 6.05, hopt = 3.59
 {instance_lines}
 
-.tran 1p 20n 
+.tran 1p 10n 
 .probe V(*) I(*)
 {measure_lines}
 .measure tran tp param='(tpLH+tpHL)/2'
 .end
 """
 
-# =============================================================================
-# CM到SN/SP转换函数
-# 根据Relation.md中的对应关系，将CM（输入栅电容倍数）转换为SN和SP（晶体管尺寸）
-# =============================================================================
 
+# CM到SN/SP转换函数
 def cm_to_sn_sp_inv(cm):
     """
     INV: SN = SP = CM
@@ -175,12 +172,7 @@ def cm_to_sn_sp_nor2(cm):
     sp = cm / 1.5 * 2
     return sn, sp
 
-# =============================================================================
 # accurate的意思是，精确计算每个器件的尺寸和等效扇出，然后实际应用时再取整(四舍五入)，
-# 一定程度上防止向下取整的误差累计
-# 
-# 注意：这里计算的是CM（输入栅电容倍数），然后通过转换函数得到SN和SP
-# =============================================================================
 def load_parameter_accurate(m):
     """
     生成参数配置
@@ -221,7 +213,7 @@ def load_parameter_accurate(m):
     # 计算第一级缓冲反相器的尺寸
     # NOR2的等效扇出 = hopt/g/b = hopt/(3/2)/1
     XNOR2_f = hopt/(3/2)/1
-    X_inv_buffer_0_size = XNOR2_f * CM_NOR2  # 缓冲反相器的输入栅电容 = NOR2的CM * 等效扇出
+    X_inv_buffer_0_size = XNOR2_f * CM_NOR2  # 缓冲反相器的输入栅电容(等于尺寸) = NOR2的CM * 等效扇出
     
     if (m==0):
         inst_lines = ["Xinv_load word_15 load_out vdd gnd INV SN='128' SP='128' Lg = '20n'"]
@@ -243,18 +235,18 @@ def load_parameter_accurate(m):
     buffer_inv_size_for_use = []  # 存储实际用到的缓冲反相器尺寸，因为要取整
     buffer_inv_size_for_use.append(buffer_0_size_int)
 
-    last_node = ["buffer_out_0"]
+    last_node = ["buffer_out_0"] # 记录最后一个出现的结点，用于标记output结点
 
     for i in range(m-1):
         buffer_inv_size = buffer_inv_sizes[-1] * buffer_inv_fs[-1]  # 先计算当前缓冲反相器的尺寸
         f_val = hopt/1/1  # 计算当前缓冲反相器的等效扇出
         buffer_inv_fs.append(f_val)
         buffer_inv_sizes.append(buffer_inv_size)
-        buffer_size_int = max(1, int(buffer_inv_size + 0.5))
+        buffer_size_int = max(1, int(buffer_inv_size + 0.5)) # 反相器的CM必须为整数，因为P管和N管的NFIN必须为整数
         inst_lines.append(f"Xinv_buffer_{i+1} buffer_out_{i} buffer_out_{i+1} vdd gnd INV SN='{buffer_size_int}' SP='{buffer_size_int}' Lg = '20n'")
 
         buffer_inv_size_for_use.append(buffer_size_int)
-        last_node.append(f"buffer_out_{i+1}")
+        last_node.append(f"buffer_out_{i+1}")  # 用于标记output结点
 
     inst_lines.append(f"Xinv_load {last_node[-1]} load_out vdd gnd INV SN='128' SP='128' Lg = '20n'")
     all_fs = [Xinv2_f, XNAND2_f, XNOR2_f] + buffer_inv_fs
@@ -301,15 +293,20 @@ def write_for_N(m, outdir='.'):
     Dmin = {f(m+3)}
     
     NAND2:
-      CM_NAND2 (输入栅电容倍数): {CM_NAND2}
-      SN_NAND2: {SN_NAND2}
-      SP_NAND2: {SP_NAND2}
-    
+        CM_NAND2 (输入栅电容倍数): {CM_NAND2}
+        SN_NAND2 (NMOS尺寸): {SN_NAND2}
+        SP_NAND2 (PMOS尺寸): {SP_NAND2}
+
     NOR2:
-      CM_NOR2 (输入栅电容倍数): {CM_NOR2}
-      SN_NOR2: {SN_NOR2}
-      SP_NOR2: {SP_NOR2}
-    
+        CM_NOR2 (输入栅电容倍数): {CM_NOR2}
+        SN_NOR2 (NMOS尺寸): {SN_NOR2}
+        SP_NOR2 (PMOS尺寸): {SP_NOR2}
+
+    反相器链：
+        缓冲反相器数量 m: {m}
+        缓冲反相器输入栅电容: {all_cms[3:]}
+        缓冲反相器实际用到的尺寸: {all_cms_for_use[3:]}
+        
     All gate f(from Xinv2): {all_fs}
     All gate CM(from Xinv2): {all_cms}
     All gate CM(for use, from Xinv2): {all_cms_for_use}
@@ -322,8 +319,8 @@ def write_for_N(m, outdir='.'):
     )
 
     # 自动创建目录并保存脚本
-    path_dir = Path(outdir) / f'm={m}'   # 目标文件夹，例如 ./N=4
-    path_dir.mkdir(parents=True, exist_ok=True)  # ✅ 自动创建（含父目录）
+    path_dir = Path(outdir) / f'm={m}'   
+    path_dir.mkdir(parents=True, exist_ok=True) 
     path_sp = path_dir / f"task2_m{m}.sp"   # 最终文件路径
     path_log = path_dir / f"task2_m{m}.log"   # 日志文件路径
     path_sp.write_text(content, encoding='utf-8')

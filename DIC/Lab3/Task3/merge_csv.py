@@ -13,9 +13,9 @@ if __name__ == "__main__":
     ms = []
     for root, dirs, files in os.walk(folder_path):
         for file in files:
-            if re.match(r"task3_H1_pro_m\d+\.csv", file):
+            if re.match(r"task3_H2_m\d+\.csv", file):
                 csv_files.append(os.path.join(root, file))
-                match = re.search(r"task3_H1_pro_m(\d+)\.csv", str(file))
+                match = re.search(r"task3_H2_m(\d+)\.csv", str(file))
                 ms.append(match.group(1) if match else None)
 
     # 读取所有csv文件，并将它们合并成一个DataFrame
@@ -27,4 +27,4 @@ if __name__ == "__main__":
 
     merged_df = pd.concat(df_list, ignore_index=True)
     print(merged_df)
-    merged_df.to_csv(os.path.join(folder_path, "merged_H1_pro.csv"), index=False)
+    merged_df.to_csv(os.path.join(folder_path, "merged_H2.csv"), index=False)

@@ -198,12 +198,8 @@ def cm_to_sn_sp_nor3(cm):
     sp = cm / 2 * 3
     return sn, sp
 
-# =============================================================================
+
 # accurate的意思是，精确计算每个器件的尺寸和等效扇出，然后实际应用时再取整(四舍五入)
-# 一定程度上防止向下取整的误差累计
-# 
-# 注意：现在计算的是CM（输入栅电容倍数），然后通过转换函数得到SN和SP
-# =============================================================================
 def load_parameter_accurate(m):
     """
     生成参数配置（H2路径）
@@ -221,7 +217,7 @@ def load_parameter_accurate(m):
     SP_NAND2 = max(1, int(SP_NAND2_raw + 0.5))
 
     # 计算NOR3的CM（输入栅电容倍数）
-    XNAND2_f = hopt/2/8
+    XNAND2_f = hopt/1.5/8
     CM_NOR3 = XNAND2_f * CM_NAND2
     SN_NOR3_raw, SP_NOR3_raw = cm_to_sn_sp_nor3(CM_NOR3)
     SN_NOR3 = max(1, int(SN_NOR3_raw + 0.5))
@@ -234,7 +230,7 @@ def load_parameter_accurate(m):
     SP_XinvPA0 = max(1, int(SP_XinvPA0 + 0.5))
 
     # 逐级计算buffer尺寸（INV的CM = 尺寸）
-    buffer_cm = [hopt*CM_NOR3/2]
+    buffer_cm = [hopt/2*CM_NOR3]
     buffer_sizes_for_use = [max(1, int(size+0.5)) for size in buffer_cm]
 
     buffer_f = hopt/1/1
@@ -288,23 +284,23 @@ def write_for_N(m, outdir='.'):
     hopt: {12288**(1/(m+3))}
     
     XinvPA0 (INV):
-      CM_XinvPA0: {CM_XinvPA0}
-      SN_XinvPA0: {SN_XinvPA0}
-      SP_XinvPA0: {SP_XinvPA0}
+        CM_XinvPA0: {CM_XinvPA0}
+        SN_XinvPA0（已取整）: {SN_XinvPA0}
+        SP_XinvPA0（已取整）: {SP_XinvPA0}
     
     NAND2:
-      CM_NAND2: {CM_NAND2}
-      SN_NAND2: {SN_NAND2}
-      SP_NAND2: {SP_NAND2}
-    
+        CM_NAND2: {CM_NAND2}
+        SN_NAND2（已取整）: {SN_NAND2}
+        SP_NAND2（已取整）: {SP_NAND2}
+
     NOR3:
-      CM_NOR3: {CM_NOR3}
-      SN_NOR3: {SN_NOR3}
-      SP_NOR3: {SP_NOR3}
-    
-    Buffer sizes (CM, for INV: SN=SP=CM):
-      CM values: {buffer_cm}
-      Sizes for use: {buffer_sizes_for_use}
+        CM_NOR3: {CM_NOR3}
+        SN_NOR3（已取整）: {SN_NOR3}
+        SP_NOR3（已取整）: {SP_NOR3}
+
+    反相器链: (CM, for INV: SN=SP=CM):
+        CM values: {buffer_cm}
+        Sizes for use: {buffer_sizes_for_use}
     '''
     
     content = TEMPLATE_TOP.format(

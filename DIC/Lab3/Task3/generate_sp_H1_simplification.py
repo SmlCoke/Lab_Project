@@ -1,6 +1,6 @@
 # gen_sp.py
 # 
-# 本脚本用于生成Task3（5×32译码器）H1_pro路径（简化版）的SPICE仿真文件
+# 本脚本用于生成Task3（5×32译码器）H1路径的SPICE仿真文件
 # 
 # 关键概念：
 # - CM (CMulti): 逻辑门的输入栅电容相对于参考反相器的输入栅电容倍数
@@ -11,7 +11,6 @@
 # - NAND2: SN = CM/1.5*2, SP = CM/1.5  (g = 1.5)
 # - NOR3:  SN = CM/2, SP = CM/2*3      (g = 2)
 #
-
 from pathlib import Path
 
 TEMPLATE_TOP = """*****************************************************
@@ -90,7 +89,7 @@ Xinv02 NA0 PA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 
 * The third layer is 8 NAND2 gates. After this layer, we get 9 outputs
 * which is Cartesian Product of (PA4, NA4) with (PA3, NA3) and (PA2, NA2) with (PA1, NA1)
-* and NPA0
+* and NPA0 (inverter for PA0)
 * XinvPA0: INV, CM = XinvPA0_size, SN = SP = CM
 XinvPA0 PA0 NPA0 vdd gnd INV SN='{SN_XinvPA0}' SP='{SP_XinvPA0}' Lg = '20n'
 
@@ -187,34 +186,24 @@ def cm_to_sn_sp_nor3(cm):
     sn = cm / 2
     sp = cm / 2 * 3
     return sn, sp
+    
 
-# =============================================================================
 # accurate的意思是，精确计算每个器件的尺寸和等效扇出，然后实际应用时再取整(四舍五入)
-# 一定程度上防止向下取整的误差累计
-# 
-# 注意：现在计算的是CM（输入栅电容倍数），然后通过转换函数得到SN和SP
-# =============================================================================
 def load_parameter_accurate(m):
     """
-    生成参数配置（简化版H1路径）
+    生成参数配置（H2路径）
     
     参数:
         m: 缓冲反相器的数量
     """
     hopt = 8192**(1/(m+3))
 
-    # 计算XinvPA0的CM（输入栅电容倍数）
+    # 计算NAND2的CM（输入栅电容倍数）
     Xinv12_f = hopt/1/1
     CM_XinvPA0 = Xinv12_f
-    SN_XinvPA0, SP_XinvPA0 = cm_to_sn_sp_inv(CM_XinvPA0)
-    SN_XinvPA0 = max(1, int(SN_XinvPA0 + 0.5))
-    SP_XinvPA0 = max(1, int(SP_XinvPA0 + 0.5))
-    
-    # NAND2的CM与XinvPA0相同
-    CM_NAND2 = CM_XinvPA0
-    SN_NAND2_raw, SP_NAND2_raw = cm_to_sn_sp_nand2(CM_NAND2)
-    SN_NAND2 = max(1, int(SN_NAND2_raw + 0.5))
-    SP_NAND2 = max(1, int(SP_NAND2_raw + 0.5))
+    SN_XinvPA0_raw, SP_XinvPA0_raw = cm_to_sn_sp_inv(CM_XinvPA0)
+    SN_XinvPA0 = max(1, int(SN_XinvPA0_raw + 0.5))
+    SP_XinvPA0 = max(1, int(SP_XinvPA0_raw + 0.5))
 
     # 计算NOR3的CM（输入栅电容倍数）
     XinvPA0_f = hopt/1/16
@@ -222,9 +211,15 @@ def load_parameter_accurate(m):
     SN_NOR3_raw, SP_NOR3_raw = cm_to_sn_sp_nor3(CM_NOR3)
     SN_NOR3 = max(1, int(SN_NOR3_raw + 0.5))
     SP_NOR3 = max(1, int(SP_NOR3_raw + 0.5))
+    
+    # XinvPA0使用与NAND2相同的CM
+    CM_NAND2 = CM_XinvPA0
+    SN_NAND2_raw, SP_NAND2_raw = cm_to_sn_sp_nand2(CM_NAND2)
+    SN_NAND2 = max(1, int(SN_NAND2_raw + 0.5))
+    SP_NAND2 = max(1, int(SP_NAND2_raw + 0.5))
 
     # 逐级计算buffer尺寸（INV的CM = 尺寸）
-    buffer_cm = [hopt*CM_NOR3/2]
+    buffer_cm = [hopt/2*CM_NOR3]
     buffer_sizes_for_use = [max(1, int(size+0.5)) for size in buffer_cm]
 
     buffer_f = hopt/1/1
@@ -275,26 +270,26 @@ def write_for_N(m, outdir='.'):
     
     log_content = f'''
     When num of Inverters is {m}:
-    hopt: {8192**(1/(m+3))}
+    hopt: {12288**(1/(m+3))}
     
     XinvPA0 (INV):
-      CM_XinvPA0: {CM_XinvPA0}
-      SN_XinvPA0: {SN_XinvPA0}
-      SP_XinvPA0: {SP_XinvPA0}
+        CM_XinvPA0: {CM_XinvPA0}
+        SN_XinvPA0（已取整）: {SN_XinvPA0}
+        SP_XinvPA0（已取整）: {SP_XinvPA0}
     
     NAND2:
-      CM_NAND2: {CM_NAND2}
-      SN_NAND2: {SN_NAND2}
-      SP_NAND2: {SP_NAND2}
-    
+        CM_NAND2: {CM_NAND2}
+        SN_NAND2（已取整）: {SN_NAND2}
+        SP_NAND2（已取整）: {SP_NAND2}
+
     NOR3:
-      CM_NOR3: {CM_NOR3}
-      SN_NOR3: {SN_NOR3}
-      SP_NOR3: {SP_NOR3}
-    
-    Buffer sizes (CM, for INV: SN=SP=CM):
-      CM values: {buffer_cm}
-      Sizes for use: {buffer_sizes_for_use}
+        CM_NOR3: {CM_NOR3}
+        SN_NOR3（已取整）: {SN_NOR3}
+        SP_NOR3（已取整）: {SP_NOR3}
+
+    反相器链: (CM, for INV: SN=SP=CM):
+        CM values: {buffer_cm}
+        Sizes for use: {buffer_sizes_for_use}
     '''
     
     content = TEMPLATE_TOP.format(
@@ -315,5 +310,5 @@ def write_for_N(m, outdir='.'):
     print(f"Written {path_sp} done!")
 
 if __name__ == '__main__':
-    for i in range(1, 9):
+    for i in range(0, 9):
         write_for_N(i, outdir='.')

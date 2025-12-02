@@ -12,7 +12,7 @@
 # - NOR3:  SN = CM/2, SP = CM/2*3      (g = 2)
 #
 from pathlib import Path
-
+import itertools
 TEMPLATE_TOP = """*****************************************************
 * Lab3 - Task 3: Use Logical Effort to Optimize 5×32 Decoder
 *****************************************************
@@ -21,12 +21,6 @@ TEMPLATE_TOP = """*****************************************************
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n 
-.param CM_XinvPA0 = 1
-.param CM_NAND2 = 1
-.param CM_NOR3 = 1
-.param CM_buffer_0 = 1
-.param CM_buffer_1 = 1
-.param CM_buffer_2 = 1
 
 * lib
 .include '../../16nfet.pm'
@@ -96,11 +90,9 @@ Xinv02 NA0 PA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 * which is Cartesian Product of (PA4, NA4) with (PA3, NA3) and (PA2, NA2) with (PA1, NA1)
 * and NPA0
 * XinvPA0: INV, SN = SP = CM
-XinvPA0 PA0 NPA0 vdd gnd INV SN='CM_XinvPA0' SP='CM_XinvPA0' Lg = '20n'
+XinvPA0 PA0 NPA0 vdd gnd INV SN='SN_XinvPA0' SP='SP_XinvPA0' Lg = '20n'
 
 * NAND2: SN = int(CM/1.5*2+0.5), SP = int(CM/1.5+0.5)
-.param SN_NAND2 = 'int(CM_NAND2/1.5*2+0.5)'
-.param SP_NAND2 = 'int(CM_NAND2/1.5+0.5)'
 XNAND2_0 NA2 NA1 NA2_NA1 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 XNAND2_1 NA2 PA1 NA2_PA1 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 XNAND2_2 PA2 NA1 PA2_NA1 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
@@ -113,8 +105,6 @@ XNAND2_7 PA4 PA3 PA4_PA3 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 * The last layer: 32 NOR3 gates (4×4×2 = 32 combinations)
 * Format: NOR3(A4A3_combo, A2A1_combo, A0_signal)
 * NOR3: SN = int(CM/2+0.5), SP = int(CM/2*3+0.5)
-.param SN_NOR3 = 'int(CM_NOR3/2+0.5)'
-.param SP_NOR3 = 'int(CM_NOR3/2*3+0.5)'
 
 * A4A3 = 00 (NA4_NA3)
 XNOR3_0  NA4_NA3 NA2_NA1 PA0  word_0  vdd gnd NOR3 SN="SN_NOR3" SP="SP_NOR3" Lg='20n'
@@ -161,17 +151,19 @@ XNOR3_31 PA4_PA3 PA2_PA1 NPA0 word_31 vdd gnd NOR3 SN="SN_NOR3" SP="SP_NOR3" Lg=
 * H2min = 12288
 * P = (m+3)12288**[1/(m+3)] + m + 6 = N12288**(1/N) + N + 3
 
-* Buffer inverters (m=3), INV: SN = SP = CM
-Xbuffer_0 word_2 buffer_out_0 vdd gnd INV SN='CM_buffer_0' SP='CM_buffer_0' Lg='20n'
-Xbuffer_1 buffer_out_0 buffer_out_1 vdd gnd INV SN='CM_buffer_1' SP='CM_buffer_1' Lg='20n'
-Xbuffer_2 buffer_out_1 buffer_out_2 vdd gnd INV SN='CM_buffer_2' SP='CM_buffer_2' Lg='20n'
-Xinv_load buffer_out_2 load_out vdd gnd INV SN='256' SP='256' Lg='20n'
+* Buffer inverters (m=4), INV: SN = SP = CM
+Xbuffer_0 word_2 buffer_out_0 vdd gnd INV SN='SN_buffer_0' SP='SN_buffer_0' Lg='20n'
+Xbuffer_1 buffer_out_0 buffer_out_1 vdd gnd INV SN='SN_buffer_1' SP='SN_buffer_1' Lg='20n'
+Xbuffer_2 buffer_out_1 buffer_out_2 vdd gnd INV SN='SN_buffer_2' SP='SN_buffer_2' Lg='20n'
+Xbuffer_3 buffer_out_2 buffer_out_3 vdd gnd INV SN='SN_buffer_3' SP='SN_buffer_3' Lg='20n'
+Xbuffer_4 buffer_out_3 buffer_out_4 vdd gnd INV SN='SN_buffer_4' SP='SN_buffer_4' Lg='20n'
+Xinv_load buffer_out_4 load_out vdd gnd INV SN='256' SP='256' Lg='20n'
 {sweepdata}
 
 .tran 1p 10n sweep data = sweepdata
 .probe V(*) I(*)
-.measure tran tpLH TRIG V(NA1) = '0.5*SUPPLY' RISE = 4 TARG V(buffer_out_2) = '0.5*SUPPLY' RISE = 4
-.measure tran tpHL TRIG V(NA1) = '0.5*SUPPLY' FALL = 4 TARG V(buffer_out_2) = '0.5*SUPPLY' FALL = 4
+.measure tran tpLH TRIG V(NA1) = '0.5*SUPPLY' RISE = 4 TARG V(buffer_out_4) = '0.5*SUPPLY' RISE = 4
+.measure tran tpHL TRIG V(NA1) = '0.5*SUPPLY' FALL = 4 TARG V(buffer_out_4) = '0.5*SUPPLY' FALL = 4
 
 .measure tran tp param='(tpLH+tpHL)/2'
 .end
@@ -184,76 +176,106 @@ def load_parameter_lists():
     注意：这里扫描的是CM（输入栅电容倍数），不是直接的晶体管尺寸
     SPICE中会通过.param语句自动计算对应的SN和SP
     """
-    # 最优值中心点（使用CM）
-    center = {
-        'CM_XinvPA0': 2,
-        'CM_NAND2': 2,
-        'CM_NOR3': 1,
-        'CM_buffer_0': 2,
-        'CM_buffer_1': 8,
-        'CM_buffer_2': 40
+    '''
+    best value:
+    XinvPA0 (INV):
+        CM_XinvPA0: 1.6223896036109775
+        SN_XinvPA0（已取整）: 2
+        SP_XinvPA0（已取整）: 2
+    
+    NAND2:
+        CM_NAND2: 1.6223896036109775
+        SN_NAND2（已取整）: 2
+        SP_NAND2（已取整）: 1
+
+    NOR3:
+        CM_NOR3: 0.4386913376508308
+        SN_NOR3（已取整）: 1
+        SP_NOR3（已取整）: 1
+
+    反相器链: (CM, for INV: SN=SP=CM):
+        CM values: [0.7117282653989009, 2.309401076758503, 7.493496595001984, 24.314741940850958, 78.89596907864079]
+        Sizes for use: [1, 2, 7, 24, 79]
+    '''
+    # 1. 配置区域
+    # 格式： "SN变量名": ("逻辑门类型", [SN扫描值列表])
+    # 程序会自动推导对应的 SP变量名 (将SN替换为SP)
+    # 支持的逻辑门类型: INV, NAND2, NOR2, NAND3, NOR3
+    gate_configs = {
+        "SN_XinvPA0": ("INV",   [1, 2, 3]),
+        "SN_NAND2": ("NAND2", [2, 3]), 
+        "SN_NOR3": ("NOR3", [1, 2]),
+        "SN_buffer_0": ("INV",   [1, 2]),
+        "SN_buffer_1": ("INV",   [1, 2, 3]),
+        "SN_buffer_2": ("INV",   [6, 7, 8]),
+        "SN_buffer_3": ("INV",   [22, 24, 26]),
+        "SN_buffer_4": ("INV",   [71, 75, 79])
     }
+
+    # ---------------- 以下逻辑自动处理 ----------------
     
-    # 定义每个参数的扫描范围和步长
-    # 格式：参数名: (中心值, 扫描半径, 步长)
-    scan_config = {
-        'CM_XinvPA0': (center['CM_XinvPA0'], 1, 1),      # 2±1, 步长1 -> [1, 2, 3]
-        'CM_NAND2': (center['CM_NAND2'], 1, 1),      # 2±1, 步长1 -> [1, 2, 3]
-        'CM_NOR3': (center['CM_NOR3'], 1, 1),        # 1±1, 步长1 -> [1, 2]
-        'CM_buffer_0': (center['CM_buffer_0'], 1, 1),  # 2±1, 步长1 -> [2, 3, 4]
-        'CM_buffer_1': (center['CM_buffer_1'], 2, 2),  # 8±2, 步长2 -> [6, 8, 10]
-        'CM_buffer_2': (center['CM_buffer_2'], 9, 3),  # 40±9, 步长3 -> [34, 37, 40, 43, 46.49]
-    }
+    param_names = []      # 存储 .data 的表头变量名
+    stage_combinations = [] # 存储每一级逻辑门的 (SN, SP) 组合列表
+
+    # 遍历配置，生成每一级的参数对
+    for sn_name, (gate_type, sn_values) in gate_configs.items():
+        sp_name = sn_name.replace("SN", "SP")
+        
+        # 添加到表头 (顺序必须与后面数据生成的顺序一致)
+        param_names.append(sn_name)
+        param_names.append(sp_name)
+        
+        # 计算该级逻辑门所有可能的 (SN, SP) 组合，在这一步必须确保PUN和PDN的等效电阻相同，也就是说是P管和N管的尺寸是有一定关系的，关系如下：
+        current_stage_pairs = []
+        for sn in sn_values:
+            sp = 0
+            if gate_type == "INV":
+                sp = sn
+            elif gate_type == "NAND2":
+                sp = sn / 2.0
+            elif gate_type == "NOR2":
+                sp = sn * 2.0
+            elif gate_type == "NAND3":
+                sp = sn / 3.0
+            elif gate_type == "NOR3":
+                sp = sn * 3.0
+            else:
+                raise ValueError(f"Unknown gate type: {gate_type}")
+            
+            # 强制保留整数
+            sp = int(sp+0.5)
+            current_stage_pairs.append((sn, sp))
+        
+        stage_combinations.append(current_stage_pairs)
+
+    # 生成所有级逻辑门的笛卡尔积组合
+    combinations = list(itertools.product(*stage_combinations))
+
+    # 构造 .data 语句
+    lines = []
+    lines.append(f".data sweepdata {' '.join(param_names)}")
     
-    # 生成每个参数的扫描值列表
-    param_ranges = {}
-    for param_name, (center_val, radius, step) in scan_config.items():
-        min_val = max(1, center_val - radius)  # 确保最小值≥1
-        max_val = center_val + radius
-        param_ranges[param_name] = list(range(min_val, max_val + 1, step))
-        print(f"{param_name}: {param_ranges[param_name]}")
+    for combo in combinations:
+        # 展平元组: ((sn2, sp2), (sn3, sp3)) -> (sn2, sp2, sn3, sp3)
+        flat_combo = []
+        for pair in combo:
+            flat_combo.extend(pair)
+            
+        # 将数字转换为字符串并用空格连接
+        line = f"+ {' '.join(map(str, flat_combo))}"
+        lines.append(line)
     
-    # 生成笛卡尔积（所有参数组合）
-    parameter_lists = []
-    for cm_xinvpa0 in param_ranges['CM_XinvPA0']:
-        for cm_nand2 in param_ranges['CM_NAND2']:
-            for cm_nor3 in param_ranges['CM_NOR3']:
-                for cm_buf0 in param_ranges['CM_buffer_0']:
-                    for cm_buf1 in param_ranges['CM_buffer_1']:
-                        for cm_buf2 in param_ranges['CM_buffer_2']:
-                            parameter_lists.append({
-                                'CM_XinvPA0': cm_xinvpa0,
-                                'CM_NAND2': cm_nand2,
-                                'CM_NOR3': cm_nor3,
-                                'CM_buffer_0': cm_buf0,
-                                'CM_buffer_1': cm_buf1,
-                                'CM_buffer_2': cm_buf2
-                            })
-    print(f"\nGenerated {len(parameter_lists)} parameter combinations")
-    print(f"Example parameter combinations:")
-    for i, params in enumerate(parameter_lists[:3]):
-        print(f"  {i+1}. {params}")
-    print(f"  ...")
-    
-    return parameter_lists
+    return "\n".join(lines)
     
 
 def GenSpiceScripts(outdir='.'):
-    """
-    生成SPICE仿真脚本
-    """
-    parameter_lists = load_parameter_lists()
-    sweepdata_content = [".data sweepdata CM_XinvPA0 CM_NAND2 CM_NOR3 CM_buffer_0 CM_buffer_1 CM_buffer_2 \n"]
-    for i, param_dict in enumerate(parameter_lists, 1):
-        sweepdata_content.append(f"+ {param_dict['CM_XinvPA0']} {param_dict['CM_NAND2']} {param_dict['CM_NOR3']} {param_dict['CM_buffer_0']} {param_dict['CM_buffer_1']} {param_dict['CM_buffer_2']}\n")
-    sweepdata_content.append(".enddata\n")
-
-    sweepdata_content = "".join(sweepdata_content)
+    
+    sweepdata_content = load_parameter_lists()
     content = TEMPLATE_TOP.format(sweepdata=sweepdata_content)
-    file_name = f"task3_opt_H2.sp"
+    file_name = f"task3_opt_H2_m5.sp"
     path_sp = Path(outdir) / file_name
     path_sp.write_text(content, encoding='utf-8')
-    print(f"Generated {file_name}")
+    print(f"Generated {file_name} !")
 
 if __name__ == '__main__':
     GenSpiceScripts()

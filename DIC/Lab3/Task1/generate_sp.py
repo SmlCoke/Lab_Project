@@ -102,12 +102,12 @@ def load_parameter_accurate():
     '''
     best value:
     NAND3 int:
-    SN_2: 6 
-    SP_2: 2
-    SN_3: 5 
-    SP_3: 9
-    SN_4: 17 
-    SP_4: 17
+    SN_2: 6(5.5836291546125985)
+    SP_2: 2(1.8612097182041993)
+    SN_3: 5(4.618802153517007)
+    SP_3: 9(9.237604307034013)
+    SN_4: 17(17.193118909176672)
+    SP_4: 17(17.193118909176672)
     '''
     # 1. 配置区域
     # 格式： "SN变量名": ("逻辑门类型", [SN扫描值列表])
@@ -132,7 +132,7 @@ def load_parameter_accurate():
         param_names.append(sn_name)
         param_names.append(sp_name)
         
-        # 计算该级逻辑门所有可能的 (SN, SP) 组合
+        # 计算该级逻辑门所有可能的 (SN, SP) 组合，在这一步必须确保PUN和PDN的等效电阻相同，也就是说是P管和N管的尺寸是有一定关系的，关系如下：
         current_stage_pairs = []
         for sn in sn_values:
             sp = 0
@@ -156,10 +156,9 @@ def load_parameter_accurate():
         stage_combinations.append(current_stage_pairs)
 
     # 生成所有级逻辑门的笛卡尔积组合
-    # combinations 的元素结构类似: ((sn2, sp2), (sn3, sp3), (sn4, sp4))
     combinations = list(itertools.product(*stage_combinations))
 
-    # 构造 HSPICE .data 块字符串
+    # 构造 .data 语句
     lines = []
     lines.append(f".data sweepdata {' '.join(param_names)}")
     
@@ -170,10 +169,8 @@ def load_parameter_accurate():
             flat_combo.extend(pair)
             
         # 将数字转换为字符串并用空格连接
-        line = " ".join(map(str, flat_combo))
+        line = f"+ {' '.join(map(str, flat_combo))}"
         lines.append(line)
-        
-    lines.append(".enddata")
     
     return "\n".join(lines)
 
@@ -195,7 +192,7 @@ def write_for_N(outdir='.'):
     path_sp = path_dir / "task1.sp" 
     path_sp.write_text(content, encoding='utf-8')
     
-    print(f"Generated {len(sweep_data_str.splitlines())-2} combinations.")
+    print(f"Generated {len(sweep_data_str.splitlines())-1} combinations.")
     print(f"Written {path_sp} done!")
 
 if __name__ == '__main__':

@@ -6,10 +6,14 @@
 .temp 25
 .param SUPPLY = 0.75
 .param Lg = 20n 
-.param XNAND2_size = 1
-.param XNOR2_size = 1
-.param buffer_0_size = 1
-.param buffer_1_size = 1
+.param SN_NAND2 = 1
+.param SP_NAND2 = 1
+.param SN_NOR2 = 1
+.param SP_NOR2 = 1
+.param SN_buffer_0 = 1
+.param SP_buffer_0 = 1
+.param SN_buffer_1 = 1
+.param SP_buffer_1 = 1
 
 * lib
 .include '../../16nfet.pm'
@@ -25,77 +29,82 @@ VA0 A0 0 DC 'SUPPLY'
 * We believe that the bulk of all PMOS transistors should be connected to VDD, and the bulk of all NMOS transistors should be connected to GND.
 
 * Sub circuit: INVerter definition
-.subckt INV in out vdd gnd size=1 Lg=20n
-Mn out in gnd gnd nfet L='Lg' NFIN ='size'
-Mp out in vdd vdd pfet L='Lg' NFIN ='size'
+* CM到SN/SP转换: SN = CM, SP = CM
+.subckt INV in out vdd gnd SN=1 SP=1 Lg=20n
+Mn out in gnd gnd nfet L='Lg' NFIN ='SN'
+Mp out in vdd vdd pfet L='Lg' NFIN ='SP'
 .ends INV
 
 * Sub circuit: 2-NAND
-.subckt NAND2 in1 in2 out vdd gnd size=1 Lg=20n
+* g = 1.5
+* CM到SN/SP转换: SN = CM/1.5*2, SP = CM/1.5
+.subckt NAND2 in1 in2 out vdd gnd SN=1 SP=1 Lg=20n
 * PUN
-Mp1 out in1 vdd vdd pfet L='Lg' NFIN='size'
-Mp2 out in2 vdd vdd pfet L='Lg' NFIN='size'
+Mp1 out in1 vdd vdd pfet L='Lg' NFIN='SP'
+Mp2 out in2 vdd vdd pfet L='Lg' NFIN='SP'
 * PDN
-Mn1 out in1 source1 gnd nfet L='Lg' NFIN='size'
-Mn2 source1 in2 gnd gnd nfet L='Lg' NFIN='size'
+Mn1 out in1 source1 gnd nfet L='Lg' NFIN='SN'
+Mn2 source1 in2 gnd gnd nfet L='Lg' NFIN='SN'
 .ends NAND2
 
 * Sub circuit: 2-NOR
-.subckt NOR2 in1 in2 out vdd gnd size=1 Lg=20n
+* g = 1.5
+* CM到SN/SP转换: SN = CM/1.5, SP = CM/1.5*2
+.subckt NOR2 in1 in2 out vdd gnd SN=1 SP=1 Lg=20n
 *PUN
-Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='size'
-Mp2 source_p1 in2 vdd vdd pfet L='Lg' NFIN='size'
+Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='SP'
+Mp2 source_p1 in2 vdd vdd pfet L='Lg' NFIN='SP'
 *PDN
-Mn1 out in1 gnd gnd nfet L='Lg' NFIN='size'
-Mn2 out in2 gnd gnd nfet L='Lg' NFIN='size'
+Mn1 out in1 gnd gnd nfet L='Lg' NFIN='SN'
+Mn2 out in2 gnd gnd nfet L='Lg' NFIN='SN'
 .ends NOR2
 
 * Circuit: 4 to 16 decoder
 * The first layer is 4 inverters. After this layer, we get 4 outputs
 * which are NA3, NA2, NA1, NA0
-Xinv31 A3 NA3 vdd gnd INV size = '1' Lg = '20n'
-Xinv21 A2 NA2 vdd gnd INV size = '1' Lg = '20n'
-Xinv11 A1 NA1 vdd gnd INV size = '1' Lg = '20n'
-Xinv01 A0 NA0 vdd gnd INV size = '1' Lg = '20n'
+Xinv31 A3 NA3 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv21 A2 NA2 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv11 A1 NA1 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv01 A0 NA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 
 * The second layer is 4 inverters. After this layer, we get 4 outputs
 * which are PA3, PA2, PA1, PA0
-Xinv32 NA3 PA3 vdd gnd INV size = '1' Lg = '20n'
-Xinv22 NA2 PA2 vdd gnd INV size = '1' Lg = '20n'
-Xinv12 NA1 PA1 vdd gnd INV size = '1' Lg = '20n'
-Xinv02 NA0 PA0 vdd gnd INV size = '1' Lg = '20n'
+Xinv32 NA3 PA3 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv22 NA2 PA2 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv12 NA1 PA1 vdd gnd INV SN='1' SP='1' Lg = '20n'
+Xinv02 NA0 PA0 vdd gnd INV SN='1' SP='1' Lg = '20n'
 
 * The third layer is 8 NAND2 gates. After this layer, we get 8 outputs
 * which is Cartesian Product of (PA3, NA3) with (PA2, NA2) and (PA1, NA1) with (PA0, NA0)
-.param x = 1
-XNAND2_0 NA1 NA0 NA1_NA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_1 NA1 PA0 NA1_PA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_2 PA1 NA0 PA1_NA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_3 PA1 PA0 PA1_PA0 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_4 NA3 NA2 NA3_NA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_5 NA3 PA2 NA3_PA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_6 PA3 NA2 PA3_NA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
-XNAND2_7 PA3 PA2 PA3_PA2 vdd gnd NAND2 size = "XNAND2_size" Lg = '20n'
+* NAND2: SN_NAND2 = CM_NAND2/1.5*2, SP_NAND2 = CM_NAND2/1.5
+XNAND2_0 NA1 NA0 NA1_NA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_1 NA1 PA0 NA1_PA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_2 PA1 NA0 PA1_NA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_3 PA1 PA0 PA1_PA0 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_4 NA3 NA2 NA3_NA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_5 NA3 PA2 NA3_PA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_6 PA3 NA2 PA3_NA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
+XNAND2_7 PA3 PA2 PA3_PA2 vdd gnd NAND2 SN="SN_NAND2" SP="SP_NAND2" Lg = '20n'
 
 * The last layer is 16 NOR2 gates. After this layer, we get 16 outputs
 * which is A3'A2'A1'A0', A3'A2'A1'A0, to A3A2A1A0
-.param y = 1
-XNOR2_0  NA3_NA2 NA1_NA0 word_0  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_1  NA3_NA2 NA1_PA0 word_1  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_2  NA3_NA2 PA1_NA0 word_2  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_3  NA3_NA2 PA1_PA0 word_3  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_4  NA3_PA2 NA1_NA0 word_4  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_5  NA3_PA2 NA1_PA0 word_5  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_6  NA3_PA2 PA1_NA0 word_6  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_7  NA3_PA2 PA1_PA0 word_7  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_8  PA3_NA2 NA1_NA0 word_8  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_9  PA3_NA2 NA1_PA0 word_9  vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_10 PA3_NA2 PA1_NA0 word_10 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_11 PA3_NA2 PA1_PA0 word_11 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_12 PA3_PA2 NA1_NA0 word_12 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_13 PA3_PA2 NA1_PA0 word_13 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_14 PA3_PA2 PA1_NA0 word_14 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
-XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'   
+* NOR2: SN_NOR2 = CM_NOR2/1.5, SP_NOR2 = CM_NOR2/1.5*2
+XNOR2_0  NA3_NA2 NA1_NA0 word_0  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_1  NA3_NA2 NA1_PA0 word_1  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_2  NA3_NA2 PA1_NA0 word_2  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_3  NA3_NA2 PA1_PA0 word_3  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_4  NA3_PA2 NA1_NA0 word_4  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_5  NA3_PA2 NA1_PA0 word_5  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_6  NA3_PA2 PA1_NA0 word_6  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_7  NA3_PA2 PA1_PA0 word_7  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_8  PA3_NA2 NA1_NA0 word_8  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_9  PA3_NA2 NA1_PA0 word_9  vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_10 PA3_NA2 PA1_NA0 word_10 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_11 PA3_NA2 PA1_PA0 word_11 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_12 PA3_PA2 NA1_NA0 word_12 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_13 PA3_PA2 NA1_PA0 word_13 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_14 PA3_PA2 PA1_NA0 word_14 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'
+XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 SN="SN_NOR2" SP="SP_NOR2" Lg = '20n'   
 
 * About critical path, we can obviously see that the path which passes 2'inv is the longest.
 * Such path has an general feature, it has PA!
@@ -112,242 +121,110 @@ XNOR2_15 PA3_PA2 PA1_PA0 word_15 vdd gnd NOR2 size = "XNOR2_size" Lg = '20n'
 * D = (m+3)2304^[1/(m+3)] + 1 + 2 + 2 + m = (m+3)2304**[1/(m+3)] + m + 5 = NH**(1/N) + N + 1
 * solve critical point of NH**(1/N) + N + 1
 * N = 6.05, hopt = 3.59
-Xinv_buffer_0 word_15 buffer_out_0 vdd gnd INV size = 'buffer_0_size' Lg = '20n'
-Xinv_buffer_1 buffer_out_0 buffer_out_1 vdd gnd INV size = 'buffer_1_size' Lg = '20n'
-Xinv_load buffer_out_1 load_out vdd gnd INV size = '128' Lg = '20n'
 
-.data sweepdata XNAND2_size XNOR2_size buffer_0_size buffer_1_size
-+ 1 1 4 21
-+ 1 1 4 24
-+ 1 1 4 27
-+ 1 1 4 30
-+ 1 1 4 33
-+ 1 1 5 21
-+ 1 1 5 24
-+ 1 1 5 27
-+ 1 1 5 30
-+ 1 1 5 33
-+ 1 1 6 21
-+ 1 1 6 24
-+ 1 1 6 27
-+ 1 1 6 30
-+ 1 1 6 33
-+ 1 1 7 21
-+ 1 1 7 24
-+ 1 1 7 27
-+ 1 1 7 30
-+ 1 1 7 33
-+ 1 1 8 21
-+ 1 1 8 24
-+ 1 1 8 27
-+ 1 1 8 30
-+ 1 1 8 33
-+ 1 2 4 21
-+ 1 2 4 24
-+ 1 2 4 27
-+ 1 2 4 30
-+ 1 2 4 33
-+ 1 2 5 21
-+ 1 2 5 24
-+ 1 2 5 27
-+ 1 2 5 30
-+ 1 2 5 33
-+ 1 2 6 21
-+ 1 2 6 24
-+ 1 2 6 27
-+ 1 2 6 30
-+ 1 2 6 33
-+ 1 2 7 21
-+ 1 2 7 24
-+ 1 2 7 27
-+ 1 2 7 30
-+ 1 2 7 33
-+ 1 2 8 21
-+ 1 2 8 24
-+ 1 2 8 27
-+ 1 2 8 30
-+ 1 2 8 33
-+ 1 3 4 21
-+ 1 3 4 24
-+ 1 3 4 27
-+ 1 3 4 30
-+ 1 3 4 33
-+ 1 3 5 21
-+ 1 3 5 24
-+ 1 3 5 27
-+ 1 3 5 30
-+ 1 3 5 33
-+ 1 3 6 21
-+ 1 3 6 24
-+ 1 3 6 27
-+ 1 3 6 30
-+ 1 3 6 33
-+ 1 3 7 21
-+ 1 3 7 24
-+ 1 3 7 27
-+ 1 3 7 30
-+ 1 3 7 33
-+ 1 3 8 21
-+ 1 3 8 24
-+ 1 3 8 27
-+ 1 3 8 30
-+ 1 3 8 33
-+ 2 1 4 21
-+ 2 1 4 24
-+ 2 1 4 27
-+ 2 1 4 30
-+ 2 1 4 33
-+ 2 1 5 21
-+ 2 1 5 24
-+ 2 1 5 27
-+ 2 1 5 30
-+ 2 1 5 33
-+ 2 1 6 21
-+ 2 1 6 24
-+ 2 1 6 27
-+ 2 1 6 30
-+ 2 1 6 33
-+ 2 1 7 21
-+ 2 1 7 24
-+ 2 1 7 27
-+ 2 1 7 30
-+ 2 1 7 33
-+ 2 1 8 21
-+ 2 1 8 24
-+ 2 1 8 27
-+ 2 1 8 30
-+ 2 1 8 33
-+ 2 2 4 21
-+ 2 2 4 24
-+ 2 2 4 27
-+ 2 2 4 30
-+ 2 2 4 33
-+ 2 2 5 21
-+ 2 2 5 24
-+ 2 2 5 27
-+ 2 2 5 30
-+ 2 2 5 33
-+ 2 2 6 21
-+ 2 2 6 24
-+ 2 2 6 27
-+ 2 2 6 30
-+ 2 2 6 33
-+ 2 2 7 21
-+ 2 2 7 24
-+ 2 2 7 27
-+ 2 2 7 30
-+ 2 2 7 33
-+ 2 2 8 21
-+ 2 2 8 24
-+ 2 2 8 27
-+ 2 2 8 30
-+ 2 2 8 33
-+ 2 3 4 21
-+ 2 3 4 24
-+ 2 3 4 27
-+ 2 3 4 30
-+ 2 3 4 33
-+ 2 3 5 21
-+ 2 3 5 24
-+ 2 3 5 27
-+ 2 3 5 30
-+ 2 3 5 33
-+ 2 3 6 21
-+ 2 3 6 24
-+ 2 3 6 27
-+ 2 3 6 30
-+ 2 3 6 33
-+ 2 3 7 21
-+ 2 3 7 24
-+ 2 3 7 27
-+ 2 3 7 30
-+ 2 3 7 33
-+ 2 3 8 21
-+ 2 3 8 24
-+ 2 3 8 27
-+ 2 3 8 30
-+ 2 3 8 33
-+ 3 1 4 21
-+ 3 1 4 24
-+ 3 1 4 27
-+ 3 1 4 30
-+ 3 1 4 33
-+ 3 1 5 21
-+ 3 1 5 24
-+ 3 1 5 27
-+ 3 1 5 30
-+ 3 1 5 33
-+ 3 1 6 21
-+ 3 1 6 24
-+ 3 1 6 27
-+ 3 1 6 30
-+ 3 1 6 33
-+ 3 1 7 21
-+ 3 1 7 24
-+ 3 1 7 27
-+ 3 1 7 30
-+ 3 1 7 33
-+ 3 1 8 21
-+ 3 1 8 24
-+ 3 1 8 27
-+ 3 1 8 30
-+ 3 1 8 33
-+ 3 2 4 21
-+ 3 2 4 24
-+ 3 2 4 27
-+ 3 2 4 30
-+ 3 2 4 33
-+ 3 2 5 21
-+ 3 2 5 24
-+ 3 2 5 27
-+ 3 2 5 30
-+ 3 2 5 33
-+ 3 2 6 21
-+ 3 2 6 24
-+ 3 2 6 27
-+ 3 2 6 30
-+ 3 2 6 33
-+ 3 2 7 21
-+ 3 2 7 24
-+ 3 2 7 27
-+ 3 2 7 30
-+ 3 2 7 33
-+ 3 2 8 21
-+ 3 2 8 24
-+ 3 2 8 27
-+ 3 2 8 30
-+ 3 2 8 33
-+ 3 3 4 21
-+ 3 3 4 24
-+ 3 3 4 27
-+ 3 3 4 30
-+ 3 3 4 33
-+ 3 3 5 21
-+ 3 3 5 24
-+ 3 3 5 27
-+ 3 3 5 30
-+ 3 3 5 33
-+ 3 3 6 21
-+ 3 3 6 24
-+ 3 3 6 27
-+ 3 3 6 30
-+ 3 3 6 33
-+ 3 3 7 21
-+ 3 3 7 24
-+ 3 3 7 27
-+ 3 3 7 30
-+ 3 3 7 33
-+ 3 3 8 21
-+ 3 3 8 24
-+ 3 3 8 27
-+ 3 3 8 30
-+ 3 3 8 33
+* Buffer inverters (m=3)
+* INV: SN = SP = CM
+Xinv_buffer_0 word_15 buffer_out_0 vdd gnd INV SN="SN_buffer_0" SP="SP_buffer_0" Lg = '20n'
+Xinv_buffer_1 buffer_out_0 buffer_out_1 vdd gnd INV SN="SN_buffer_1" SP="SP_buffer_1" Lg = '20n'
+Xinv_load buffer_out_1 load_out vdd gnd INV SN='128' SP='128' Lg = '20n'
 
+.data sweepdata SN_NAND2 SP_NAND2 SN_NOR2 SP_NOR2 SN_buffer_0 SP_buffer_0 SN_buffer_1 SP_buffer_1
++ 2 1 1 2 4 4 23 23
++ 2 1 1 2 4 4 25 25
++ 2 1 1 2 4 4 27 27
++ 2 1 1 2 4 4 29 29
++ 2 1 1 2 4 4 31 31
++ 2 1 1 2 6 6 23 23
++ 2 1 1 2 6 6 25 25
++ 2 1 1 2 6 6 27 27
++ 2 1 1 2 6 6 29 29
++ 2 1 1 2 6 6 31 31
++ 2 1 1 2 8 8 23 23
++ 2 1 1 2 8 8 25 25
++ 2 1 1 2 8 8 27 27
++ 2 1 1 2 8 8 29 29
++ 2 1 1 2 8 8 31 31
++ 2 1 2 4 4 4 23 23
++ 2 1 2 4 4 4 25 25
++ 2 1 2 4 4 4 27 27
++ 2 1 2 4 4 4 29 29
++ 2 1 2 4 4 4 31 31
++ 2 1 2 4 6 6 23 23
++ 2 1 2 4 6 6 25 25
++ 2 1 2 4 6 6 27 27
++ 2 1 2 4 6 6 29 29
++ 2 1 2 4 6 6 31 31
++ 2 1 2 4 8 8 23 23
++ 2 1 2 4 8 8 25 25
++ 2 1 2 4 8 8 27 27
++ 2 1 2 4 8 8 29 29
++ 2 1 2 4 8 8 31 31
++ 3 2 1 2 4 4 23 23
++ 3 2 1 2 4 4 25 25
++ 3 2 1 2 4 4 27 27
++ 3 2 1 2 4 4 29 29
++ 3 2 1 2 4 4 31 31
++ 3 2 1 2 6 6 23 23
++ 3 2 1 2 6 6 25 25
++ 3 2 1 2 6 6 27 27
++ 3 2 1 2 6 6 29 29
++ 3 2 1 2 6 6 31 31
++ 3 2 1 2 8 8 23 23
++ 3 2 1 2 8 8 25 25
++ 3 2 1 2 8 8 27 27
++ 3 2 1 2 8 8 29 29
++ 3 2 1 2 8 8 31 31
++ 3 2 2 4 4 4 23 23
++ 3 2 2 4 4 4 25 25
++ 3 2 2 4 4 4 27 27
++ 3 2 2 4 4 4 29 29
++ 3 2 2 4 4 4 31 31
++ 3 2 2 4 6 6 23 23
++ 3 2 2 4 6 6 25 25
++ 3 2 2 4 6 6 27 27
++ 3 2 2 4 6 6 29 29
++ 3 2 2 4 6 6 31 31
++ 3 2 2 4 8 8 23 23
++ 3 2 2 4 8 8 25 25
++ 3 2 2 4 8 8 27 27
++ 3 2 2 4 8 8 29 29
++ 3 2 2 4 8 8 31 31
++ 4 2 1 2 4 4 23 23
++ 4 2 1 2 4 4 25 25
++ 4 2 1 2 4 4 27 27
++ 4 2 1 2 4 4 29 29
++ 4 2 1 2 4 4 31 31
++ 4 2 1 2 6 6 23 23
++ 4 2 1 2 6 6 25 25
++ 4 2 1 2 6 6 27 27
++ 4 2 1 2 6 6 29 29
++ 4 2 1 2 6 6 31 31
++ 4 2 1 2 8 8 23 23
++ 4 2 1 2 8 8 25 25
++ 4 2 1 2 8 8 27 27
++ 4 2 1 2 8 8 29 29
++ 4 2 1 2 8 8 31 31
++ 4 2 2 4 4 4 23 23
++ 4 2 2 4 4 4 25 25
++ 4 2 2 4 4 4 27 27
++ 4 2 2 4 4 4 29 29
++ 4 2 2 4 4 4 31 31
++ 4 2 2 4 6 6 23 23
++ 4 2 2 4 6 6 25 25
++ 4 2 2 4 6 6 27 27
++ 4 2 2 4 6 6 29 29
++ 4 2 2 4 6 6 31 31
++ 4 2 2 4 8 8 23 23
++ 4 2 2 4 8 8 25 25
++ 4 2 2 4 8 8 27 27
++ 4 2 2 4 8 8 29 29
++ 4 2 2 4 8 8 31 31
 
-.tran 1p 20n sweep data = sweepdata 
+.tran 1p 20n sweep data = sweepdata
 .probe V(*) I(*)
 .measure tran tpLH TRIG V(NA3) = '0.5*SUPPLY' FALL = 4 TARG V(buffer_out_1) = '0.5*SUPPLY' RISE = 4
 .measure tran tpHL TRIG V(NA3) = '0.5*SUPPLY' RISE = 4 TARG V(buffer_out_1) = '0.5*SUPPLY' FALL = 4
 
 .measure tran tp param='(tpLH+tpHL)/2'
 .end
+

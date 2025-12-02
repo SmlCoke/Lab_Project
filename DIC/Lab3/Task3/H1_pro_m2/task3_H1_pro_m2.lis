@@ -10,15 +10,15 @@
   lic:  
   lic: FLEXlm: v11.2.1 
   lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU 
-  lic: HOSTID: "581cf82b6eec"       PID:      5396 
-****** HSPICE -- L-2016.03-2 win64 (May  2 2016) ******                          Input File: task3_H1_pro_m2.sp                                                  lic:   lic: FLEXlm: v11.2.1  lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU  lic: HOSTID: "581cf82b6eec"       PID:      5396   lic: Using FLEXlm license file: 
+  lic: HOSTID: "581cf82b6eec"       PID:      21280 
+****** HSPICE -- L-2016.03-2 win64 (May  2 2016) ******                          Input File: task3_H1_pro_m2.sp                                                  lic:   lic: FLEXlm: v11.2.1  lic: USER:   21035                HOSTNAME: LAPTOP-EC5F5EVU  lic: HOSTID: "581cf82b6eec"       PID:      21280   lic: Using FLEXlm license file: 
   lic: 27000@LAPTOP-EC5F5EVU 
   lic: Checkout 1 hspice 
   lic: License/Maintenance for hspice will expire on 30-dec-2029/2029.2029 
   lic: 1(in_use)/99(total) FLOATING license(s) on SERVER 27000@LAPTOP-EC5F5EVU 
   lic:   
  lic: Using FLEXlm license file:  lic: 27000@LAPTOP-EC5F5EVU  lic: Checkout 1 hspice  lic: License/Maintenance for hspice will expire on 30-dec-2029/2029.2029  lic: 1(in_use)/99(total) FLOATING license(s) on SERVER 27000@LAPTOP-EC5F5EVU  lic:     **warning** (..\..\16nfet.pm:4) Model nfet device geometries will not be checked against the limits set by lmin, lmax, nfinmin and nfinmax. To enable this check, add a period(.) to the model name(i.e. enable model selector).
-  **warning** (task3_H1_pro_m2.sp:26) Global net name, "gnd", in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
+  **warning** (task3_H1_pro_m2.sp:27) Global net name, "gnd", in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
 1****** HSPICE -- L-2016.03-2 win64 (May  2 2016) ******                        
  ******  
  *****************************************************
@@ -1492,55 +1492,55 @@
  + 0:a0      =   0.       0:a1      =   0.       0:a2      =   0.     
  + 0:a3      =   0.       0:a4      =   0.       0:buffer_o= 749.9786m
  + 0:buffer_o=  14.8354u  0:load_out= 749.9792m  0:na0     = 749.9791m
- + 0:na1     = 749.9780m  0:na2     = 749.9786m  0:na2_na1 =  59.3345u
- + 0:na2_pa1 = 749.9815m  0:na3     = 749.9780m  0:na4     = 749.9786m
- + 0:na4_na3 =  59.3344u  0:na4_pa3 = 749.9815m  0:npa0    = 749.9787m
- + 0:pa0     =  14.8359u  0:pa1     =  14.8358u  0:pa2     =  14.8356u
- + 0:pa2_na1 = 749.9789m  0:pa2_pa1 = 749.9983m  0:pa3     =  14.8358u
- + 0:pa4     =  14.8356u  0:pa4_na3 = 749.9789m  0:pa4_pa3 = 749.9983m
- + 0:vdd     = 750.0000m  0:word_0  = 749.8123m  0:word_1  =  11.9039u
- + 0:word_10 = 835.4568n  0:word_11 = 362.6001n  0:word_12 = 835.5170n
- + 0:word_13 = 362.6138n  0:word_14 = 835.0600n  0:word_15 = 362.5097n
- + 0:word_16 =  14.8111u  0:word_17 = 835.5710n  0:word_18 = 835.4632n
- + 0:word_19 = 362.6015n  0:word_2  =  12.3752u  0:word_20 = 835.5234n
- + 0:word_21 = 362.6152n  0:word_22 = 835.0664n  0:word_23 = 362.5110n
- + 0:word_24 =  14.8021u  0:word_25 = 835.5224n  0:word_26 = 835.4146n
- + 0:word_27 = 362.5910n  0:word_28 = 835.4748n  0:word_29 = 362.6047n
- + 0:word_3  = 831.9785n  0:word_30 = 835.0178n  0:word_31 = 362.5006n
- + 0:word_4  =  12.3761u  0:word_5  = 831.9849n  0:word_6  =  12.3691u
- + 0:word_7  = 831.9364n  0:word_8  =  14.8099u  0:word_9  = 835.5646n
- +12:source1 =  29.7007u 13:source1 = 695.2121m 14:source1 =  16.2334u
- +15:source1 =  56.4014m 16:source1 =  29.7007u 17:source1 = 695.2121m
- +18:source1 =  16.2334u 19:source1 =  56.4014m 20:source_p= 749.8749m
- +20:source_p= 749.9374m 21:source_p=  61.6954m 21:source_p=  76.3415m
- +22:source_p=  62.7635m 22:source_p= 749.9841m 23:source_p=  14.7779m
- +23:source_p= 686.6526m 24:source_p=  62.7656m 24:source_p= 749.9841m
- +25:source_p=  14.7780m 25:source_p= 686.6505m 26:source_p=  62.7500m
- +26:source_p= 749.9841m 27:source_p=  14.7772m 27:source_p= 686.6664m
- +28:source_p= 749.9620m 28:source_p= 749.9810m 29:source_p= 685.4859m
- +29:source_p= 685.4880m 30:source_p= 685.4820m 30:source_p= 749.9979m
- +31:source_p= 671.4660m 31:source_p= 735.2316m 32:source_p= 685.4842m
- +32:source_p= 749.9979m 33:source_p= 671.4673m 33:source_p= 735.2306m
- +34:source_p= 685.4677m 34:source_p= 749.9979m 35:source_p= 671.4580m
- +35:source_p= 735.2382m 36:source_p= 749.9620m 36:source_p= 749.9810m
- +37:source_p= 685.4838m 37:source_p= 685.4859m 38:source_p= 685.4799m
- +38:source_p= 749.9979m 39:source_p= 671.4638m 39:source_p= 735.2315m
- +40:source_p= 685.4821m 40:source_p= 749.9979m 41:source_p= 671.4651m
- +41:source_p= 735.2305m 42:source_p= 685.4656m 42:source_p= 749.9979m
- +43:source_p= 671.4559m 43:source_p= 735.2381m 44:source_p= 749.9620m
- +44:source_p= 749.9810m 45:source_p= 685.4997m 45:source_p= 685.5018m
- +46:source_p= 685.4959m 46:source_p= 749.9979m 47:source_p= 671.4805m
- +47:source_p= 735.2323m 48:source_p= 685.4980m 48:source_p= 749.9979m
- +49:source_p= 671.4818m 49:source_p= 735.2313m 50:source_p= 685.4815m
- +50:source_p= 749.9979m 51:source_p= 671.4725m 51:source_p= 735.2390m
+ + 0:na1     = 749.9777m  0:na2     = 749.9784m  0:na2_na1 =  29.7371u
+ + 0:na2_pa1 = 749.9633m  0:na3     = 749.9777m  0:na4     = 749.9784m
+ + 0:na4_na3 =  29.7370u  0:na4_pa3 = 749.9633m  0:npa0    = 749.9789m
+ + 0:pa0     =  14.8363u  0:pa1     =  14.8359u  0:pa2     =  14.8356u
+ + 0:pa2_na1 = 749.9582m  0:pa2_pa1 = 749.9968m  0:pa3     =  14.8359u
+ + 0:pa4     =  14.8356u  0:pa4_na3 = 749.9582m  0:pa4_pa3 = 749.9968m
+ + 0:vdd     = 750.0000m  0:word_0  = 749.9375m  0:word_1  =  35.6468u
+ + 0:word_10 =   2.4406u  0:word_11 =   1.0210u  0:word_12 =   2.4410u
+ + 0:word_13 =   1.0211u  0:word_14 =   2.4383u  0:word_15 =   1.0204u
+ + 0:word_16 =  44.3916u  0:word_17 =   2.4397u  0:word_18 =   2.4407u
+ + 0:word_19 =   1.0210u  0:word_2  =  37.0807u  0:word_20 =   2.4410u
+ + 0:word_21 =   1.0211u  0:word_22 =   2.4383u  0:word_23 =   1.0204u
+ + 0:word_24 =  44.3375u  0:word_25 =   2.4394u  0:word_26 =   2.4404u
+ + 0:word_27 =   1.0209u  0:word_28 =   2.4408u  0:word_29 =   1.0210u
+ + 0:word_3  =   2.4289u  0:word_30 =   2.4380u  0:word_31 =   1.0204u
+ + 0:word_4  =  37.0863u  0:word_5  =   2.4290u  0:word_6  =  37.0442u
+ + 0:word_7  =   2.4287u  0:word_8  =  44.3845u  0:word_9  =   2.4397u
+ +12:source1 =  14.9021u 13:source1 = 695.2103m 14:source1 =  16.2326u
+ +15:source1 =  56.4013m 16:source1 =  14.9021u 17:source1 = 695.2103m
+ +18:source1 =  16.2326u 19:source1 =  56.4013m 20:source_p= 749.9583m
+ +20:source_p= 749.9792m 21:source_p=  61.6732m 21:source_p=  76.3170m
+ +22:source_p=  62.7560m 22:source_p= 749.9841m 23:source_p=  14.7665m
+ +23:source_p= 686.6365m 24:source_p=  62.7601m 24:source_p= 749.9841m
+ +25:source_p=  14.7667m 25:source_p= 686.6324m 26:source_p=  62.7291m
+ +26:source_p= 749.9841m 27:source_p=  14.7651m 27:source_p= 686.6640m
+ +28:source_p= 749.9620m 28:source_p= 749.9810m 29:source_p= 685.4709m
+ +29:source_p= 685.4730m 30:source_p= 685.4827m 30:source_p= 749.9979m
+ +31:source_p= 671.4590m 31:source_p= 735.2236m 32:source_p= 685.4870m
+ +32:source_p= 749.9979m 33:source_p= 671.4614m 33:source_p= 735.2216m
+ +34:source_p= 685.4541m 34:source_p= 749.9979m 35:source_p= 671.4431m
+ +35:source_p= 735.2368m 36:source_p= 749.9620m 36:source_p= 749.9810m
+ +37:source_p= 685.4667m 37:source_p= 685.4688m 38:source_p= 685.4785m
+ +38:source_p= 749.9979m 39:source_p= 671.4546m 39:source_p= 735.2233m
+ +40:source_p= 685.4828m 40:source_p= 749.9979m 41:source_p= 671.4570m
+ +41:source_p= 735.2213m 42:source_p= 685.4500m 42:source_p= 749.9979m
+ +43:source_p= 671.4387m 43:source_p= 735.2366m 44:source_p= 749.9620m
+ +44:source_p= 749.9810m 45:source_p= 685.4984m 45:source_p= 685.5005m
+ +46:source_p= 685.5102m 46:source_p= 749.9979m 47:source_p= 671.4878m
+ +47:source_p= 735.2250m 48:source_p= 685.5146m 48:source_p= 749.9979m
+ +49:source_p= 671.4903m 49:source_p= 735.2230m 50:source_p= 685.4817m
+ +50:source_p= 749.9979m 51:source_p= 671.4719m 51:source_p= 735.2382m
 
  ******
  *****************************************************
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- tplh=  90.6178p  targ=   7.0460n   trig=   6.9554n
- tphl=  78.4392p  targ=   8.0368n   trig=   7.9583n
- tp=  84.5285p
+ tplh=  86.7260p  targ=   7.0421n   trig=   6.9554n
+ tphl=  84.5575p  targ=   8.0429n   trig=   7.9583n
+ tp=  85.6418p
 
           ***** job concluded
  ******  
@@ -1570,20 +1570,20 @@
   ******  Runtime Statistics (seconds)  ******
 
   analysis           time    # points   tot. iter  conv.iter
-  op point           0.10           1         106
-  transient          2.17       10001        5587        1822 rev=       265
+  op point           0.09           1         107
+  transient          2.16       10001        5473        1821 rev=       252
   readin             0.01
-  errchk             0.02
+  errchk             0.01
   setup              0.00
   output             0.00
 
 
-           peak memory used         52.17 megabytes
-           total cpu time            2.29 seconds
-           total elapsed time        2.38 seconds
-           job started at     12:06:04 11/28/2025
-           job ended   at     12:06:07 11/28/2025
+           peak memory used         52.18 megabytes
+           total cpu time            2.28 seconds
+           total elapsed time        2.35 seconds
+           job started at     14:32:41 12/02/2025
+           job ended   at     14:32:43 12/02/2025
 
 
- init: begin read circuit files,  cpu clock=  9.70E-02                                 option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TLINE\                     option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TI\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\SIGNET\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PCI\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\LIN_TECH\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PET\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\DI0\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\COMLINE\                   option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BURR_BRM\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BJT\                       option runlvl                                                                   option post =     2.00                                                          option runlvl =     6.00                                                  init: end read circuit files,  cpu clock=  9.80E-02 peak memory=        48 mb   init: begin check errors,  cpu clock=  9.80E-02                                 init: end check errors,  cpu clock=  1.14E-01 peak memory=        50 mb         init: begin setup matrix, pivot=     0 cpu clock=  1.14E-01                           establish matrix -- done,  cpu clock=  1.14E-01 peak memory=        51 mb       re-order matrix -- done,  cpu clock=  1.16E-01 peak memory=        51 mb  init: end setup matrix,  cpu clock=  1.17E-01 peak memory=        51 mb         dcop: begin dcop,  cpu clock=  1.18E-01                                         dcop: end dcop,  cpu clock=  2.13E-01 peak memory=        52 mb  tot_iter=      output: task3_H1_pro_m2.mt0                                                     sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  2.13E-01 tran: time= 1.0000E-09 tot_iter=     204 conv_iter=      66 cpu clock= 2.85E-01 tran: time= 2.0000E-09 tot_iter=     817 conv_iter=     262 cpu clock= 5.30E-01 tran: time= 3.0000E-09 tot_iter=    1353 conv_iter=     437 cpu clock= 7.41E-01 tran: time= 4.0000E-09 tot_iter=    2003 conv_iter=     649 cpu clock= 9.99E-01 tran: time= 5.0000E-09 tot_iter=    2531 conv_iter=     823 cpu clock= 1.21E+00 tran: time= 6.0000E-09 tot_iter=    3186 conv_iter=    1036 cpu clock= 1.46E+00 tran: time= 7.0000E-09 tot_iter=    3747 conv_iter=    1219 cpu clock= 1.67E+00 tran: time= 8.0000E-09 tot_iter=    4385 conv_iter=    1427 cpu clock= 1.92E+00 tran: time= 9.0000E-09 tot_iter=    4924 conv_iter=    1604 cpu clock= 2.13E+00 tran: time= 1.0000E-08 tot_iter=    5578 conv_iter=    1819 cpu clock= 2.38E+00 sweep: tran tran0    end,  cpu clock=  2.38E+00 peak memory=        52 mb      >info:         ***** hspice job concluded                                                  total cpu time            2.29 seconds                                          total elapsed time            2.38 seconds                                      job started at     12:06:04 11/28/2025                                          job ended   at     12:06:07 11/28/2025                                 lic: Release hspice token(s) 
- lic: Release hspice token(s)  lic: total license checkout elapse time:        0.09(s)
+ init: begin read circuit files,  cpu clock=  8.60E-02                                 option search = D:\Synopsys\Hspice_L-2016.03-2\parts\behave\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\AD\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\XILINX\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TLINE\                     option search = D:\Synopsys\Hspice_L-2016.03-2\parts\TI\                        option search = D:\Synopsys\Hspice_L-2016.03-2\parts\SIGNET\                    option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PCI\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\LIN_TECH\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\PET\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\DI0\                       option search = D:\Synopsys\Hspice_L-2016.03-2\parts\COMLINE\                   option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BURR_BRM\                  option search = D:\Synopsys\Hspice_L-2016.03-2\parts\BJT\                       option runlvl                                                                   option post =     2.00                                                          option runlvl =     6.00                                                  init: end read circuit files,  cpu clock=  8.80E-02 peak memory=        48 mb   init: begin check errors,  cpu clock=  8.80E-02                                 init: end check errors,  cpu clock=  1.03E-01 peak memory=        50 mb         init: begin setup matrix, pivot=     0 cpu clock=  1.03E-01                           establish matrix -- done,  cpu clock=  1.05E-01 peak memory=        51 mb       re-order matrix -- done,  cpu clock=  1.06E-01 peak memory=        51 mb  init: end setup matrix,  cpu clock=  1.07E-01 peak memory=        51 mb         dcop: begin dcop,  cpu clock=  1.07E-01                                         dcop: end dcop,  cpu clock=  1.93E-01 peak memory=        52 mb  tot_iter=      output: task3_H1_pro_m2.mt0                                                     sweep: tran tran0    begin, stop_t=  1.00E-08 #sweeps=**** cpu clock=  1.95E-01 tran: time= 1.0000E-09 tot_iter=     176 conv_iter=      59 cpu clock= 2.52E-01 tran: time= 2.0000E-09 tot_iter=     875 conv_iter=     290 cpu clock= 5.27E-01 tran: time= 3.0000E-09 tot_iter=    1349 conv_iter=     449 cpu clock= 7.14E-01 tran: time= 4.0000E-09 tot_iter=    1956 conv_iter=     650 cpu clock= 9.62E-01 tran: time= 5.0000E-09 tot_iter=    2432 conv_iter=     811 cpu clock= 1.15E+00 tran: time= 6.0000E-09 tot_iter=    3091 conv_iter=    1028 cpu clock= 1.43E+00 tran: time= 7.0000E-09 tot_iter=    3596 conv_iter=    1196 cpu clock= 1.62E+00 tran: time= 8.0000E-09 tot_iter=    4257 conv_iter=    1416 cpu clock= 1.88E+00 tran: time= 9.0000E-09 tot_iter=    4787 conv_iter=    1595 cpu clock= 2.08E+00 tran: time= 1.0000E-08 tot_iter=    5470 conv_iter=    1820 cpu clock= 2.35E+00 sweep: tran tran0    end,  cpu clock=  2.35E+00 peak memory=        52 mb      >info:         ***** hspice job concluded                                                  total cpu time            2.28 seconds                                          total elapsed time            2.35 seconds                                      job started at     14:32:41 12/02/2025                                          job ended   at     14:32:43 12/02/2025                                 lic: Release hspice token(s) 
+ lic: Release hspice token(s)  lic: total license checkout elapse time:        0.08(s)

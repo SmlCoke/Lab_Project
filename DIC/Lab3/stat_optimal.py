@@ -17,7 +17,7 @@ if __name__ == "__main__":
             csv_path = os.path.join(root, filename)
             csv_name = str(match.group(1)) # 索引从1开始
 
-            result_name = f"{csv_name}_optimal.log"
+            result_name = f"{csv_name}_prac_optimal.log"
             result_path = os.path.join(args.stat_dir, result_name)
 
             df = pd.read_csv(csv_path)

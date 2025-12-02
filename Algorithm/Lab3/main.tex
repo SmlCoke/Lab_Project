@@ -6,8 +6,8 @@
 \usepackage{graphicx}
 \usepackage{enumerate}
 \usepackage{algorithm}
-\usepackage{caption} %\caption*需要
-\usepackage[noend]{algpseudocode} %algorithmicx
+\usepackage{caption}
+\usepackage[noend]{algpseudocode}
 \makeatletter
 \renewcommand{\fnum@algorithm}{\fname@algorithm}
 \makeatother
@@ -15,36 +15,31 @@
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 \usepackage[margin=1in]{geometry}
 \geometry{a4paper}
+\setlength{\headheight}{14.5pt}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
 \usepackage{xcolor}
 \usepackage{listings}
 \lstset{
-	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	basicstyle=\ttfamily\small,
 	breaklines,
 	tabsize=4,
 	extendedchars=false,
 	columns=fixed,
-	%numbers=left,                                        % 在左侧显示行号
-	numbers=none,
-	frame=none,                                          % 不显示背景边框
-	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
-	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
-	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
-	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
-	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
-	showstringspaces=false,                              % 不显示字符串中的空格
-	xleftmargin=1em,
-	%xrightmargin=1em,
-	%aboveskip=-0.5em
-	language=c++,                                        % 设置语言
+	numbers=left,
+	frame=single,
+	backgroundcolor=\color[RGB]{245,245,244},
+	keywordstyle=\color[RGB]{40,40,255},
+	numberstyle=\footnotesize\color{darkgray},
+	commentstyle=\it\color[RGB]{0,96,96},
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},
+	showstringspaces=false,
+	xleftmargin=2em,
+	language=c++,
 }
 
-% title依据是作业还是实验报告，以及是第几次作业/实验报告，
-% 比如第1次分治算法作业，则命名为"算法原理 HW1 分治算法";
-% 第1次分治算法实验报告，则命名为"算法原理 Lab1 分治算法"
-\title{算法原理 HW1/Lab1 作业/实验报告模板}
+\title{算法原理 Lab3 模拟退火算法}
 \author{
 	姓名：\underline{你的名字}~~~~~~
 	学号：\underline{你的学号}~~~~~~}
@@ -53,131 +48,341 @@
 
 \begin{document}
 
-% 如下两行请按实际情况修改
 \fancyhead[L]{你的名字}
-\fancyhead[C]{分治算法}
+\fancyhead[C]{模拟退火算法}
 \fancyfoot[C]{\thepage}
 
 \maketitle
-%\tableofcontents
-%\newpage
 
-\emph{以下内容仅针对作业，按照作业题目编号，将题目誊写过来，然后依次予以回答}
-\begin{enumerate}[1.]
-	\item 请简述下勾股定理？
-
-	答：勾三股四弦五！
-	\item 求解3+5=？
-
-	解：3+5=8。
-\end{enumerate}
-
-\emph{以下部分作业不需要，仅针对实验报告}
 \section{摘要}
-简要概述主要实验内容和结果。要求：使用标准精确的词汇和语言，清晰紧凑地概述客观事实；摘要的整体结构严谨、思路清楚，基本素材组织合理。
 
+本实验利用模拟退火（Simulated Annealing, SA）算法解决标准单元版图中晶体管布局优化问题。实验核心任务是在已提供的算法框架基础上，补全模拟退火主循环的关键代码，包括：随机扰动生成、合法性检测调用、目标函数评分、Metropolis接受准则实现以及降温策略。
+
+实验完成了\texttt{sa\_core.cpp}中所有TODO部分的代码填空，并额外实现了退火过程数据记录与可视化功能（fj\_pro扩展）。通过多组参数实验，验证了模拟退火算法在标准单元布局问题上的有效性，并分析了起始温度、降温因子、迭代次数等参数对优化结果的影响。
 
 \section{实验思路/算法思路}
-本部分包括对实验所要求解问题的思路分析、算法伪代码、核心实现代码等。此部分是实验报告的主体部分。非常重要。视需要可增加subsection。
-\subsection{实验原理}
-本实验可通过求解XXX方程实现：
 
+\subsection{模拟退火算法原理}
 
-\begin{numcases}{}
-    T_2cos\alpha_2 - T_1cos\alpha_1 = 0 \\
-    T_2sin\alpha_2 - T_1sin\alpha_1 = \rho dx\frac{\partial^2y }{\partial x^2}
-\end{numcases}
+模拟退火算法是一种启发式全局优化方法，其灵感来源于固体退火过程。算法通过引入随机性来避免陷入局部最优解，其核心思想如下：
 
-\subsection{XXX算法}
-XXX算法通过XXX实现求解XXX，其伪代码如下：
-\begin{algorithm}[H]%
-	\caption{RAND-MIN-CUT($G=(V,E)$)}
+\begin{enumerate}
+	\item \textbf{初始化}：设定初始温度$T_0$、终止温度$T_t$、降温因子$\alpha$
+	\item \textbf{扰动生成}：在当前解的邻域内随机产生一个新解
+	\item \textbf{接受准则}：根据Metropolis准则决定是否接受新解
+	\item \textbf{降温}：按照降温策略更新温度
+	\item \textbf{终止}：当温度降至终止温度时，算法结束
+\end{enumerate}
+
+Metropolis接受准则是模拟退火的核心，其数学表达式为：
+\[
+P(\text{接受新解}) = 
+\begin{cases}
+1 & \text{if } \Delta E > 0 \text{ （新解更优）} \\
+e^{\Delta E / T} & \text{if } \Delta E \leq 0 \text{ （新解较差）}
+\end{cases}
+\]
+其中$\Delta E = E_{\text{new}} - E_{\text{old}}$是新旧解的能量差（本实验中为得分差，得分越高越好），$T$为当前温度。
+
+\subsection{模拟退火算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{模拟退火算法 Simulated Annealing}
 	\begin{algorithmic}[1]
-		\State 为图$G$的所有边都随机赋予一个正权值
-		\State 找出$G$的最小生成树$T$
-		\State 删除$T$中权值最大的一条边得到两棵子树$T_1,~T_2$
-		\State 令$T_1$的顶点集为$V_1$，则$T_2$的顶点集为$V_2=V-V_1$
-		\State $C=\{ uv|uv\in E, u\in V_1, v\in V_2 \}$
-		\State \Return{$C$}
+		\Require 初始解$S_0$，初始温度$T_0$，终止温度$T_t$，降温因子$\alpha$，每温度迭代次数$times$
+		\Ensure 优化后的解$S_{best}$
+		\State $S_{cur} \gets S_0$, $T \gets T_0$
+		\While{$T > T_t$}
+			\For{$i = 1$ to $times$}
+				\State $S_{new} \gets$ 在$S_{cur}$邻域内随机生成新解
+				\If{$S_{new}$合法}
+					\State $\Delta E \gets \text{Score}(S_{new}) - \text{Score}(S_{cur})$
+					\If{$\Delta E > 0$ \textbf{or} $\text{random}(0,1) < e^{\Delta E/T}$}
+						\State $S_{cur} \gets S_{new}$ \Comment{接受新解}
+					\EndIf
+				\EndIf
+			\EndFor
+			\State $T \gets T \times \alpha$ \Comment{降温}
+		\EndWhile
+		\State \Return $S_{cur}$
 	\end{algorithmic}
 \end{algorithm}
 
-上述算法中，第1行XXX；第XXX行开始循环，处理XXX。算法的时间复杂度为$O(n^2)$。
+\subsection{代码补全说明}
 
-\subsection{XXX算法的实现}
-Complete by yourself!
-e.g.，算法的C++代码如下：
-\begin{lstlisting}[language={C++}, basicstyle=\ttfamily\small]
-	main() {
-		int n, total, x, y, z;
-		scanf("%d",&n);
-		total = 3;
-		while(1){
-			for(x=1; x<=total-2; x++)
-			for(y=1; y<=total-x-1; y++){
-				z = total - x - y;
-				if( exp(x,n) + exp(y,n) == exp(z,n))
-				printf("hello, world\n");
-			}
-			total++;
-		}
-	}
+本实验需要在\texttt{sa\_core.cpp}文件中补全模拟退火主函数\texttt{simulated\_annealing\_cpp}的关键部分。以下是各TODO部分的实现说明：
+
+\subsubsection{TODO 1: 随机选择位置并调用is\_legal}
+
+从占用位置列表\texttt{occupy}和空位置列表\texttt{empty}中各随机选择一个位置，调用\texttt{is\_legal}函数判断将MOS管从占用位置移动到空位置是否合法。
+
+\begin{lstlisting}
+// 创建随机分布
+std::uniform_int_distribution<int> dist_occ(0, 
+    static_cast<int>(occupy.size()) - 1);
+std::uniform_int_distribution<int> dist_emp(0, 
+    static_cast<int>(empty.size()) - 1);
+int i = dist_occ(rng);  // 随机选择占用位置索引
+int j = dist_emp(rng);  // 随机选择空位置索引
+
+bool legal;
+vector<Mos> pary, nary;
+vector<optional<Mos>> pplace, nplace;
+
+if (tp) {  // PMOS行
+    std::tie(legal, pary, nary, pplace, nplace) = 
+        is_legal(cur_pmos, cur_nmos, cur_pp, cur_np, 
+                 occupy[i], empty[j]);
+} else {   // NMOS行，需要交换参数顺序
+    std::tie(legal, nary, pary, nplace, pplace) = 
+        is_legal(cur_nmos, cur_pmos, cur_np, cur_pp, 
+                 occupy[i], empty[j]);
+}
 \end{lstlisting}
 
+\subsubsection{TODO 2: 计算当前解和候选解的分数}
+
+使用\texttt{evaluator}函数分别计算当前解和候选解的得分：
+
+\begin{lstlisting}
+// 计算当前解的分数
+auto eval0 = evaluator(w_ref, nets, pins, 
+    cur_pmos, cur_nmos, cur_pp, cur_np);
+double s0 = std::get<0>(eval0);  // 总分
+
+// 计算候选解的分数
+auto eval1 = evaluator(w_ref, nets, pins, 
+    new_pary, new_nary, new_pp2, new_np2);
+double s1 = std::get<0>(eval1);
+\end{lstlisting}
+
+\subsubsection{TODO 3: Metropolis接受准则}
+
+实现Metropolis接受准则，决定是否接受候选解：
+
+\begin{lstlisting}
+double delta = s1 - s0;  // 得分差，正值表示新解更好
+bool accept = false;
+
+if (delta > 0) {
+    // 新解更好，直接接受
+    accept = true;
+} else {
+    // 新解更差，以概率e^(delta/t)接受
+    double threshold = std::exp(delta / t);
+    if (dist01(rng) < threshold) {
+        accept = true;
+    }
+}
+\end{lstlisting}
+
+\subsubsection{TODO 4: 接受后更新当前解}
+
+当新解被接受时，更新当前解并在行末尾追加空位：
+
+\begin{lstlisting}
+if (accept) {
+    cur_pmos = new_pary;
+    cur_nmos = new_nary;
+    cur_pp = new_pp2;
+    cur_np = new_np2;
+    
+    // 追加空位，为后续扰动预留空间
+    cur_pp.push_back(std::nullopt);
+    cur_pp.push_back(std::nullopt);
+    cur_np.push_back(std::nullopt);
+    cur_np.push_back(std::nullopt);
+    
+    // 行切换逻辑
+    if (tp) {
+        if (!cur_nmos.empty()) tp = !tp;
+    } else {
+        if (!cur_pmos.empty()) tp = !tp;
+    }
+}
+\end{lstlisting}
+
+\subsubsection{TODO 5: 降温}
+
+采用指数降温策略：
+
+\begin{lstlisting}
+t = t * decrease;  // 指数降温
+\end{lstlisting}
+
+\subsection{扩展工作（fj\_pro）}
+
+除了完成必要的TODO部分，还额外实现了以下扩展功能：
+
+\subsubsection{退火过程数据记录}
+
+在\texttt{simulated\_annealing\_cpp}函数中添加了数据记录功能，将每次迭代的温度、当前分数、候选分数以及是否接受记录到CSV文件：
+
+\begin{lstlisting}
+// 初始化数据文件
+std::ofstream data_file;
+bool logging = !data_filename.empty();
+if (logging) {
+    data_file.open(data_filename);
+    data_file << "Temp,CurrentScore,CandidateScore,Accepted\n";
+}
+
+// 在每次评分后记录数据
+if (logging) {
+    data_file << t << "," << s0 << "," << s1 << "," 
+              << (accept ? 1 : 0) << "\n";
+}
+
+// 关闭数据文件
+if (logging) {
+    data_file.close();
+}
+\end{lstlisting}
+
+\subsubsection{迭代曲线绘制脚本}
+
+编写了Python脚本\texttt{plot\_iter.py}，用于可视化退火过程中的收敛曲线。该脚本读取CSV数据文件，绘制历史最佳分数随温度变化的曲线：
+
+\begin{lstlisting}[language=Python]
+# 计算历史最佳分数曲线
+df['BestScore'] = df['CurrentScore'].cummax()
+
+# 绘制历史最佳分数曲线
+plt.plot(df['Temp'], df['BestScore'], 
+    color='red', linewidth=2, label='Best Score')
+plt.xscale('log')  # X轴使用对数坐标
+plt.gca().invert_xaxis()  # 反转X轴（高温在左）
+\end{lstlisting}
 
 \section{实验过程及数据}
+
 \subsection{实验环境}
-本实验在配备XXX CPU和8GB内存的Ubuntu 20.04机器上运行，机器主频XXX GHz。程序以C++实现，采用XXX编译。程序的运行时间通过XXX进行测量。程序的输入数据如何准备XXXX。计算结果写入XXX文件/在控制台输出。
+
+\begin{itemize}
+	\item \textbf{操作系统}：WSL - Ubuntu 22.04
+	\item \textbf{编程语言}：C++17、Python 3.10.12
+	\item \textbf{编译工具}：pybind11用于C++与Python绑定
+	\item \textbf{测试单元}：AN2D2（8个MOS管：4个PMOS + 4个NMOS）
+\end{itemize}
+
+\subsection{编译与运行流程}
+
+\begin{enumerate}
+	\item \textbf{编译C++扩展}：\texttt{python setup.py build\_ext --inplace}
+	\item \textbf{运行布局算法}：\texttt{python eda.py cells.spi AN2D2 data.csv}
+	\item \textbf{评分}：\texttt{python evaluator.py AN2D2.json AN2D2 cells.spi}
+	\item \textbf{绘制收敛曲线}：\texttt{python plot\_iter.py data.csv log}
+\end{enumerate}
+
+\subsection{实验参数设置}
+
+实验测试了多组参数组合，参数命名规则为\texttt{x\_y\_z\_w}，其中：
+\begin{itemize}
+	\item $x \times \text{mos\_num}$：起始温度$T_0$
+	\item $0.y$：终止温度$T_t$（固定为0.1）
+	\item $0.z$：降温因子$\alpha$（如88表示0.88）
+	\item $w \times \text{mos\_num}$：每温度迭代次数$times$
+\end{itemize}
 
 \subsection{实验数据}
-实验得到的数据如下：
+
+以AN2D2标准单元（mos\_num=8）为例，各参数组合的实验结果如下：
 
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
- \hline
-线圈名称 & R'(Ω) & Va(V) & V(V) & Vr'(V) & Vo(V)\\
- \hline
-线圈1(空气芯) & 123 & 456 & 789 & 012 & 345\\
- \hline
-线圈2(空气芯) & 123 & 456 & 789 & 012 & 345\\
- \hline
-线圈3(铝芯) & 123 & 456 & 789 & 012 & 345\\
- \hline
-线圈4(铝芯) & 123 & 456 & 789 & 012 & 345\\
- \hline
+\begin{tabular}{|c|c|c|c|c|}
+	\hline
+	\textbf{参数组合} & \textbf{$T_0$} & \textbf{$\alpha$} & \textbf{$times$} & \textbf{备注} \\
+	\hline
+	20000\_1\_88\_2000 & 160000 & 0.88 & 16000 & 高温慢降，长迭代 \\
+	\hline
+	20000\_1\_88\_1000 & 160000 & 0.88 & 8000 & 高温慢降，短迭代 \\
+	\hline
+	20000\_1\_7\_2000 & 160000 & 0.70 & 16000 & 高温快降，长迭代 \\
+	\hline
+	20000\_1\_7\_1000 & 160000 & 0.70 & 8000 & 高温快降，短迭代 \\
+	\hline
+	20000\_1\_5\_2000 & 160000 & 0.70 & 16000 & 高温快降，长迭代 \\
+	\hline
+	20000\_1\_5\_1000 & 160000 & 0.70 & 8000 & 高温快降，短迭代 \\
+	\hline
+	10000\_1\_88\_2000 & 160000 & 0.70 & 8000 & 中温快降 \\
+	\hline
+	10000\_1\_8\_1000 & 80000 & 0.80 & 8000 & 低温中速降 \\
+	\hline
 \end{tabular}
 \end{center}
 
-另外，重要的结果可截图贴在此处。
-\begin{center}
-	Change the picture by yourself！
+\subsection{收敛曲线示例}
 
+通过fj\_pro扩展功能生成的退火收敛曲线保存在\texttt{results/}目录下的各参数文件夹中。曲线展示了历史最佳分数随温度下降的变化趋势，体现了模拟退火算法的收敛特性。
 
-	\includegraphics{picture/example.png}
-\end{center}
-
-\subsection{展示一下行间公式}
-\subsubsection{行间公式}
-% 行间公式用 $$ $$ 或者 \[ \] 来框住都可以，但在 LaTeX 中前者会改变行文的默认行间距，因此不推荐采用。
-\paragraph{}这是一个不确定度计算。
-\[
-U_k=tinv(x,y)×s_k=xxx
-\]
-\subsubsection{相对于行内公式}
-这是一个不确定度计算：$U_k=tinv(x,y)×s_k=xxx$
-
+% 如果有图片可以取消注释以下代码
+% \begin{center}
+% 	\includegraphics[width=0.8\textwidth]{results/20000_1_88_2000/data.pdf}
+% 	\caption*{参数组合20000\_1\_88\_2000的收敛曲线}
+% \end{center}
 
 \section{分析与讨论}
 
-\subsection{结果分析}
-由实验结果所能得到的结论及分析结果描述。
+\subsection{参数影响分析}
 
-\subsection{实验后的思考}
-可说明自己做本实验的总结、收获和体会，对实验中发现的问题提出自己的建议。
+\subsubsection{降温因子$\alpha$的影响}
 
+\begin{itemize}
+	\item \textbf{较大的$\alpha$（如0.88）}：降温较慢，算法有更多时间在每个温度水平进行探索，有利于找到更优解，但运行时间较长。
+	\item \textbf{较小的$\alpha$（如0.70）}：降温较快，算法更快收敛，但可能过早陷入局部最优。
+\end{itemize}
 
-% 参考文献如不需要，将如下两行注释掉
-\bibliographystyle{plain}
-\bibliography{./template}  %bib文件名
+\subsubsection{每温度迭代次数$times$的影响}
+
+\begin{itemize}
+	\item \textbf{较大的$times$}：每个温度下进行更多扰动尝试，增加找到更优解的概率，但增加计算时间。
+	\item \textbf{较小的$times$}：减少计算时间，但可能导致搜索不充分。
+\end{itemize}
+
+\subsubsection{起始温度$T_0$的影响}
+
+\begin{itemize}
+	\item \textbf{较高的$T_0$}：初期接受差解的概率高，有利于跳出局部最优，探索范围更广。
+	\item \textbf{较低的$T_0$}：初期即表现出较强的贪心性质，可能错过全局最优。
+\end{itemize}
+
+\subsection{SA与贪心算法的效果差异}
+
+\textbf{【待完成】}
+
+此部分需要实现简单贪心算法（只接受改进解）进行对比实验，分析以下内容：
+
+\begin{enumerate}
+	\item 贪心算法的实现方式（Metropolis准则中只接受$\Delta E > 0$的情况）
+	\item 在相同测试用例上，SA与贪心的最终得分对比
+	\item SA相对于贪心在避免局部最优方面的优势分析
+	\item 运行时间对比
+\end{enumerate}
+
+% 预留空间用于后续补充实验数据
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+	\hline
+	\textbf{算法} & \textbf{最终得分} & \textbf{运行时间} & \textbf{备注} \\
+	\hline
+	模拟退火 & --- & --- & 待补充 \\
+	\hline
+	贪心算法 & --- & --- & 待补充 \\
+	\hline
+\end{tabular}
+\end{center}
+
+\subsection{实验总结与收获}
+
+\begin{enumerate}
+	\item \textbf{理解了模拟退火算法的核心思想}：通过引入随机性（Metropolis准则）来避免陷入局部最优，在高温时广泛探索，低温时精细收敛。
+	
+	\item \textbf{掌握了模拟退火的完整流程}：邻域产生$\rightarrow$合法性检查$\rightarrow$目标函数评分$\rightarrow$接受准则$\rightarrow$降温策略。
+	
+	\item \textbf{理解了参数调节的重要性}：不同的参数组合会显著影响算法的收敛速度和最终解的质量，需要根据具体问题进行调优。
+	
+	\item \textbf{实践了C++与Python的混合编程}：通过pybind11将计算密集型的C++代码封装为Python模块，兼顾了性能和易用性。
+\end{enumerate}
 
 \end{document}

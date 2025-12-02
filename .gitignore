@@ -49,3 +49,5 @@ _codeql_detected_source_root
 *. lis
 *.ma0
 *.ms0
+# Generated PDF (should be re-compiled locally)
+Algorithm/Lab3/main.pdf

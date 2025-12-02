@@ -10,6 +10,7 @@ python setup.py build_ext --inplace
 
 这个命令会告诉 setup.py 把编译好的 .pyd 文件直接放在当前源代码目录下，这样 eda.py 就能直接引用它了。
 
+## 运行过程
 ### cmd2
 将
 ```bash
@@ -33,6 +34,12 @@ python evaluator.py AN2D2.json AN2D2 cells.spi > "results\20000_1_88_2000\score.
 ```bash
 python plot_iter.py results\10000_1_8_1000\data.csv log
 ```
+
+## 批量化运行
+为了方便执行，构建了run_flow.py脚本。并作了如下修改：、
+eda.py中提供初始温度、退火速率因子、move次数的命令行参数接口
+然后在run_flow.py批量完成模拟退火算法、评分、绘制迭代曲线全流程。只需要在其中修改greedy的添加与否，然后重新编译一下cpp程序，就可以实现贪心算法/metropolis法则的切换。
+
 ## setup.py的修改：
 ```python
 extra_compile_args = []

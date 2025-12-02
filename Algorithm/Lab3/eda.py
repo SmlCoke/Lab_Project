@@ -1,7 +1,13 @@
 import sys
 import sa_core
+import argparse
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
+
+# fj_pro: 强制标准输出使用 utf-8，解决重定向乱码问题
+sys.stdout.reconfigure(encoding='utf-8') 
+
+
 
 ## 类型和数据结构
 # 表示引脚的编号列表，每个元素是一个 net 在 nets 数组中的索引。
@@ -411,12 +417,25 @@ def init_layout(pmos: List[Mos], nmos: List[Mos]) -> Tuple[List[Mos], List[Mos],
 
 
 def main() -> None:
-    args = sys.argv[1:]
-    if len(args) != 2:
-        print("Usage: python eda.py <netlist> <cell_name>")
-        return
-    cells, cell = args
+    # fj_pro: 将sys.argv修改为更方便的argparse处理，同时加入数据文件
+    parser = argparse.ArgumentParser(description="Simulated Annealing Placement Tool")
+    parser.add_argument("netlist", help="Path of the netlist file")
+    parser.add_argument("cell_name", help="Name of the cell to process")
+    parser.add_argument("data_file", help="File to log annealing data")
+    args = parser.parse_args()
+    cells = args.netlist
+    cell = args.cell_name
+    data_file = args.data_file
+
+    # args = sys.argv[1:]
+    # if len(args) < 2 or len(args) > 3: # fj_pro: 支持可选的第三个参数 data_file, 且该参数可选。用于记录退火过程分数数据
+    #     print("Usage: python eda.py <netlist> <cell_name> [data_file]")
+    #     return
+    # cells, cell = args[0], args[1]
+    # data_file = args[2] if len(args) == 3 else "sa_data.csv"  # fj_pro: 如果提供了第三个参数就用它，否则默认文件名
+
     print("[main] netlist =", cells, "cell =", cell)
+    print("[main] data_file =", data_file)
     s = read_cell(cells, cell)
     print("[main] read_cell 返回行数:", len(s))
     pins, nets, nmos, pmos, filename, w_ref = init(s)
@@ -449,11 +468,15 @@ def main() -> None:
     pp_ary_sa = [None if m is None else to_sa_mos(m) for m in pp_ary]
     np_ary_sa = [None if m is None else to_sa_mos(m) for m in np_ary]
 
+    print("[main] fj: mos_num =", mos_num)
     t0 = float(mos_num) * 20000.0
     tt = 0.1
-    decrease = 0.88
-    times = mos_num * 2000
-
+    decrease = 0.7
+    times = mos_num * 1000
+    # t0 = float(mos_num) * 10000.0  # fj: 调整初始温度参数
+    # tt = 0.1                     # fj: 调整终止温度参数
+    # decrease = 0.7                # fj: 调整降温速率参数
+    # times = mos_num * 1000        # fj: 调整每个温度的move次数
     print("[main] 退火参数 t0=", t0, "tt=", tt, "decrease=", decrease, "times=", times)
 
     new_pary_sa, new_nary_sa, new_pp_sa, new_np_sa = sa_core.run_sa(
@@ -468,6 +491,7 @@ def main() -> None:
         tt,
         decrease,
         times,
+        data_file # fj_pro: 传入数据文件名字
     )
 
     print("[main] sa_core.run_sa 返回 PMOS 数量:", len(new_pary_sa))

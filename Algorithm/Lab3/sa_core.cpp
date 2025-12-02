@@ -6,12 +6,14 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 
 using std::vector;
 using std::string;
 using std::optional;
 using std::tuple;
 using std::make_tuple;
+using std::ofstream;
 
 // Pins: 记录管脚在 nets 数组中的索引，例如某个逻辑管脚对应哪个 net
 using Pins = vector<int>;
@@ -234,13 +236,13 @@ double calc_pin_access(const Nets& nets,
 }
 //      evaluator: 根据当前布局计算综合评分和若干子指标
 tuple<double,double,double,double,double> evaluator(
-    int w_ref,
-    const Nets& nets,
-    const Pins& pins,
-    const vector<Mos>& pmos_ary,
-    const vector<Mos>& nmos_ary,
-    const vector<optional<Mos>>& pmos_place,
-    const vector<optional<Mos>>& nmos_place
+    int w_ref, // fj: 参考宽度
+    const Nets& nets, // fj: 所有 net 名字
+    const Pins& pins, // fj: pin索引数组
+    const vector<Mos>& pmos_ary, // fj: PMOS 数组
+    const vector<Mos>& nmos_ary, // fj: NMOS 数组
+    const vector<optional<Mos>>& pmos_place, // fj: PMOS 布局行
+    const vector<optional<Mos>>& nmos_place  // fj: NMOS 布局行
 ) {
     double w_ref_f = static_cast<double>(w_ref);
 
@@ -309,9 +311,10 @@ vector<optional<Mos>> ary_drop(const vector<optional<Mos>>& ary, size_t pos) {
     return res;
 }
 //          update_place_ary主函数
+// fj: 删除布局中可以安全删除的空列，压缩布局宽度：
 std::pair<vector<optional<Mos>>, vector<optional<Mos>>> update_place_ary(
-    const vector<optional<Mos>>& pp_in,
-    const vector<optional<Mos>>& np_in
+    const vector<optional<Mos>>& pp_in, // fj: PMOS 布局输入
+    const vector<optional<Mos>>& np_in  // fj: NMOS 布局输入
 ) {
     vector<optional<Mos>> pp_ary = pp_in;
     vector<optional<Mos>> np_ary = np_in;
@@ -348,6 +351,7 @@ std::pair<vector<optional<Mos>>, vector<optional<Mos>>> update_place_ary(
     return {pp_ary, np_ary};
 }
 //      update_mos_ary: 根据新的 place 阵列，把 mos_ary 中每个器件的 x 坐标同步更新到和mos_place一致
+// fj: mos_ary: 要更新的 MOS 数组， mos_place: 新的布局数组
 void update_mos_ary(vector<Mos>& mos_ary, const vector<optional<Mos>>& mos_place) {
     for (size_t i = 0; i < mos_place.size(); ++i) {
         if (!mos_place[i].has_value()) continue;
@@ -540,12 +544,12 @@ vector<optional<Mos>> set_subary_flip(const vector<optional<Mos>>& place_ary,
 //   vector<optional<Mos>>: 变换后的 NMOS 布局行
 tuple<bool, vector<Mos>, vector<Mos>, vector<optional<Mos>>, vector<optional<Mos>>>
 is_legal(
-    const vector<Mos>& pary,
-    const vector<Mos>& nary,
-    const vector<optional<Mos>>& pplace_ary,
-    const vector<optional<Mos>>& nplace_ary,
-    int mv_occ,
-    int mv_emp
+    const vector<Mos>& pary,  // fj: 当前 PMOS 数组
+    const vector<Mos>& nary,  // fj: 当前 NMOS 数组
+    const vector<optional<Mos>>& pplace_ary, // fj: 当前 PMOS 布局行
+    const vector<optional<Mos>>& nplace_ary, // fj: 当前 NMOS 布局行
+    int mv_occ, // fj: 要移动的 MOS 当前所在列
+    int mv_emp  // fj: 要移动的 MOS 目标空列
 ) {
     vector<Mos> pmos_ary = pary;
     vector<Mos> nmos_ary = nary;
@@ -858,19 +862,40 @@ static std::mt19937 rng{std::random_device{}()};
 //   通过能量差和温度决定接受，则更新当前解，直到温度降到阈值。
 // 返回: 优化后的 PMOS/NMOS 数组及对应的布局阵列
 // 扰动方法,换行方法
+/* fj: 退火过程理解
+初始化当前解 cur_* <- 输入的初始布局
+设置温度 t = t0
+
+while (t > tt):  // 外层循环：降温
+    for turn in range(times):  // 内层循环：每个温度下的迭代
+        1. 获取当前布局的占用位置和空位置
+        2. 随机选择一个占用位置 i 和一个空位置 j
+        3. 调用 is_legal 判断移动是否合法
+        4. 如果合法且不产生 notch：
+           a. 调用 update_place_ary 压缩空列
+           b. 调用 update_mos_ary 更新坐标
+           c. 调用 evaluator 计算新解的分数
+           d. 根据 Metropolis 准则决定是否接受新解
+        5. 如果接受：更新当前解
+    
+    t = t * decrease  // 降温
+
+返回最终的布局
+*/
 tuple<vector<Mos>, vector<Mos>, vector<optional<Mos>>, vector<optional<Mos>>>
 simulated_annealing_cpp(
-    int w_ref,
-    const Nets& nets,
-    const Pins& pins,
-    const vector<Mos>& pmos_ary,
-    const vector<Mos>& nmos_ary,
-    const vector<optional<Mos>>& pp_ary,
-    const vector<optional<Mos>>& np_ary,
+    int w_ref,  // fj: 参考宽度
+    const Nets& nets,  // fj: net 名称数组
+    const Pins& pins,  // fj: pin 名称数组
+    const vector<Mos>& pmos_ary, // fj: 初始 PMOS 数组
+    const vector<Mos>& nmos_ary, // fj: 初始 NMOS 数组
+    const vector<optional<Mos>>& pp_ary, // fj: 初始 PMOS 布局行
+    const vector<optional<Mos>>& np_ary, // fj: 初始 NMOS 布局行
     double t0,        // 起始温度
     double tt,        // 终止温度（停止条件：t <= tt）
     double decrease,  // 降温因子，例如 0.95，每轮 t *= decrease
-    int times         // 每个温度下尝试的 move 次数
+    int times,         // 每个温度下尝试的 move 次数
+    std::string data_filename // fj: 记录退火过程中得分的数据文件名字
 ) {
     // 当前解：从初始布局拷贝一份出来，在此基础上做扰动
     vector<Mos> cur_pmos = pmos_ary;
@@ -883,6 +908,19 @@ simulated_annealing_cpp(
     cur_pp.push_back(std::nullopt);
     cur_np.push_back(std::nullopt);
     cur_np.push_back(std::nullopt);
+
+    // fj_pro: 初始化数据文件，用于记录退火过程中的分数变化
+    std::ofstream data_file;
+    bool logging = !data_filename.empty();
+    if (logging) {
+        data_file.open(data_filename);
+        // 写入表头: 温度, 当前分数, 候选分数, 是否接受(1/0)
+        data_file << "Temp,CurrentScore,CandidateScore,Accepted\n";
+    }
+
+    // fj_pro: 计算初始分数 (假设你代码里有这部分，如果没有，需要在循环前算一次)
+    auto eval_init = evaluator(w_ref, nets, pins, cur_pmos, cur_nmos, cur_pp, cur_np);
+    double s_init = std::get<0>(eval_init);  // 初始解的总分
 
     std::uniform_real_distribution<double> dist01(0.0, 1.0);
 
@@ -917,10 +955,11 @@ simulated_annealing_cpp(
             vector<Mos> pary, nary;
             vector<optional<Mos>> pplace, nplace;
             if (tp) {
-                // 待补充 
+                // fj: 用 std::tie 解包
+                std::tie(legal, pary, nary, pplace, nplace) = is_legal(cur_pmos, cur_nmos, cur_pp, cur_np, occupy[i], empty[j]);
                 
             } else {
-                // 待补充 
+                std::tie(legal, nary, pary, nplace, pplace) = is_legal(cur_nmos, cur_pmos, cur_np, cur_pp, occupy[i], empty[j]);
             }
 
             vector<Mos> new_pary = tp ? pary : nary;
@@ -937,24 +976,51 @@ simulated_annealing_cpp(
                 update_mos_ary(new_nary, new_np2);
 
                 // TODO : 核心模拟退火判断部分,计算当前解和候选解的分数(使用 evaluator 函数),并判断是否采纳新解
-                // 待补充
+                // 计算当前解的分数
+                auto eval0 = evaluator(w_ref, nets, pins, cur_pmos, cur_nmos, cur_pp, cur_np);
+                double s0 = std::get<0>(eval0);  // 当前解的总分
 
+                // 计算候选解的总分
+                auto eval1 = evaluator(w_ref, nets, pins, new_pary, new_nary, new_pp2, new_np2);
+                double s1 = std::get<0>(eval1);  // 候选解的总分
+
+                
                 // delta>0 表示新解更好；delta<0 表示新解更差
                 double delta = s1 - s0;   // s: 分数，越大越好
                 bool accept = false;
                 
                 // TODO: 接收准则
-                // 待补充
-
+                if (delta > 0) {
+                    // 新解更好，直接接受
+                    accept = true;
+                } else {
+                    // 新解更差，以一定概率接受
+                    // 概率 = e^(delta/t)，因为分数越高越好，因此delta为负数，t越大概率越高
+                    double threshold = std::exp(delta / t);
+                    if (dist01(rng) < threshold) {
+                        accept = true;
+                    }
+                }
+                
+                // fj_pro: 将当前温度、当前分数、候选分数、是否接受记录到数据文件中，用于绘图
+                if (logging) {
+                    data_file << t << "," << s0 << "," << s1 << "," << (accept ? 1 : 0) << "\n";
+                }
                 // TODO : 接受后更新当前解,行末尾追加空位,行切换逻辑
                 if (accept) {
-                    // 待补充
+                    cur_pmos = new_pary;
+                    cur_nmos = new_nary;
+                    cur_pp = new_pp2;
+                    cur_np = new_np2;
                     
                     cur_pp.push_back(std::nullopt);
                     cur_pp.push_back(std::nullopt);
                     cur_np.push_back(std::nullopt);
                     cur_np.push_back(std::nullopt);
                     
+                    // fj: 这一步切换tp的逻辑是：如果本轮是在 PMOS 行上做 move（tp=true），
+                    // fj: 那么只有当当前 PMOS 行上还有 MOS 时，才切换到 NMOS 行（tp=false）；
+                    // fj: 反之亦然。如果当前行已经没有 MOS 了，就继续留在该行，下一次继续尝试 move。
                     if (tp) {
                         if (!cur_nmos.empty()) tp = !tp;
                     } else {
@@ -965,8 +1031,12 @@ simulated_annealing_cpp(
         }
 
         // TODO : 降温
-        // 待补充
+        t = t * decrease; // fj: 降温方法：指数型
+    }
 
+    // fj_pro: 关闭数据文件
+    if (logging) {
+        data_file.close();
     }
 
     return make_tuple(cur_pmos, cur_nmos, cur_pp, cur_np);

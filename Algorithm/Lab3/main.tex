@@ -342,6 +342,76 @@ if x_mode == 'log':
 	plt.xscale('log')
 \end{lstlisting}
 
+\subsection{批量实验运行脚本}
+
+为了方便批量运行不同参数组合的实验，编写了\texttt{run\_flow.py}脚本。该脚本能够自动完成模拟退火算法运行、评分计算、迭代曲线绘制的全流程，支持遍历多组参数组合进行对比实验。
+
+\begin{lstlisting}[language=Python]
+import subprocess
+import os
+
+if __name__ == "__main__":
+    T0 = [10000, 20000]       # 起始温度系数
+    TT = [1]                   # 终止温度系数
+    de = [5, 7, 88]            # 降温因子(0.05, 0.7, 0.88)
+    times = [1000, 2000]       # 每温度迭代次数系数
+
+    for t0 in T0:
+        for t in TT:
+            for d in de:
+                for time in times:
+                    # 构造目录名
+                    dir_name = f'{t0}_{t}_{d}_{time}'
+                    result_dir = os.path.join('greedy_results', dir_name)
+                    
+                    # 如果目录不存在则创建
+                    if not os.path.exists(result_dir):
+                        os.makedirs(result_dir)
+                    
+                    print(f"Running flow for: {dir_name}")
+
+                    # 1. 运行 eda.py
+                    process_log_path = os.path.join(result_dir, 'process.txt')
+                    data_csv_path = os.path.join(result_dir, 'data.csv')
+                    
+                    with open(process_log_path, 'w', encoding='utf-8') as f_log:
+                        subprocess.run(['python', 
+                                        'eda.py', 
+                                        'cells.spi',
+                                        'AN2D2',
+                                        data_csv_path,
+                                        str(t0),
+                                        f'0.{d}',
+                                        str(time)],
+                                        stdout=f_log)
+                    
+                    # 2. 运行 evaluator.py
+                    score_log_path = os.path.join(result_dir, 'score.txt')
+                    with open(score_log_path, 'w', encoding='utf-8') as f_score:
+                        subprocess.run(['python', 
+                                        'evaluator.py', 
+                                        'AN2D2.json',
+                                        'AN2D2',
+                                        'cells.spi'],
+                                        stdout=f_score)
+                    
+                    # 3. 运行 plot_iter.py
+                    subprocess.run(['python', 
+                                    'plot_iter.py', 
+                                    data_csv_path,
+                                    'log'])
+\end{lstlisting}
+
+该脚本的主要功能如下：
+\begin{enumerate}
+	\item \textbf{参数遍历}：通过嵌套循环遍历所有参数组合（起始温度$T_0$、降温因子$\alpha$、每温度迭代次数$times$）
+	\item \textbf{目录管理}：自动创建以参数命名的结果目录，便于管理不同实验的输出
+	\item \textbf{全流程自动化}：依次执行模拟退火算法（eda.py）、评分计算（evaluator.py）、曲线绘制（plot\_iter.py）
+	\item \textbf{日志记录}：将运行日志和评分结果保存到文件，便于后续分析
+\end{enumerate}
+
+使用该脚本进行贪心算法与模拟退火算法的对比实验时，只需修改\texttt{result\_dir}变量（如改为\texttt{greedy\_results}或\texttt{results}），并在重新编译前修改\texttt{sa\_core.cpp}中的接受准则即可切换算法模式。
+
 \subsection{其他}
 
 由于后续会将程序在终端打印出的信息保存到文件，为了防止中文乱码，在\texttt{set\_up.py}中，做出如下更改
@@ -497,28 +567,40 @@ Cell score 96.685586 (width: 4, bbox: 3.500000, pin_access: 0.062500, symmetric:
 以AN2D2标准单元（mos\_num=8）为例，各参数组合的实验结果如下：
 
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 	\hline
-	\textbf{参数组合} & \textbf{$T_0$} & \textbf{$\alpha$} & \textbf{$times$}  & \textbf{备注} \\
+	\textbf{参数组合} & \textbf{$T_0$} & \textbf{$\alpha$} & \textbf{$times$} & \textbf{得分} & \textbf{备注} \\
 	\hline
-	20000\_1\_88\_2000 & 160000 & 0.88 & 16000 & 高温慢降，长迭代 \\
+	20000\_1\_88\_2000 & 160000 & 0.88 & 16000 & 96.69 & 高温慢降，长迭代 \\
 	\hline
-	20000\_1\_88\_1000 & 160000 & 0.88 & 8000 & 高温慢降，短迭代 \\
+	20000\_1\_88\_1000 & 160000 & 0.88 & 8000 & 96.69 & 高温慢降，短迭代 \\
 	\hline
-	20000\_1\_7\_2000 & 160000 & 0.70 & 16000 & 高温快降，长迭代 \\
+	20000\_1\_7\_2000 & 160000 & 0.70 & 16000 & 96.69 & 高温快降，长迭代 \\
 	\hline
-	20000\_1\_7\_1000 & 160000 & 0.70 & 8000 & 高温快降，短迭代 \\
+	20000\_1\_7\_1000 & 160000 & 0.70 & 8000 & 94.06 & 高温快降，短迭代 \\
 	\hline
-	20000\_1\_5\_2000 & 160000 & 0.70 & 16000 & 高温快降，长迭代 \\
+	20000\_1\_5\_2000 & 160000 & 0.50 & 16000 & 96.69 & 高温快降，长迭代 \\
 	\hline
-	20000\_1\_5\_1000 & 160000 & 0.70 & 8000 & 高温快降，短迭代 \\
+	20000\_1\_5\_1000 & 160000 & 0.50 & 8000 & 93.98 & 高温快降，短迭代 \\
 	\hline
-	10000\_1\_88\_2000 & 160000 & 0.70 & 8000 & 中温快降 \\
+	10000\_1\_88\_2000 & 80000 & 0.88 & 16000 & 96.69 & 中温慢降，长迭代 \\
 	\hline
-	10000\_1\_8\_1000 & 80000 & 0.80 & 8000 & 低温中速降 \\
+	10000\_1\_88\_1000 & 80000 & 0.88 & 8000 & 93.98 & 中温慢降，短迭代 \\
+	\hline
+	10000\_1\_7\_2000 & 80000 & 0.70 & 16000 & 96.69 & 中温快降，长迭代 \\
+	\hline
+	10000\_1\_7\_1000 & 80000 & 0.70 & 8000 & 91.98 & 中温快降，短迭代 \\
+	\hline
+	10000\_1\_5\_2000 & 80000 & 0.50 & 16000 & 91.98 & 中温快降，长迭代 \\
+	\hline
+	10000\_1\_5\_1000 & 80000 & 0.50 & 8000 & 96.69 & 中温快降，短迭代 \\
+	\hline
+	10000\_1\_8\_1000 & 80000 & 0.80 & 8000 & 91.89 & 中温中速降 \\
 	\hline
 \end{tabular}
 \end{center}
+
+从实验数据可以看出，多组参数组合都能达到最优得分96.69分。这表明对于AN2D2这样相对简单的标准单元（仅8个MOS管），模拟退火算法具有较好的鲁棒性。
 
 \subsection{收敛曲线示例}
 
@@ -561,29 +643,69 @@ Cell score 96.685586 (width: 4, bbox: 3.500000, pin_access: 0.062500, symmetric:
 
 \subsection{SA与贪心算法的效果差异}
 
-\textbf{【待完成】}
+贪心算法是模拟退火算法的简化版本，其核心区别在于Metropolis准则：贪心算法只接受使目标函数改进的解（即$\Delta E > 0$时才接受），而模拟退火算法即使在$\Delta E < 0$时也有一定概率接受较差解。
 
-此部分需要实现简单贪心算法（只接受改进解）进行对比实验，分析以下内容：
+\subsubsection{贪心算法的实现方式}
 
-\begin{enumerate}
-	\item 贪心算法的实现方式（Metropolis准则中只接受$\Delta E > 0$的情况）
-	\item 在相同测试用例上，SA与贪心的最终得分对比
-	\item SA相对于贪心在避免局部最优方面的优势分析
-	\item 运行时间对比
-\end{enumerate}
+在代码实现上，只需修改\texttt{sa\_core.cpp}中的Metropolis接受准则部分，将概率接受改为只接受改进解：
+\begin{lstlisting}
+// 贪心算法：只接受改进解
+if (delta > 0) {
+    accept = true;  // 新解更好，接受
+} else {
+    accept = false; // 新解更差，拒绝
+}
+\end{lstlisting}
 
-% 预留空间用于后续补充实验数据
+\subsubsection{实验对比数据}
+
+使用相同的参数组合，分别运行模拟退火算法和贪心算法，得到以下对比结果：
+
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 	\hline
-	\textbf{算法} & \textbf{最终得分} & \textbf{运行时间} & \textbf{备注} \\
+	\textbf{参数组合} & \textbf{SA得分} & \textbf{贪心得分} & \textbf{差值} \\
 	\hline
-	模拟退火 & --- & --- & 待补充 \\
+	20000\_1\_88\_2000 & 96.69 & 93.14 & +3.55 \\
 	\hline
-	贪心算法 & --- & --- & 待补充 \\
+	20000\_1\_88\_1000 & 96.69 & 91.14 & +5.55 \\
+	\hline
+	20000\_1\_7\_2000 & 96.69 & 88.64 & +8.05 \\
+	\hline
+	20000\_1\_7\_1000 & 94.06 & 93.14 & +0.92 \\
+	\hline
+	20000\_1\_5\_2000 & 96.69 & 93.14 & +3.55 \\
+	\hline
+	20000\_1\_5\_1000 & 93.98 & 93.14 & +0.84 \\
+	\hline
+	10000\_1\_88\_2000 & 96.69 & 92.64 & +4.05 \\
+	\hline
+	10000\_1\_88\_1000 & 93.98 & 92.23 & +1.75 \\
+	\hline
+	10000\_1\_7\_2000 & 96.69 & 94.06 & +2.63 \\
+	\hline
+	10000\_1\_7\_1000 & 91.98 & 88.64 & +3.34 \\
+	\hline
+	10000\_1\_5\_2000 & 91.98 & 90.74 & +1.24 \\
+	\hline
+	10000\_1\_5\_1000 & 96.69 & 93.56 & +3.13 \\
 	\hline
 \end{tabular}
 \end{center}
+
+\subsubsection{结果分析}
+
+从实验数据可以得出以下结论：
+
+\begin{enumerate}
+	\item \textbf{SA算法整体优于贪心算法}：在所有12组对比实验中，模拟退火算法的得分均高于贪心算法，得分差值范围为0.84\textasciitilde8.05分。
+	
+	\item \textbf{SA最优得分（96.69分）显著高于贪心最优得分（94.06分）}：模拟退火算法能够找到更优的全局解，而贪心算法容易陷入局部最优。
+	
+	\item \textbf{贪心算法结果波动较大}：贪心算法的得分范围为88.64\textasciitilde94.06分，标准差较大；而模拟退火算法的得分集中在较高水平。
+	
+	\item \textbf{SA的概率接受机制是关键}：模拟退火算法通过在高温阶段以一定概率接受较差解，能够跳出局部最优，探索更广阔的解空间，最终收敛到更优的解。
+\end{enumerate}
 
 \subsection{实验总结与收获}
 

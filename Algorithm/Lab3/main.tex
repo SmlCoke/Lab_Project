@@ -41,26 +41,28 @@
 
 \title{算法原理 Lab3 模拟退火算法}
 \author{
-	姓名：\underline{你的名字}~~~~~~
-	学号：\underline{你的学号}~~~~~~}
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
 \date{\today}
 \pagenumbering{arabic}
 
 \begin{document}
 
-\fancyhead[L]{你的名字}
+\fancyhead[L]{冯峻}
 \fancyhead[C]{模拟退火算法}
 \fancyfoot[C]{\thepage}
 
 \maketitle
-
+\tableofcontents
+\newpage
 \section{摘要}
 
 本实验利用模拟退火（Simulated Annealing, SA）算法解决标准单元版图中晶体管布局优化问题。实验核心任务是在已提供的算法框架基础上，补全模拟退火主循环的关键代码，包括：随机扰动生成、合法性检测调用、目标函数评分、Metropolis接受准则实现以及降温策略。
 
 实验完成了\texttt{sa\_core.cpp}中所有TODO部分的代码填空，并额外实现了退火过程数据记录与可视化功能（fj\_pro扩展）。通过多组参数实验，验证了模拟退火算法在标准单元布局问题上的有效性，并分析了起始温度、降温因子、迭代次数等参数对优化结果的影响。
 
-\section{实验思路/算法思路}
+\newpage
+\section{实验步骤}
 
 \subsection{模拟退火算法原理}
 
@@ -82,7 +84,7 @@ P(\text{接受新解}) =
 e^{\Delta E / T} & \text{if } \Delta E \leq 0 \text{ （新解较差）}
 \end{cases}
 \]
-其中$\Delta E = E_{\text{new}} - E_{\text{old}}$是新旧解的能量差（本实验中为得分差，得分越高越好），$T$为当前温度。
+其中$\Delta E = E_{\text{new}} - E_{\text{old}}$是新旧解的能量差（本实验中为得分差，得分越高越好，因此当$\Delta E > 0$时直接接受，当$\Delta E < 0$时，根据当前温度情况概率接受），$T$为当前温度。
 
 \subsection{模拟退火算法伪代码}
 
@@ -91,18 +93,18 @@ e^{\Delta E / T} & \text{if } \Delta E \leq 0 \text{ （新解较差）}
 	\begin{algorithmic}[1]
 		\Require 初始解$S_0$，初始温度$T_0$，终止温度$T_t$，降温因子$\alpha$，每温度迭代次数$times$
 		\Ensure 优化后的解$S_{best}$
-		\State $S_{cur} \gets S_0$, $T \gets T_0$
+		\State $S_{\text{cur}} \gets S_0$, $T \gets T_0$
 		\While{$T > T_t$}
-			\For{$i = 1$ to $times$}
-				\State $S_{new} \gets$ 在$S_{cur}$邻域内随机生成新解
-				\If{$S_{new}$合法}
-					\State $\Delta E \gets \text{Score}(S_{new}) - \text{Score}(S_{cur})$
+			\For{$i = 1$ to times}
+				\State $S_{\text{new}} \gets$ 在$S_{\text{cur}}$邻域内随机生成新解
+				\If{$S_{\text{new}}$合法}
+					\State $\Delta E \gets \text{Score}(S_{\text{new}}) - \text{Score}(S_{\text{cur}})$
 					\If{$\Delta E > 0$ \textbf{or} $\text{random}(0,1) < e^{\Delta E/T}$}
-						\State $S_{cur} \gets S_{new}$ \Comment{接受新解}
+						\State $S_{\text{cur}} \gets S_{\text{new}}$ \Comment{接受新解}
 					\EndIf
 				\EndIf
 			\EndFor
-			\State $T \gets T \times \alpha$ \Comment{降温}
+			\State $T \gets \alpha T$ \Comment{降温}
 		\EndWhile
 		\State \Return $S_{cur}$
 	\end{algorithmic}
@@ -110,12 +112,11 @@ e^{\Delta E / T} & \text{if } \Delta E \leq 0 \text{ （新解较差）}
 
 \subsection{代码补全说明}
 
-本实验需要在\texttt{sa\_core.cpp}文件中补全模拟退火主函数\texttt{simulated\_annealing\_cpp}的关键部分。以下是各TODO部分的实现说明：
+本实验的主要内容是在\texttt{sa\_core.cpp}文件中补全模拟退火主函数框架\texttt{simulated\_annealing\_cpp}的关键部分。
 
 \subsubsection{TODO 1: 随机选择位置并调用is\_legal}
 
-从占用位置列表\texttt{occupy}和空位置列表\texttt{empty}中各随机选择一个位置，调用\texttt{is\_legal}函数判断将MOS管从占用位置移动到空位置是否合法。
-
+从占用位置列表\texttt{occupy}和空位置列表\texttt{empty}中各随机选择一个位置，调用\texttt{is\_legal}函数判断将MOS管从占用位置（即occupy[i]）移动到空位置（即empty[j]）是否合法。is_legal()函数内部会自动尝试各种翻转组合来找到合法布局。
 \begin{lstlisting}
 // 创建随机分布
 std::uniform_int_distribution<int> dist_occ(0, 
@@ -133,16 +134,20 @@ if (tp) {  // PMOS行
     std::tie(legal, pary, nary, pplace, nplace) = 
         is_legal(cur_pmos, cur_nmos, cur_pp, cur_np, 
                  occupy[i], empty[j]);
+	// 对于 PMOS 行，传入顺序是 (pmos, nmos, pp, np, occupy[i], empty[j])
 } else {   // NMOS行，需要交换参数顺序
     std::tie(legal, nary, pary, nplace, pplace) = 
         is_legal(cur_nmos, cur_pmos, cur_np, cur_pp, 
                  occupy[i], empty[j]);
+	// 对于 NMOS 行，传入顺序是 (nmos, pmos, np, pp, occupy[i], empty[j])
 }
 \end{lstlisting}
 
 \subsubsection{TODO 2: 计算当前解和候选解的分数}
 
-使用\texttt{evaluator}函数分别计算当前解和候选解的得分：
+使用\texttt{evaluator}函数分别计算当前解和候选解的得分。所有参数按照形式参数列表传入即可。
+
+在计算新解的分数时，要使用更新后的MOS数组\texttt{new\_pary}、\texttt{new\_nary}，以及布局数组\texttt{new\_pp2}和\texttt{new\_np2}。
 
 \begin{lstlisting}
 // 计算当前解的分数
@@ -158,7 +163,7 @@ double s1 = std::get<0>(eval1);
 
 \subsubsection{TODO 3: Metropolis接受准则}
 
-实现Metropolis接受准则，决定是否接受候选解：
+实现Metropolis接受准则，决定是否接受候选解。这里dist01(rng)用于随机生成一个0到1之间的浮点数，用作概率与当前温度下的阈值概率比较。
 
 \begin{lstlisting}
 double delta = s1 - s0;  // 得分差，正值表示新解更好
@@ -178,7 +183,7 @@ if (delta > 0) {
 
 \subsubsection{TODO 4: 接受后更新当前解}
 
-当新解被接受时，更新当前解并在行末尾追加空位：
+当新解被接受时，更新当前解并在行末尾追加空位。
 
 \begin{lstlisting}
 if (accept) {
@@ -210,79 +215,174 @@ if (accept) {
 t = t * decrease;  // 指数降温
 \end{lstlisting}
 
-\subsection{扩展工作（fj\_pro）}
+\newpage
+\section{实验扩展工作}
 
 除了完成必要的TODO部分，还额外实现了以下扩展功能：
 
-\subsubsection{退火过程数据记录}
+\subsection{退火过程数据记录}
 
-在\texttt{simulated\_annealing\_cpp}函数中添加了数据记录功能，将每次迭代的温度、当前分数、候选分数以及是否接受记录到CSV文件：
+在\texttt{simulated\_annealing\_cpp}函数中添加了数据记录功能，将每次迭代的温度、当前解分数、候选解分数以及是否接受（0/1标识）记录到CSV文件。
 
+要完成这一步，有如下代码片段需要改动：
+
+\textbf{1. 在\texttt{simulated\_annealing\_cpp}函数参数列表中添加一个字符串参数\texttt{data\_filename}，表示数据文件名。}
 \begin{lstlisting}
-// 初始化数据文件
+tuple<vector<Mos>, vector<Mos>, vector<optional<Mos>>, vector<optional<Mos>>>
+simulated_annealing_cpp(
+	int w_ref,  // fj: 参考宽度
+	const Nets& nets,  // fj: net 名称数组
+	const Pins& pins,  // fj: pin 名称数组
+	const vector<Mos>& pmos_ary, // fj: 初始 PMOS 数组
+	const vector<Mos>& nmos_ary, // fj: 初始 NMOS 数组
+	const vector<optional<Mos>>& pp_ary, // fj: 初始 PMOS 布局行
+	const vector<optional<Mos>>& np_ary, // fj: 初始 NMOS 布局行
+	double t0,        // 起始温度
+	double tt,        // 终止温度（停止条件：t <= tt）
+	double decrease,  // 降温因子，例如 0.95，每轮 t *= decrease
+	int times,         // 每个温度下尝试的 move 次数
+	std::string data_filename // fj: 记录退火过程中得分的数据文件名字
+) 
+\end{lstlisting}
+
+\textbf{2. 退火过程中，每一次move操作都记录当前解分数以及候选解分数。}
+\begin{lstlisting}
+// fj_pro: 初始化数据文件，用于记录退火过程中的分数变化
 std::ofstream data_file;
 bool logging = !data_filename.empty();
 if (logging) {
-    data_file.open(data_filename);
-    data_file << "Temp,CurrentScore,CandidateScore,Accepted\n";
+	data_file.open(data_filename);
+	// 写入表头: 温度, 当前分数, 候选分数, 是否接受(1/0)
+	data_file << "Temp,CurrentScore,CandidateScore,Accepted\n";
 }
 
-// 在每次评分后记录数据
-if (logging) {
-    data_file << t << "," << s0 << "," << s1 << "," 
-              << (accept ? 1 : 0) << "\n";
-}
+// fj_pro: 计算初始分数 (假设你代码里有这部分，如果没有，需要在循环前算一次)
+auto eval_init = evaluator(w_ref, nets, pins, cur_pmos, cur_nmos, cur_pp, cur_np);
+double s_init = std::get<0>(eval_init);  // 初始解的总分
 
-// 关闭数据文件
+std::uniform_real_distribution<double> dist01(0.0, 1.0);
+
+// ......
+
+// fj_pro: 将当前温度、当前分数、候选分数、是否接受记录到数据文件中，用于绘图
 if (logging) {
-    data_file.close();
+	data_file << t << "," << s0 << "," << s1 << "," << (accept ? 1 : 0) << "\n";
 }
 \end{lstlisting}
 
-\subsubsection{迭代曲线绘制脚本}
+\textbf{3. 在\texttt{sa\_bindings.cpp}中，将\texttt{simulated\_annealing\_cpp}函数绑定到Python接口时，添加新的字符串参数。}
+\begin{lstlisting}
+// fj_pro: 修改为带有 data_filename 参数的 run_sa
+m.def("run_sa", &run_sa, "Run simulated annealing core",
+	py::arg("w_ref"),
+	py::arg("nets"),
+	py::arg("pins"),
+	py::arg("pmos_ary"),
+	py::arg("nmos_ary"),
+	py::arg("pp_ary"),
+	py::arg("np_ary"),
+	py::arg("t0"),
+	py::arg("tt"),
+	py::arg("decrease"),
+	py::arg("times"),
+	py::arg("data_filename") = "" // [新增] 允许 Python 调用时不传此参数
+);
+\end{lstlisting}
 
-编写了Python脚本\texttt{plot\_iter.py}，用于可视化退火过程中的收敛曲线。该脚本读取CSV数据文件，绘制历史最佳分数随温度变化的曲线：
+\textbf{4. 在eda.py中调用模拟退火算法时，需要传入数据文件名参数。}
+\begin{lstlisting}[language=Python]
+# fj_pro: 将sys.argv修改为更方便的argparse处理，同时加入数据文件
+parser = argparse.ArgumentParser(description="Simulated Annealing Placement Tool")
+parser.add_argument("netlist", help="Path of the netlist file")
+parser.add_argument("cell_name", help="Name of the cell to process")
+parser.add_argument("data_file", help="File to log annealing data")
+args = parser.parse_args()
+cells = args.netlist
+cell = args.cell_name
+data_file = args.data_file
+\end{lstlisting}
+
+\subsection{迭代曲线绘制脚本}
+
+编写了Python脚本\texttt{plot\_iter.py}，用于可视化退火过程中的收敛曲线。该脚本读取CSV数据文件，绘制历史最佳分数随温度变化的曲线。同时，该脚本接受\texttt{x_mode}参数，支持绘图时更改横坐标为对数模式（指数速率降温）或者线性模式（线性速率降温）。
 
 \begin{lstlisting}[language=Python]
-# 计算历史最佳分数曲线
+# 计算历史最佳分数曲线，该曲线必定连续，能够很直白的看出算法优化效果
 df['BestScore'] = df['CurrentScore'].cummax()
 
-# 绘制历史最佳分数曲线
-plt.plot(df['Temp'], df['BestScore'], 
-    color='red', linewidth=2, label='Best Score')
-plt.xscale('log')  # X轴使用对数坐标
-plt.gca().invert_xaxis()  # 反转X轴（高温在左）
+plt.figure(figsize=(10, 6))
+
+# 1. 绘制当前分数 (使用散点图，更能体现高温下的随机性)
+# plt.scatter(df['Temp'], df['CurrentScore'], s=10, c='blue', alpha=0.15, label='Current Score')
+# 如果绘制处所有数据点，则svg文件也会很大，所以直接放弃散点图
+
+# 2. 绘制历史最佳分数 (使用连线，体现收敛趋势)
+plt.plot(df['Temp'], df['BestScore'], color='red', linewidth=2, label='Best Score')
+
+# ......
+
+# 设置 X 轴为对数坐标 (因为退火温度通常是指数下降的，线性坐标会导致低温段挤在一起)
+if x_mode == 'log':
+	plt.xscale('log')
 \end{lstlisting}
 
+\subsection{其他}
+
+由于后续会将程序在终端打印出的信息保存到文件，为了防止中文乱码，在\texttt{set_up.py}中，做出如下更改
+\begin{lstlisting}[language=Python]
+extra_compile_args = []
+if sys.platform == "win32":
+	extra_compile_args = ["/std:c++17", "/O2", "/utf-8"]
+\end{lstlisting}
+
+增加了utf-8参数，否则在执行命令\texttt{python setup.py build_ext --inplace}时会出现：“warning C4819: 该文件包含不能在当前代码页(936)中表示的字符”。因为源文件是 UTF-8 编码，但 Windows 的中文命令行默认使用 GBK (代码页 936)。
+
+\newpage
 \section{实验过程及数据}
 
 \subsection{实验环境}
 
 \begin{itemize}
-	\item \textbf{操作系统}：WSL - Ubuntu 22.04
-	\item \textbf{编程语言}：C++17、Python 3.10.12
+	\item \textbf{操作系统}：Windows 11 
+	\item \textbf{编程语言}：C++17、Python 311.13
 	\item \textbf{编译工具}：pybind11用于C++与Python绑定
 	\item \textbf{测试单元}：AN2D2（8个MOS管：4个PMOS + 4个NMOS）
 \end{itemize}
 
 \subsection{编译与运行流程}
+在加入上述扩展工作后，编译与运行流程发生如下变化：
 
-\begin{enumerate}
-	\item \textbf{编译C++扩展}：\texttt{python setup.py build\_ext --inplace}
-	\item \textbf{运行布局算法}：\texttt{python eda.py cells.spi AN2D2 data.csv}
-	\item \textbf{评分}：\texttt{python evaluator.py AN2D2.json AN2D2 cells.spi}
-	\item \textbf{绘制收敛曲线}：\texttt{python plot\_iter.py data.csv log}
-\end{enumerate}
+\textbf{1. 编译}
+
+\texttt{python setup.py build\_ext --inplace}：编译C++扩展模块。
+
+该命令会告诉 setup.py 把编译好的 .pyd 文件直接放在当前源代码目录下，这样 eda.py 就能直接引用。
+
+\textbf{2. 运行模拟退火算法}
+
+\texttt{python eda.py cells.spi AN2D2 "results\20000_1_88_2000\data.csv" > "results\20000_1_88_2000\process.log"}
+
+将eda.py打印的退火日志信息保存到log文件，将退火过程中的评分保存到.csv文件， data_file用于记录模拟退火过程中的数据文件。
+
+\textbf{3. 评分}
+
+\texttt{python evaluator.py AN2D2.json AN2D2 cells.spi > "results\20000_1_88_2000\score.log"}
+
+将评分的信息保存到.log文件。
+
+\textbf{4. 绘制迭代曲线}
+
+\texttt{python plot\_iter.py "results\20000_1_88_2000\data.csv" log}
 
 \subsection{实验参数设置}
 
-实验测试了多组参数组合，参数命名规则为\texttt{x\_y\_z\_w}，其中：
-\begin{itemize}
-	\item $x \times \text{mos\_num}$：起始温度$T_0$
-	\item $0.y$：终止温度$T_t$（固定为0.1）
-	\item $0.z$：降温因子$\alpha$（如88表示0.88）
-	\item $w \times \text{mos\_num}$：每温度迭代次数$times$
-\end{itemize}
+实验测试了多组参数组合，参数命名规则为\texttt{x\_y\_z\_w}，其中x, y, z, w的含义分别是，在当前文件夹保存的退火模式中：
+\begin{enumerate}
+	\item 起始温度$T_0$： $x \times \text{mos\_num}$，其中mos\_num为当前单元的MOS管数量
+	\item 终止温度$T_t$：$0.y$，在本次实验中固定为0.1
+	\item 降温因子$\alpha$：$0.z$，如88表示0.88
+	\item 每温度迭代次数$times$：$w \times \text{mos\_num}$
+\end{enumerate}
 
 \subsection{实验数据}
 
@@ -291,7 +391,7 @@ plt.gca().invert_xaxis()  # 反转X轴（高温在左）
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|}
 	\hline
-	\textbf{参数组合} & \textbf{$T_0$} & \textbf{$\alpha$} & \textbf{$times$} & \textbf{备注} \\
+	\textbf{参数组合} & \textbf{$T_0$} & \textbf{$\alpha$} & \textbf{$times$}  & \textbf{备注} \\
 	\hline
 	20000\_1\_88\_2000 & 160000 & 0.88 & 16000 & 高温慢降，长迭代 \\
 	\hline
@@ -316,11 +416,14 @@ plt.gca().invert_xaxis()  # 反转X轴（高温在左）
 
 通过fj\_pro扩展功能生成的退火收敛曲线保存在\texttt{results/}目录下的各参数文件夹中。曲线展示了历史最佳分数随温度下降的变化趋势，体现了模拟退火算法的收敛特性。
 
-% 如果有图片可以取消注释以下代码
-% \begin{center}
-% 	\includegraphics[width=0.8\textwidth]{results/20000_1_88_2000/data.pdf}
-% 	\caption*{参数组合20000\_1\_88\_2000的收敛曲线}
-% \end{center}
+例如，在退火模式：\texttt{results/20000\_1\_88\_2000/}下，生成的收敛曲线如下所示：
+
+\begin{center}
+	\centering
+	\includegraphics[width=0.8\textwidth]{results/20000_1_88_2000/data.pdf}
+	\caption{参数组合20000\_1\_88\_2000的收敛曲线}
+	\label{fig:convergence_curve}
+\end{center}
 
 \section{分析与讨论}
 

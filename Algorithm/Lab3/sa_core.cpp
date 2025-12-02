@@ -898,10 +898,10 @@ simulated_annealing_cpp(
     std::string data_filename // fj: 记录退火过程中得分的数据文件名字
 ) {
     // 当前解：从初始布局拷贝一份出来，在此基础上做扰动
-    vector<Mos> cur_pmos = pmos_ary;
-    vector<Mos> cur_nmos = nmos_ary;
-    vector<optional<Mos>> cur_pp = pp_ary;
-    vector<optional<Mos>> cur_np = np_ary;
+    vector<Mos> cur_pmos = pmos_ary; // fj: 表示当前行的 PMOS 数组
+    vector<Mos> cur_nmos = nmos_ary; // fj: 表示当前行的 NMOS 数组
+    vector<optional<Mos>> cur_pp = pp_ary; // fj: 表示当前行的 PMOS 布局
+    vector<optional<Mos>> cur_np = np_ary; // fj: 表示当前行的 NMOS 布局
 
     // 在两行末尾各加两个空位，预留“腾挪空间”，后续每次接受新解也会再追加
     cur_pp.push_back(std::nullopt);

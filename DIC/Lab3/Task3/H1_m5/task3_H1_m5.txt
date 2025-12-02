@@ -1,0 +1,23 @@
+
+    When num of Inverters is 5:
+    best_q: 3.8920352
+    
+    XinvPA0 (INV):
+        CM_XinvPA0: 1.5351990520143852
+        SN_XinvPA0（已取整）: 2
+        SP_XinvPA0（已取整）: 2
+    
+    NAND2:
+        CM_NAND2: 1.5351990520143852
+        SN_NAND2（已取整）: 2
+        SP_NAND2（已取整）: 1
+
+    NOR3:
+        CM_NOR3: 0.1473022580816167
+        SN_NOR3（已取整）: 1
+        SP_NOR3（已取整）: 1
+
+    反相器链: (CM, for INV: SN=SP=CM):
+        CM values: [0.28665278674656836, 1.1156627361957376, 4.342198640602125, 16.89998995461562, 65.7753557830104]
+        Sizes for use: [1, 1, 4, 17, 66]
+    

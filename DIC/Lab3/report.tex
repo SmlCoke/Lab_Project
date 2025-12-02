@@ -128,7 +128,7 @@ $$S_N = CM/g\times n$$
 \begin{lstlisting}
 * Sub circuit: 2-NAND
 * g = 1.5
-* CM到SN/SP转换: SN = CM/1.5*2, SP = CM/1.5
+* CM到SN/SP转换: SN = (CM/1.5)*2, SP = CM/1.5
 .subckt NAND2 in1 in2 out vdd gnd SN=1 SP=1 Lg=20n
 * PUN
 Mp1 out in1 vdd vdd pfet L='Lg' NFIN='SP'
@@ -1146,7 +1146,7 @@ Mp out in vdd vdd pfet L='Lg' NFIN ='SP'
 \begin{lstlisting}
 * Sub circuit: 2-NOR
 * g = 1.5
-* CM到SN/SP转换: SN = CM/1.5, SP = CM/1.5*2
+* CM到SN/SP转换: SN = CM/1.5, SP = (CM/1.5)*2
 .subckt NOR2 in1 in2 out vdd gnd SN=1 SP=1 Lg=20n
 *PUN
 Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='SP'
@@ -1161,7 +1161,7 @@ Mn2 out in2 gnd gnd nfet L='Lg' NFIN='SN'
 \begin{lstlisting}
 * Sub circuit: 3-NAND
 * g = 5/3
-* CM到SN/SP转换: SN = CM/(5/3)*3, SP = CM/(5/3)
+* CM到SN/SP转换: SN = (CM*3)/(5/3) = CM*9/5, SP = CM/(5/3) = CM*3/5
 .subckt NAND3 in1 in2 in3 out vdd gnd SN=1 SP=1 Lg=20n
 * PUN
 Mp1 out in1 vdd vdd pfet L='Lg' NFIN='SP'
@@ -1178,7 +1178,7 @@ Mn3 source2 in3 gnd gnd nfet L='Lg' NFIN='SN'
 \begin{lstlisting}
 * Sub circuit: 3-NOR
 * g = 2
-* CM到SN/SP转换: SN = CM/2, SP = CM/2*3
+* CM到SN/SP转换: SN = CM/2, SP = (CM/2)*3
 .subckt NOR3 in1 in2 in3 out vdd gnd SN=1 SP=1 Lg=20n
 *PUN
 Mp1 out in1 source_p1 vdd pfet L='Lg' NFIN='SP'

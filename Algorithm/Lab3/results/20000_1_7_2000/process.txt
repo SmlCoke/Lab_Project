@@ -1,0 +1,79 @@
+[main] netlist = cells.spi cell = AN2D2
+[main] data_file = results\20000_1_7_2000\data.csv
+[read_cell] 打开网表文件: cells.spi
+[read_cell] 找到 .SUBCKT: ['.SUBCKT', 'AN2D2', 'A1', 'A2', 'Z', 'VDD', 'VSS']
+[read_cell] 找到 .ENDS，子电路读取结束
+[read_cell] 子电路内容行数: 10
+[main] read_cell 返回行数: 10
+[init] 处理 cell: AN2D2
+[pro_head] pins: ['A1', 'A2', 'Z', 'VDD', 'VSS']
+[pro_row] 输入行: ['MM9', 'net14', 'A2', 'VSS', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14']
+[pro_row] 输入行: ['MM8', 'net26', 'A1', 'net14', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM5', 'Z', 'net26', 'VSS', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM5_2', 'Z', 'net26', 'VSS', 'VSS', 'nch_mac', 'l=30.0n', 'w=0.14u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM6', 'net26', 'A1', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=170.0n']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM7', 'net26', 'A2', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=0.17u']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM4', 'Z', 'net26', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=0.17u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 输入行: ['MM4_2', 'Z', 'net26', 'VDD', 'VDD', 'pch_mac', 'l=30.0n', 'w=0.17u', '']
+[pro_row] 进入前 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_row] 处理后 nets 列表: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[pro_middle] nets: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[init] pins: ['A1', 'A2', 'Z', 'VDD', 'VSS']
+[init] nets: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[init] 行 1 name= MM9 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 2 name= MM8 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 3 name= MM5 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 4 name= MM5_2 tp_bool= False int_num= 140 拆分个数= 1
+[init] 行 5 name= MM6 tp_bool= True int_num= 170 拆分个数= 1
+[init] 行 6 name= MM7 tp_bool= True int_num= 170 拆分个数= 1
+[init] 行 7 name= MM4 tp_bool= True int_num= 170 拆分个数= 1
+[init] 行 8 name= MM4_2 tp_bool= True int_num= 170 拆分个数= 1
+[order_moslst] 重新编号后数量: 4
+[order_moslst] 重新编号后数量: 4
+[init] 最终 NMOS 数量: 4
+[init] 最终 PMOS 数量: 4
+[init] w_ref = 8
+[main] pins_idx: [0, 1, 2, 3, 4]
+[main] nets: ['A1', 'A2', 'Z', 'VDD', 'VSS', 'net14', 'net26']
+[main] 初始 NMOS 数量: 4 PMOS 数量: 4
+[main] w_ref = 8
+[main] mos_num = 8
+[init_layout] 输入 PMOS 数量: 4 NMOS 数量: 4 mos_num = 8
+[complete_lst] 原长度: 7 目标长度: 8 结果长度: 8
+[complete_lst] 原长度: 8 目标长度: 8 结果长度: 8
+[init_layout] 初始 pmos_place 长度: 8
+[init_layout] 初始 nmos_place 长度: 8
+[update_place_ary] 处理完空列, 最终长度: 8
+[init_layout] 压缩后 pplace_ary 长度: 8
+[init_layout] 压缩后 nplace_ary 长度: 8
+[update_mos_ary] 已根据 place 更新 mos_ary
+[update_mos_ary] 已根据 place 更新 mos_ary
+[init_layout] 完成布局, 返回
+[main] init_layout 返回的 pmos_ary 长度: 4
+[main] init_layout 返回的 nmos_ary 长度: 4
+[main] init_layout 返回的 pp_ary 长度: 8
+[main] init_layout 返回的 np_ary 长度: 8
+[main] fj: mos_num = 8
+[main] 退火参数 t0= 160000.0 tt= 0.1 decrease= 0.7 times= 16000
+[main] sa_core.run_sa 返回 PMOS 数量: 4
+[main] sa_core.run_sa 返回 NMOS 数量: 4
+[placement_str] 进入 placement_str
+[mos_ary_str] PMOS 数量: 4 NMOS 数量: 4
+[mos_ary_str] 合并后总长度: 1466
+[write_to_file] 写入文件: AN2D2.json
+[write_to_file] 写入内容长度: 1494
+Placement written to AN2D2.json

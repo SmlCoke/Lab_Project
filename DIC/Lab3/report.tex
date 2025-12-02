@@ -233,7 +233,7 @@ $$a \rightarrow \text{inv(minimum size)} \rightarrow b \rightarrow \text{3-NAND}
     \midrule
     $p$ & $p_1 = 1$ & $p_2 = 3$ & $p_3 = 2$ & $p_4 = 1$ \\
     $g$ & $g_1 = 1$ & $g_2 = 2$ & $g_3 = \frac{3}{2}$ & $g_4 = 1$ \\
-    $s$ & $CM_1 = 1$ & $CM_2 = x$ & $CM_3 = y$ & $CM_4 = z$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = x$ & $CM_3 = y$ & $CM_4 = z$ \\
     $f$ & $f_1 = x$ & $f_2 = y/x$ & $f_3 = z/y$ & $f_4 = 64/z$ \\
     $b$ & $b_1 = 1$ & $b_2 = 1$ & $b_3 = 1$ & $b_4 = 1$ \\
     \bottomrule
@@ -276,14 +276,15 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
 通过该值计算得到的四个逻辑门的等效扇出以及尺寸的理论最优值见表\ref{tab:task1_theo_best_sf}
 \begin{table}[htbp]
     \centering
-    \caption{Task1 通过理论计算得到的$f$, $s$最优值}
+    \caption{Task1 通过理论计算得到的$f$, $CM$, $S_N$, $S_P$最优值}
     \label{tab:task1_theo_best_sf}
     \begin{tabularx}{\linewidth}{XXXXX}
     \toprule
     stage & inv(minimum size) & 3-NAND & 2-NOR & inv2 \\
     \midrule
-    $s$ & $s_1 = 1$ & $s_2 = 3.722$ & $s_3 = 6.928$ & $s_4 = 17.193$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = 3.722$ & $CM_3 = 6.928$ & $CM_4 = 17.193$ \\
     $f$ & $f_1 = 3.722$ & $f_2 = 1.861$ & $f_3 = 2.482$ & $f_4 = 3.722$ \\
+    $(S_N, S_P)$ & $(1, 1)$ & $(5.58, 1.86)$ & $(4.62, 9.24)$ & $(17.19, 17.19)$ \\
     \bottomrule
     \end{tabularx}
 \end{table}
@@ -297,52 +298,46 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
     \toprule
     stage & inv(minimum size) & 3-NAND & 2-NOR & inv2 \\
     \midrule
-    $s$ & $s_1 = 1$ & $s_2 = 4$ & $s_3 = 7$ & $s_4 = 17$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = 4$ & $CM_3 = 7$ & $CM_4 = 17$ \\
+    $(S_N, S_P)$ & $(1, 1)$ & $(6, 2)$ & $(5, 9)$ & $(17, 17)$ \\
     \bottomrule
     \end{tabularx}
 \end{table}
 
 \subsection{HSPICE仿真阶段}
 
-在仿真时，为了能够在相对比较大的范围内扫描，得到最优解，我们不仅选择理论最优点($s_2 = 4$, $s_3 = 7$, $s_4 = 17$)，还在其附近进行参数扫描，以获得更精确的最优延迟。
+在仿真时，为了能够在相对比较大的范围内扫描，得到最优解，我们不仅选择理论最优点（NAND3: $(S_N, S_P) = (6, 2)$，NOR2: $(S_N, S_P) = (5, 9)$，INV2: $(S_N, S_P) = (17, 17)$），还在其附近进行参数扫描，以获得更精确的最优延迟。
 
-具体扫描范围为：$S_2: [2,3,4,5,6]$，$S_3:[5,6,7,8,9]$，$S_4:[15,16,17,18,19]$。对于满足$\{(s_2, s_3, s_4)| s_2 \in S_2, s_3 \in S_3, s_4 \in S_4\}$的任意尺寸组合，我们都会对其进行仿真。这一步在HSPICE脚本中通过sweep data完成。
+具体扫描范围为：
+\begin{itemize}
+    \item NAND3: $S_N \in [5, 6, 7]$（对应$S_P = S_N/3$取整后）
+    \item NOR2: $S_N \in [3, 5, 7]$（对应$S_P = S_N \times 2$）
+    \item INV2: $S_N \in [14, 17, 20]$（对应$S_P = S_N$）
+\end{itemize}
 
 \subsubsection{仿真结果与分析}
-上述参数组合一共有$5\times5\times5=125$个点，我们将一部分结果（尺寸，$t_{\text{pLH}}, t_{\text{pHL}}, t_{\text{p}}$）展示在表格\ref{tab:task1_results}中。
+上述参数组合一共有$3\times3\times3=27$个点，我们将一部分结果（尺寸，$t_{\text{pLH}}, t_{\text{pHL}}, t_{\text{p}}$）展示在表格\ref{tab:task1_results}中。
 
-值得注意的是，理论得出的最优尺寸组合为$(s_2 = 4, s_3 = 7, s_4 = 17)$，的延迟为：$t_{\text{pLH}}=38.08$ps, $t_{\text{pHL}} = 48.04$ps, $t_{\text{p}} = 43.06$ps。
+值得注意的是，理论得出的最优尺寸组合为：NAND3 $(S_N, S_P) = (6, 2)$，NOR2 $(S_N, S_P) = (5, 9)$，INV2 $(S_N, S_P) = (17, 17)$，对应的延迟为：$t_{\text{pLH}}=32.37$ps, $t_{\text{pHL}} = 29.29$ps, $t_{\text{p}} = 30.83$ps。
 
-但是仿真结果表明，\textbf{仿真得出的最优尺寸组合}为$S_2 = 6$，$S_3 = 5$，$S_4 = 15$，对应的延迟参数为$t_{\text{pLH}} = 33.28$ps，$t_{\text{pHL}} = 41.70$ps，$t_{\text{p}} = 37.49$ps < $43.06$ps。
-
-理论仿真得出了不同的尺寸组合，并且看起来3-NAND门的尺寸取到了最大边界，而2-NOR门和inv2门的尺寸取到了最小边界。也就是说该链在最开始更加倾向于用具有更大输入栅电容的逻辑门作为驱动级。
+但是仿真结果表明，\textbf{仿真得出的最优尺寸组合}为：NAND3 $(S_N, S_P) = (5, 2)$，NOR2 $(S_N, S_P) = (5, 10)$，INV2 $(S_N, S_P) = (14, 14)$，对应的延迟参数为$t_{\text{pLH}} = 30.71$ps，$t_{\text{pHL}} = 28.33$ps，$t_{\text{p}} = 29.52$ps < $30.83$ps。
 
 \begin{table}[htbp]
     \centering
     \caption{Task1部分仿真结果}
     \label{tab:task1_results}
+    \small
     \begin{tabular}{cccccc|cccccc}
         \toprule
-        $s_2$ & $s_3$ & $s_4$ & $t_{pLH}$(ps) & $t_{pHL}$(ps) & $t_p$(ps) & $s_2$ & $s_3$ & $s_4$ & $t_{pLH}$(ps) & $t_{pHL}$(ps) & $t_p$(ps) \\
+        \multicolumn{3}{c}{NAND3} & \multicolumn{3}{c|}{NOR2 \& INV2} & \multicolumn{3}{c}{延迟结果} \\
+        $S_N$ & $S_P$ & & $S_N^{\text{NOR2}}$ & $S_P^{\text{NOR2}}$ & $(S_N, S_P)^{\text{INV2}}$ & $t_{pLH}$(ps) & $t_{pHL}$(ps) & $t_p$(ps) \\
         \midrule
-        % 前16条数据：左栏1-8，右栏9-16
-        2 & 5 & 15 & 38.22 & 51.22 & 44.72 & 5 & 6 & 15 & 35.46 & 44.18 & 39.82 \\
-        3 & 5 & 15 & 35.45 & 46.09 & 40.77 & 6 & 6 & 15 & 35.10 & 43.37 & 39.24 \\
-        4 & 5 & 15 & 34.21 & 43.67 & 38.94 & 2 & 7 & 15 & 42.21 & 55.31 & 48.76 \\
-        5 & 5 & 15 & 33.58 & 42.41 & 37.99 & 3 & 7 & 15 & 39.32 & 50.01 & 44.66 \\
-        \textcolor{red}{6} & \textcolor{red}{5} & \textcolor{red}{15} & \textcolor{red}{33.28} & \textcolor{red}{41.70} & \textcolor{red}{37.49} & 4 & 7 & 15 & 37.99 & 47.42 & 42.71 \\
-        2 & 6 & 15 & 40.28 & 53.33 & 46.80 & 5 & 7 & 15 & 37.27 & 45.98 & 41.63 \\
-        \midrule
-        % 中间省略号
-        \multicolumn{6}{c}{\dots} & \multicolumn{6}{c}{\dots} \\
-        \midrule
-        % 后16条数据：左栏135-142，右栏143-150
-        3 & 7 & 19 & 39.96 & 51.96 & 45.96 & 6 & 8 & 19 & 38.50 & 47.48 & 42.99 \\
-        4 & 7 & 19 & 38.26 & 48.73 & 43.50 & 2 & 9 & 19 & 47.20 & 62.38 & 54.79 \\
-        5 & 7 & 19 & 37.33 & 46.90 & 42.11 & 3 & 9 & 19 & 43.54 & 55.64 & 49.59 \\
-        6 & 7 & 19 & 36.78 & 45.76 & 41.27 & 4 & 9 & 19 & 41.76 & 52.34 & 47.05 \\
-        2 & 8 & 19 & 45.42 & 60.50 & 52.96 & 5 & 9 & 19 & 40.77 & 50.42 & 45.60 \\
-        3 & 8 & 19 & 41.78 & 53.83 & 47.81 & 6 & 9 & 19 & 40.17 & 49.19 & 44.68 \\
+        \textcolor{red}{5} & \textcolor{red}{2} & & \textcolor{red}{5} & \textcolor{red}{10} & \textcolor{red}{(14,14)} & \textcolor{red}{30.71} & \textcolor{red}{28.33} & \textcolor{red}{29.52} \\
+        5 & 2 & & 3 & 6 & (14,14) & 30.67 & 28.85 & 29.76 \\
+        5 & 2 & & 3 & 6 & (17,17) & 31.78 & 29.93 & 30.85 \\
+        5 & 2 & & 5 & 10 & (17,17) & 31.40 & 29.01 & 30.20 \\
+        5 & 2 & & 7 & 14 & (14,14) & 31.84 & 28.78 & 30.31 \\
+        6 & 2 & & 5 & 10 & (17,17) & 32.37 & 29.29 & 30.83 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -398,7 +393,7 @@ $A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32}
 
 \subsubsection{critical path延迟函数的极值求解}
 
-我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task2_metrics}（设Xinv32, XNAND2\_7, XNOR2\_15的参数下标分别为1, 2, 3, 4，$z_1 \sim z_m$分别代表插入的$m$级反相器）
+我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、电容倍数$CM$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task2_metrics}（设Xinv32, XNAND2\_7, XNOR2\_15的参数下标分别为1, 2, 3, 4，$z_1 \sim z_m$分别代表插入的$m$级反相器）
 
 \begin{table}[htbp]
     \centering
@@ -411,7 +406,7 @@ $A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32}
     \midrule
     $p$ & $p_1 = 1$ & $p_2 = 2$ & $p_3 = 2$ & $[1,1,\cdots ,1]$ \\
     $g$ & $g_1 = 1$ & $g_2 = 3/2$ & $g_3 = 3/2$ & $[1,1,\cdots ,1]$ \\
-    $s$ & $s_1 = 1$ & $s_2 = x$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = x$ & $CM_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
     $f$ & $f_1 = x$ & $f_2 = y/x$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 128/z_{m}]$ \\
     $b$ & $b_1 = 2$ & $b_2 = 4$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
     \bottomrule
@@ -464,7 +459,7 @@ $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
     \end{tabular}
 \end{table}
 
-其中，等效扇出$f$，逻辑门尺寸$s$的计算方法与Task1中完全相同，\textcolor{red}{取整方法依旧采用四舍五入}，因此这里不再展示详细细节，而是\textbf{直接给出计算结果以及取整结果}，见表\ref{tab:task2_theo_best_sf}。
+其中，等效扇出$f$，逻辑门电容倍数$CM$（以及对应的$S_N$, $S_P$尺寸）的计算方法与Task1中完全相同，\textcolor{red}{取整方法依旧采用四舍五入}，因此这里不再展示详细细节，而是\textbf{直接给出计算结果以及取整结果}，见表\ref{tab:task2_theo_best_sf}。
 \begin{table}[htbp]
     \centering
     \caption{Task2 通过理论计算得到的$CM$, $S_N$, $S_P$最优值以及取整近似值}
@@ -651,7 +646,7 @@ $A_1 \rightarrow \text{Xinv11} \rightarrow NA_1 \rightarrow \text{Xinv12} \right
 
 \textbf{1. 对于critical path1}
 
-我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task3_p1_metrics}（设Xinv02, XinvPA0, XNOR3\_1的参数下标分别为1, 2, 3，$z_1 \sim z_m$分别代表插入的$m$级反相器）
+我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、电容倍数$CM$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task3_p1_metrics}（设Xinv02, XinvPA0, XNOR3\_1的参数下标分别为1, 2, 3，$z_1 \sim z_m$分别代表插入的$m$级反相器）
 
 \begin{table}[htbp]
     \centering
@@ -663,7 +658,7 @@ $A_1 \rightarrow \text{Xinv11} \rightarrow NA_1 \rightarrow \text{Xinv12} \right
     \midrule
     $p$ & $p_1 = 1$ & $p_2 = 1$ & $p_3 = 3$ & $[1,1,\cdots ,1]$ \\
     $g$ & $g_1 = 1$ & $g_2 = 1$ & $g_3 = 2$ & $[1,1,\cdots ,1]$ \\
-    $s$ & $s_1 = 1$ & $s_2 = x_1$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = x_1$ & $CM_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
     $f$ & $f_1 = x_1$ & $f_2 = y/x_1$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 256/z_{m}]$ \\
     $b$ & $b_1 = (16y+x_1)/x_1$ & $b_2 = 16$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
     \bottomrule
@@ -765,7 +760,7 @@ $$b = \frac{(16y+x_1)}{x_1}$$
     \midrule
     $p$ & $p_1 = 1$ & $p_2 = 1$ & $p_3 = 3$ & $[1,1,\cdots ,1]$ \\
     $g$ & $g_1 = 1$ & $g_2 = 1$ & $g_3 = 2$ & $[1,1,\cdots ,1]$ \\
-    $s$ & $s_1 = 1$ & $s_2 = x_1$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = x_1$ & $CM_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
     $f$ & $f_1 = x_1$ & $f_2 = y/x_1$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 256/z_{m}]$ \\
     $b$ & \textcolor{red}{$b_1 = 1$} & $b_2 = 16$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
     \bottomrule
@@ -801,7 +796,7 @@ $$D_{\text{1pro}} = (m+3) \cdot 8192^{1/(m+3)} + m + 5$$
 
 \textbf{3. 对于critical path2}
 
-我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、尺寸$s$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task3_p2_metrics}（设Xinv12, XNAND2\_1, XNOR3\_2的参数下标分别为1, 2, 3，$z_1 \sim z_m$分别代表插入的$m$级反相器）
+我们从已知组合逻辑门能够获取的指标（本征延迟$p$、逻辑努力$g$、电容倍数$CM$、等效扇出$f$、分支努力$b$）参见表\ref{tab:task3_p2_metrics}（设Xinv12, XNAND2\_1, XNOR3\_2的参数下标分别为1, 2, 3，$z_1 \sim z_m$分别代表插入的$m$级反相器）
 
 \begin{table}[htbp]
     \centering
@@ -813,7 +808,7 @@ $$D_{\text{1pro}} = (m+3) \cdot 8192^{1/(m+3)} + m + 5$$
     \midrule
     $p$ & $p_1 = 1$ & $p_2 = 1$ & $p_3 = 3$ & $[1,1,\cdots ,1]$ \\
     $g$ & $g_1 = 1$ & $g_2 = 3/2$ & $g_3 = 2$ & $[1,1,\cdots ,1]$ \\
-    $s$ & $s_1 = 1$ & $s_2 = x_2$ & $s_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
+    $CM$ & $CM_1 = 1$ & $CM_2 = x_2$ & $CM_3 = y$ & $[z_1, z_2, \cdots, z_m]$ \\
     $f$ & $f_1 = x_2$ & $f_2 = y/x_2$ & $f_3 = z_{1}/y$ & $[z_{2}/z_{1}, z_{3}/z_{2}, \cdots, 256/z_{m}]$ \\
     $b$ & $b_1 = 2$ & $b_2 = 8$ & $b_3 = 1$ & $[1,1,\cdots ,1]$ \\
     \bottomrule

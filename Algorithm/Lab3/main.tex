@@ -39,6 +39,18 @@
 	language=c++,
 }
 
+% ------------------- 设置超链接，便于跳转 -----------------
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfborder={0 0 0},    % 消除超链接边框
+    colorlinks=true,       % 将边框改为颜色标记（可选）
+    linkcolor=black,       % 内部链接颜色（目录、引用等）
+    citecolor=black,       % 引用颜色
+    urlcolor=blue          % URL链接颜色（保持蓝色以便区分）
+}
+
+
 % 定义终端日志样式
 \lstdefinestyle{terminal}{
     basicstyle=\ttfamily\small,
@@ -447,21 +459,23 @@ if sys.platform == "win32":
 
 \textbf{2. 运行模拟退火算法}
 
-\verb|python eda.py cells.spi AN2D2 "results\20000\_1\_88\_2000\data.csv"| 
-\verb|"results\20000\_1\_88\_2000\process.log"|
+\verb|python eda.py cells.spi AN2D2 "results\20000_1_88_2000\data.csv"| 
+
+\verb|> "results\20000_1_88_2000\process.log"|
 
 将eda.py打印的退火日志信息保存到log文件，将退火过程中的评分保存到.csv文件， data\_file用于记录模拟退火过程中的数据文件。
 
 \textbf{3. 评分}
 
 \verb|python evaluator.py AN2D2.json AN2D2 cells.spi| 
-\verb|> "results\20000\_1\_88\_2000\score.log"|
+
+\verb|> "results\20000_1_88_2000\score.log"|
 
 将评分的信息保存到.log文件。
 
 \textbf{4. 绘制迭代曲线}
 
-\verb|python plot\_iter.py "results\20000\_1\_88\_2000\data.csv" log|
+\verb|python plot\_iter.py "results\20000_1_88_2000\data.csv" log|
 
 \subsection{实验参数设置}
 

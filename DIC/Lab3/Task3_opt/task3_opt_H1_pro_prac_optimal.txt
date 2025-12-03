@@ -1,6 +1,6 @@
-index          6.210000e+02
-sn_xinvpa0     4.000000e+00
-sp_xinvpa0     4.000000e+00
+index          1.161000e+03
+sn_xinvpa0     5.000000e+00
+sp_xinvpa0     5.000000e+00
 sn_nand2       4.000000e+00
 sp_nand2       2.000000e+00
 sn_nor3        1.000000e+00
@@ -13,8 +13,8 @@ sn_buffer_2    2.000000e+01
 sp_buffer_2    2.000000e+01
 sn_buffer_3    6.700000e+01
 sp_buffer_3    6.700000e+01
-tplh           8.645000e-11
-tphl           8.583000e-11
-tp             8.614000e-11
+tplh           8.549000e-11
+tphl           8.387000e-11
+tp             8.468000e-11
 temper         2.500000e+01
 alter#         1.000000e+00

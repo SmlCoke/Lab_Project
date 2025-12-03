@@ -284,7 +284,7 @@ if (logging) {
 	data_file << "Temp,CurrentScore,CandidateScore,Accepted\n";
 }
 
-// fj_pro: 计算初始分数 (假设你代码里有这部分，如果没有，需要在循环前算一次)
+// fj_pro: 计算初始分数
 auto eval_init = evaluator(w_ref, nets, pins, cur_pmos, cur_nmos, cur_pp, cur_np);
 double s_init = std::get<0>(eval_init);  // 初始解的总分
 
@@ -358,6 +358,18 @@ if x_mode == 'log':
 
 为了方便批量运行不同参数组合的实验，编写了\texttt{run\_flow.py}脚本。该脚本能够自动完成模拟退火算法运行、评分计算、迭代曲线绘制的全流程，支持遍历多组参数组合进行对比实验。
 
+运行的命令是：\texttt{python run\_flow.py}
+
+本实验选取的参数组合包括：
+\begin{itemize}
+	\item 起始温度 $T_0$: 10000, 20000
+	\item 终止温度 $T_{min}$: 1
+	\item 降温因子 $\alpha$: 0.5, 0.7, 0.88
+	\item 每温度迭代次数 $times$: 1000, 2000
+\end{itemize}
+
+使用该脚本进行贪心算法与模拟退火算法的对比实验时，只需修改\texttt{result\_dir}变量（如改为\texttt{greedy\_results}或\texttt{results}），并在重新编译前修改\texttt{sa\_core.cpp}中的接受准则即可切换算法模式。
+
 \begin{lstlisting}[language=Python]
 import subprocess
 import os
@@ -415,15 +427,27 @@ if __name__ == "__main__":
                                     'log'])
 \end{lstlisting}
 
-该脚本的主要功能如下：
-\begin{enumerate}
-	\item \textbf{参数遍历}：通过嵌套循环遍历所有参数组合（起始温度$T_0$、降温因子$\alpha$、每温度迭代次数$times$）
-	\item \textbf{目录管理}：自动创建以参数命名的结果目录，便于管理不同实验的输出
-	\item \textbf{全流程自动化}：依次执行模拟退火算法（eda.py）、评分计算（evaluator.py）、曲线绘制（plot\_iter.py）
-	\item \textbf{日志记录}：将运行日志和评分结果保存到文件，便于后续分析
-\end{enumerate}
 
-使用该脚本进行贪心算法与模拟退火算法的对比实验时，只需修改\texttt{result\_dir}变量（如改为\texttt{greedy\_results}或\texttt{results}），并在重新编译前修改\texttt{sa\_core.cpp}中的接受准则即可切换算法模式。
+因此，脚本\texttt{eda.py}中，也需要作相应命令行参数接口的修改：
+\begin{lstlisting}[language=Python]
+def main() -> None:
+	# fj_pro: 将sys.argv修改为更方便的argparse处理，同时加入数据文件
+	parser = argparse.ArgumentParser(description="Simulated Annealing Placement Tool")
+	parser.add_argument("netlist", help="Path of the netlist file")
+	parser.add_argument("cell_name", help="Name of the cell to process")
+	parser.add_argument("data_file", help="File to log annealing data")
+	parser.add_argument("x_t0", type=int)
+	parser.add_argument("z_decrease", type=float)
+	parser.add_argument("w_times", type=int)
+	args = parser.parse_args()
+	cells = args.netlist
+	cell = args.cell_name
+	data_file = args.data_file
+	x_t0 = args.x_t0
+	z_decrease = args.z_decrease
+	w_times = args.w_times
+\end{lstlisting}
+
 
 \subsection{其他}
 
@@ -441,12 +465,12 @@ if sys.platform == "win32":
 
 \subsection{实验环境}
 
-\begin{itemize}
+\begin{enumerate}
 	\item \textbf{操作系统}：Windows 11 
 	\item \textbf{编程语言}：C++17、Python 3.11.13
 	\item \textbf{编译工具}：pybind11用于C++与Python绑定
 	\item \textbf{测试单元}：AN2D2（8个MOS管：4个PMOS + 4个NMOS）
-\end{itemize}
+\end{enumerate}
 
 \subsection{编译与运行流程}
 在加入上述扩展工作后，编译与运行流程发生如下变化：
@@ -475,7 +499,7 @@ if sys.platform == "win32":
 
 \textbf{4. 绘制迭代曲线}
 
-\verb|python plot\_iter.py "results\20000_1_88_2000\data.csv" log|
+\verb|python plot_iter.py "results\20000_1_88_2000\data.csv" log|
 
 \subsection{实验参数设置}
 
@@ -637,38 +661,40 @@ Cell score 96.685586 (width: 4, bbox: 3.500000, pin_access: 0.062500, symmetric:
 
 \subsubsection{降温因子$\alpha$的影响}
 
-\begin{itemize}
-	\item \textbf{较大的$\alpha$（如0.88）}：降温较慢，算法有更多时间在每个温度水平进行探索，有利于找到更优解，但运行时间较长。
-	\item \textbf{较小的$\alpha$（如0.70）}：降温较快，算法更快收敛，但可能过早陷入局部最优。
-\end{itemize}
+\begin{enumerate}
+	\item \textbf{较大的$\alpha$（如0.88）}：降温较慢，算法有更多时间在每个温度水平进行探索，有利于找到更优解，\textcolor{red}{但运行时间较长}。
+	\item \textbf{较小的$\alpha$（如0.70）}：降温较快，算法更快收敛，\textcolor{red}{但可能过早陷入局部最优}。
+\end{enumerate}
 
 \subsubsection{每温度迭代次数$times$的影响}
 
-\begin{itemize}
+\begin{enumerate}
 	\item \textbf{较大的$times$}：每个温度下进行更多扰动尝试，增加找到更优解的概率，但增加计算时间。
 	\item \textbf{较小的$times$}：减少计算时间，但可能导致搜索不充分。
-\end{itemize}
+\end{enumerate}
 
 \subsubsection{起始温度$T_0$的影响}
 
-\begin{itemize}
-	\item \textbf{较高的$T_0$}：初期接受差解的概率高，有利于跳出局部最优，探索范围更广。
-	\item \textbf{较低的$T_0$}：初期即表现出较强的贪心性质，可能错过全局最优。
-\end{itemize}
+\begin{enumerate}
+	\item \textbf{较高的$T_0$}：迭代次数和搜索总次数也比较高，提供更充分的搜索。但是运行时间很长。
+	\item \textbf{较低的$T_0$}：降低搜索时间，但是可能找不到最优解。
+\end{enumerate}
 
-\subsection{SA与贪心算法的效果差异}
+\subsection{Metroplis法则与简单贪心策略的效果差异}
 
-贪心算法是模拟退火算法的简化版本，其核心区别在于Metropolis准则：贪心算法只接受使目标函数改进的解（即$\Delta E > 0$时才接受），而模拟退火算法即使在$\Delta E < 0$时也有一定概率接受较差解。
+贪心策略只接受使目标函数改进的解（即$\Delta E > 0$时才接受），而Metroplis法则即使在$\Delta E < 0$时也有一定概率接受较差解。
 
-\subsubsection{贪心算法的实现方式}
+\subsubsection{贪心策略的实现方式}
 
 在代码实现上，只需修改\texttt{sa\_core.cpp}中的Metropolis接受准则部分，将概率接受改为只接受改进解：
 \begin{lstlisting}
-// 贪心算法：只接受改进解
+// TODO: 接收准则
 if (delta > 0) {
-    accept = true;  // 新解更好，接受
+	// 新解更好，直接接受
+	accept = true;
 } else {
-    accept = false; // 新解更差，拒绝
+	// 贪心策略，如果新解更差，直接舍弃
+	accept = false;
 }
 \end{lstlisting}
 
@@ -718,20 +744,6 @@ if (delta > 0) {
 	\item \textbf{SA最优得分（96.69分）显著高于贪心最优得分（94.06分）}：模拟退火算法能够找到更优的全局解，而贪心算法容易陷入局部最优。
 	
 	\item \textbf{贪心算法结果波动较大}：贪心算法的得分范围为88.64\textasciitilde94.06分，标准差较大；而模拟退火算法的得分集中在较高水平。
-	
-	\item \textbf{SA的概率接受机制是关键}：模拟退火算法通过在高温阶段以一定概率接受较差解，能够跳出局部最优，探索更广阔的解空间，最终收敛到更优的解。
-\end{enumerate}
-
-\subsection{实验总结与收获}
-
-\begin{enumerate}
-	\item \textbf{理解了模拟退火算法的核心思想}：通过引入随机性（Metropolis准则）来避免陷入局部最优，在高温时广泛探索，低温时精细收敛。
-	
-	\item \textbf{掌握了模拟退火的完整流程}：邻域产生$\rightarrow$合法性检查$\rightarrow$目标函数评分$\rightarrow$接受准则$\rightarrow$降温策略。
-	
-	\item \textbf{理解了参数调节的重要性}：不同的参数组合会显著影响算法的收敛速度和最终解的质量，需要根据具体问题进行调优。
-	
-	\item \textbf{实践了C++与Python的混合编程}：通过pybind11将计算密集型的C++代码封装为Python模块，兼顾了性能和易用性。
 \end{enumerate}
 
 \end{document}

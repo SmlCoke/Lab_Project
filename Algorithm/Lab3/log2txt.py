@@ -6,9 +6,9 @@ def rename_log_to_txt(root_dir='.'):
     递归查找 root_dir 下所有 .log 文件，并将其扩展名改为 .txt
     """
     root = pathlib.Path(root_dir).resolve()
-    for log_file in root.rglob('score.log'):
+    for log_file in root.rglob('data.log'):
         if log_file.is_file():
-            new_name = log_file.with_suffix('.txt')
+            new_name = log_file.with_suffix('.csv')
             # 避免覆盖已存在的 .txt 文件
             if new_name.exists():
                 print(f"⚠️  跳过（目标已存在）: {log_file} → {new_name}")

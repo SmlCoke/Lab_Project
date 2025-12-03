@@ -192,7 +192,7 @@ Inverter, 2-NAND, 2-NOR的电路示意图分别见图\ref{fig:Inv}、\ref{fig:NA
 $$t_{\text{p}} = \frac{t_{\text{pHL}} + t_{\text{pLH}}}{2}$$
 衡量该\textbf{critical path}的性能。
 
-4. 在后续所有任务中，我们用符号：$CM$(cap multiply)代表逻辑门输入栅电容相对于参考反相器输入栅电容的倍数。用$S_N$和$S_P$代表一个逻辑门中N管和P管的尺寸。
+4. 在后续所有任务中，我们用符号：$CM$(cap multiply)代表逻辑门输入栅电容相对于参考反相器输入栅电容的倍数。用$S_N$和$S_P$代表一个逻辑门中N管和P管的尺寸（因为Static CMOS 无偏斜逻辑门中的同一类型晶体管尺寸都相同，所以我们用一个变量来表示）。相应的，$S_N^{\text{Gate}}$和$S_P^{\text{Gate}}$表示逻辑门Gate的N管尺寸和P管尺寸。
 
 5. 在Task2和Task3中，我们用$z_1 \sim z_m$代表插入的$m$级反相器及其尺寸。
 
@@ -315,6 +315,8 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
     \item INV2: $S_N \in [14, 17, 20]$（对应$S_P = S_N$）
 \end{itemize}
 
+值得注意的是，我们在HSPICE实际仿真时，只会扫描尺寸$S_N$，\textcolor{red}{因为我们默认确保critical path中的组合逻辑门链的$PUN$和$PDN$导通电阻相同。}
+
 \subsubsection{仿真结果与分析}
 上述参数组合一共有$3\times3\times3=27$个点，我们将一部分结果（尺寸，$t_{\text{pLH}}, t_{\text{pHL}}, t_{\text{p}}$）展示在表格\ref{tab:task1_results}中。
 
@@ -329,7 +331,7 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
     \small
     \begin{tabular}{cccccc|cccccc}
         \toprule
-        \multicolumn{3}{c}{NAND3} & \multicolumn{3}{c|}{NOR2 \& INV2} & \multicolumn{3}{c}{延迟结果} \\
+        \multicolumn{3}{c}{NAND3} & \multicolumn{3}{c|}{NOR2 \qquad INV2} & \multicolumn{3}{c}{延迟结果} \\
         $S_N$ & $S_P$ & & $S_N^{\text{NOR2}}$ & $S_P^{\text{NOR2}}$ & $(S_N, S_P)^{\text{INV2}}$ & $t_{pLH}$(ps) & $t_{pHL}$(ps) & $t_p$(ps) \\
         \midrule
         \textcolor{red}{5} & \textcolor{red}{2} & & \textcolor{red}{5} & \textcolor{red}{10} & \textcolor{red}{(14,14)} & \textcolor{red}{30.71} & \textcolor{red}{28.33} & \textcolor{red}{29.52} \\
@@ -381,7 +383,7 @@ $$h_{\text{opt}} = H^{1/N} = 192^{1/4} \approx 3.72$$
 
 \subsection{critical path}
 
-由图\ref{fig:task2_circuit}不难发现，电路中的所有关键路径种类相同，即都经过了两级反相器、一级2-NAND以及以及2-NOR门，共8条。因此我们选择其中任意一条critical path讨论即可。这里选择了：
+由图\ref{fig:task2_circuit}不难发现，电路中的所有关键路径种类相同，即都经过了两级反相器、一级2-NAND以及以及2-NOR门，共8条。因此我们\textbf{选择其中任意一条critical path讨论即可}。这里选择了：
 
 $A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32} \rightarrow \text{PA}_3 \rightarrow \text{XNAND2\_7} \rightarrow \text{PA3\_PA2} \rightarrow \text{XNOR2\_15} \rightarrow \text{word}15 \rightarrow \text{Cload}(128\times{inv})$。
 
@@ -437,7 +439,7 @@ $$D = (m+3) \cdot 2304^{1/(m+3)} + m + 5$$
 
 理论上通过求导和数值计算，在：
 $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
-时$D$有最小值：28.8039。为了更精确的分析，我们使用Task2/opt.py脚本，获得了在$m=3$附近的几个$m$值对应的$h_{\text{opt}}$以及$D_{\text{min}}$，见表\ref{tab:task2_m_opt}。
+时$D$有最小值：28.8039。为了更精确的分析，我们使用\texttt{Task2/opt.py}脚本（求解最优m附近的最小D以及对应$h_{\text{opt}}$），获得了在$m=3$附近的几个$m$值对应的$h_{\text{opt}}$以及$D_{\text{min}}$，见表\ref{tab:task2_m_opt}。
 \begin{table}[htbp]
     \centering
     \caption{Task2 $m$值的理论优化选择}
@@ -459,33 +461,53 @@ $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
     \end{tabular}
 \end{table}
 
-其中，等效扇出$f$，逻辑门电容倍数$CM$（以及对应的$S_N$, $S_P$尺寸）的计算方法与Task1中完全相同，\textcolor{red}{取整方法依旧采用四舍五入}，因此这里不再展示详细细节，而是\textbf{直接给出计算结果以及取整结果}，见表\ref{tab:task2_theo_best_sf}。
+其中，\textbf{等效扇出$f$，逻辑门电容倍数$CM$，以及对应的$S_N$, $S_P$尺寸}的计算方法与Task1中完全相同，\textcolor{red}{取整方法依旧采用四舍五入}，因此这里不再展示详细细节，而是\textbf{直接给出计算结果以及取整结果}，见表\ref{tab:task2_theo_best_sf}。
+% \begin{table}[htbp]
+%     \centering
+%     \caption{Task2 通过理论计算得到的$CM$, $S_N$, $S_P$最优值以及取整近似值}
+%     \label{tab:task2_theo_best_sf}
+%     \small
+%     \begin{tabular}{cccccc}
+%     \toprule
+%     $m$ & Xinv31 & \multicolumn{2}{c}{XNAND2\_7} & \multicolumn{2}{c}{XNOR2\_15} \\
+%     \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+%      & $CM$ & $CM$ & $(S_N, S_P)$ & $CM$ & $(S_N, S_P)$ \\
+%     \midrule
+%     \multirow{2}{*}{$m=2$} & 1 & 2.35 & (3, 2) & 1.84 & (1, 2) \\
+%                            & \multicolumn{5}{c}{$z_1 \sim z_2$: [6, 27]} \\
+%     \midrule
+%     \multirow{2}{*}{$m=3$} & 1 & 1.82 & (2, 1) & 1.10 & (1, 1) \\
+%                            & \multicolumn{5}{c}{$z_1 \sim z_3$: [3, 10, 35]} \\
+%     \midrule
+%     \multirow{2}{*}{$m=4$} & 1 & 1.51 & (2, 1) & 0.76 & (1, 1) \\
+%                            & \multicolumn{5}{c}{$z_1 \sim z_4$: [2, 5, 14, 42]} \\
+%     \midrule
+%     \multirow{2}{*}{$m=5$} & 1 & 1.32 & (2, 1) & 0.58 & (1, 1) \\
+%                            & \multicolumn{5}{c}{$z_1 \sim z_5$: [1, 3, 7, 18, 49]} \\
+%     \bottomrule
+%     \end{tabular}
+% \end{table}
 \begin{table}[htbp]
     \centering
     \caption{Task2 通过理论计算得到的$CM$, $S_N$, $S_P$最优值以及取整近似值}
     \label{tab:task2_theo_best_sf}
     \small
-    \begin{tabular}{cccccc}
+    \begin{tabular}{ccccccc}
     \toprule
-    $m$ & Xinv31 & \multicolumn{2}{c}{XNAND2\_7} & \multicolumn{2}{c}{XNOR2\_15} \\
-    \cmidrule(lr){3-4} \cmidrule(lr){5-6}
-     & $CM$ & $CM$ & $(S_N, S_P)$ & $CM$ & $(S_N, S_P)$ \\
+    \multirow{2}{*}{$m$} & Xinv31 & \multicolumn{2}{c}{XNAND2\_7} & \multicolumn{2}{c}{XNOR2\_15} & $z_1 \sim z_m$ \\
+    \cmidrule(lr){2-7} 
+     & $CM$ & $CM$ & $(S_N, S_P)$ & $CM$ & $(S_N, S_P)$ & $CM/(S_N, S_P)$ \\
     \midrule
-    \multirow{2}{*}{$m=2$} & 1 & 2.35 & (3, 2) & 1.84 & (1, 2) \\
-                           & \multicolumn{5}{c}{$z_1 \sim z_2$: [6, 27]} \\
+    $m=2$ & 1 & 2.35 & (3, 2) & 1.84 & (1, 2) & [6, 27] \\
     \midrule
-    \multirow{2}{*}{$m=3$} & 1 & 1.82 & (2, 1) & 1.10 & (1, 1) \\
-                           & \multicolumn{5}{c}{$z_1 \sim z_3$: [3, 10, 35]} \\
+    $m=3$ & 1 & 1.82 & (2, 1) & 1.10 & (1, 1)  & [3, 10, 35] \\
     \midrule
-    \multirow{2}{*}{$m=4$} & 1 & 1.51 & (2, 1) & 0.76 & (1, 1) \\
-                           & \multicolumn{5}{c}{$z_1 \sim z_4$: [2, 5, 14, 42]} \\
+    $m=4$ & 1 & 1.51 & (2, 1) & 0.76 & (1, 1) & [2, 5, 14, 42] \\
     \midrule
-    \multirow{2}{*}{$m=5$} & 1 & 1.32 & (2, 1) & 0.58 & (1, 1) \\
-                           & \multicolumn{5}{c}{$z_1 \sim z_5$: [1, 3, 7, 18, 49]} \\
+    $m=5$ & 1 & 1.32 & (2, 1) & 0.58 & (1, 1) & [1, 3, 7, 18, 49] \\
     \bottomrule
     \end{tabular}
 \end{table}
-
 
 在实际仿真过程中，我们选择了表\ref{tab:task2_m_opt}中较为不错的$D_{\text{min}}$结果对应的$m$，进行进一步查看，判断在$m=3$、最优尺寸参数组合下，电路critical path是否真的具有最低延迟$t_{\text{p}}$。
 
@@ -503,37 +525,41 @@ $$h_{\text{opt}} \approx 3.59, m \approx 3.05$$
 \toprule
 $m$ & $t_{pLH}$(ps) & $t_{pHL}$(ps) & $t_p$(ps) \\
 \midrule
-0 & 63.48 & 43.60 & 53.54 \\
-1 & 35.59 & 46.13 & 40.86 \\
-\textcolor{red}{2} & \textcolor{red}{42.36} & \textcolor{red}{33.19} & \textcolor{red}{37.78} \\
-\textcolor{blue}{3} & \textcolor{blue}{34.77} & \textcolor{blue}{42.07} & \textcolor{blue}{38.42} \\
-4 & 42.19 & 35.52 & 38.86 \\
-5 & 36.87 & 42.43 & 39.65 \\
+0 & 48.78 & 53.81 & 51.30 \\
+1 & 43.43 & 38.64 & 41.04 \\
+2 & 39.08 & 38.69 & 38.89 \\
+\textcolor{red}{3} & \textcolor{red}{35.90} & \textcolor{red}{38.93} & \textcolor{blue}{37.41} \\
+4 & 39.04 & 36.58 & 37.81 \\
+5 & 39.06 & 40.06 & 39.56 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-可以发现，实际上在$m = 2$时有最优延迟（$t_p = 37.81$ps），与理论预测的$m = 3$有所不同。但是两者非常接近，延迟差距也很小。这样暗示着我们，\textbf{理论分析的结果作用不是直接帮助我们确定最优解，而是给我们提供了一个最优解可能存在的局部范围，我们需要借助仿真工具进一步在这个局部范围里进行微调，从而得到更精确的最优解。}
+可以发现，实际上在$m = 3$时有最优延迟（$t_p = 37.41$ps），与理论预测的$m = 3$相同。此外，我们还可以注意到在m=4，理论最优尺寸组合下的延迟为：$t_p = 37.81$ps，这非常接近最有延迟37.81ps。因此，我们更加需要精细的尺寸扫描来弥补理论无法计算得出的实际细节，这一点就是我们下面要做的事——\textbf{扫描参数，求得大量可选参数组合下的统计意义的最优值。}
+
+%%%% \textbf{理论分析的结果作用不是直接帮助我们确定最优解，而是给我们提供了一个最优解可能存在的局部范围，我们需要借助仿真工具进一步在这个局部范围里进行微调，从而得到更精确的最优解。}
 
 \subsubsection{尺寸参数的精细扫描}
 
-根据以上结果，我们不仅在$m = 2$时扫描参数，还在临近的$m = 1$和$m = 3$时同时扫描，尽可能扩大范围得到最优延迟。三种情况的参数扫描范围如下：
+根据以上结果，我们不仅在$m = 3$时扫描参数，还在临近的$m = 2$和$m = 4$时同时扫描，尽可能扩大范围得到最优延迟。三种情况的参数扫描范围如下：
 
-对于$m = 2$：$S_N^{\text{NAND2}}$扫描范围为[2, 3, 4]，$S_P^{\text{NAND2}}$扫描范围为[1, 2]，$S_N^{\text{NOR2}}$扫描范围为[1, 2, 3]，$S_P^{\text{NOR2}}$扫描范围为[2, 3, 4]，buffer\_0\_size扫描范围为[4, 6, 8]，buffer\_1\_size扫描范围为[21, 23, 25, 27, 29, 31, 33]。
+对于$m = 2$：$S_N^{\text{NAND2}}$扫描范围为[2, 3, 4]，$S_P^{\text{NAND2}}$扫描范围为[1, 2]，$S_N^{\text{NOR2}}$扫描范围为[1, 2]，$S_P^{\text{NOR2}}$扫描范围为[2, 4]，buffer\_0\_size扫描范围为[4, 6, 8]，buffer\_1\_size扫描范围为[21, 23, 25, 27, 29, 31, 33]。
 
-对于$m = 3$：$S_N^{\text{NAND2}}$扫描范围为[1, 2, 3]，$S_P^{\text{NAND2}}$扫描范围为[1]，$S_N^{\text{NOR2}}$扫描范围为[1]，$S_P^{\text{NOR2}}$扫描范围为[1, 2, 3]，buffer\_0\_size扫描范围为[2, 3, 4]，buffer\_1\_size扫描范围为[8, 10, 12]，buffer\_2\_size扫描范围为[28, 31, 33, 35, 37, 39]。
+对于$m = 3$：$S_N^{\text{NAND2}}$扫描范围为[1, 2, 3]，$S_P^{\text{NAND2}}$扫描范围为[1, 2]，$S_N^{\text{NOR2}}$扫描范围为[1, 2]，$S_P^{\text{NOR2}}$扫描范围为[2, 4]，buffer\_0\_size扫描范围为[2, 3, 4]，buffer\_1\_size扫描范围为[8, 10, 12]，buffer\_2\_size扫描范围为[33, 35, 37]。
 
-对于$m = 4$：$S_N^{\text{NAND2}}$扫描范围为[1, 2, 3]，$S_P^{\text{NAND2}}$扫描范围为[1]，$S_N^{\text{NOR2}}$扫描范围为[1]，$S_P^{\text{NOR2}}$扫描范围为[1, 2, 3]，buffer\_0\_size扫描范围为[2, 3, 4]，buffer\_1\_size扫描范围为[4, 6, 8]，buffer\_2\_size扫描范围为[12, 16, 20]，buffer\_3\_size扫描范围为[36, 40, 44, 48, 52]。
+对于$m = 4$：$S_N^{\text{NAND2}}$扫描范围为[1, 2, 3]，$S_P^{\text{NAND2}}$扫描范围为[1, 2]，$S_N^{\text{NOR2}}$扫描范围为[1, 2]，$S_P^{\text{NOR2}}$扫描范围为[2, 4]，buffer\_0\_size扫描范围为[1, 2, 3]，buffer\_1\_size扫描范围为[4, 5, 6]，buffer\_2\_size扫描范围为[12, 14, 16]，buffer\_3\_size扫描范围为[40, 12, 44]。
+
+注意：上面我们虽然显示指明了两种类型晶体管的尺寸范围，但是实际上$S_P$的值是完全由$S_N$确定的。因为我们在程序实现(自动生成含有大量扫描参数的脚本为Task2/generate\_sp\_m2,3,4.py)给出参数组合时，\textbf{只会指定$S_N$的范围，$S_N$的值一旦固定，那么$S_P$的值也会随之固定（其中可能会涉及到四舍五入取整）。}
 
 \subsubsection{仿真结果与分析}
 
 三种情况的最优尺寸参数及对应延迟如下（或者参见表\ref{tab:task2_parc_best_tp}）：
 
-$m = 2$时：$S_N^{\text{NAND2}} = 3$，$S_P^{\text{NAND2}} = 2$，$S_N^{\text{NOR2}} = 2$，$S_P^{\text{NOR2}} = 4$，z1\_size = 8，z2\_size = 25，得到$t_{pLH} = 37.62$ps，$t_{pHL} = 37.09$ps，$t_p = 37.35$ps。
+$m = 2$时：$S_N^{\text{NAND2}} = 3$，$S_P^{\text{NAND2}} = 2$，$S_N^{\text{NOR2}} = 2$，$S_P^{\text{NOR2}} = 4$，z1\_size = 8，z2\_size = 25，得到$t_{pLH} = 37.62$ps，$t_{pHL} = 37.09$ps，$t_p = 37.35$ps。这一组数据由于理论最优尺寸参数组合得到的$t_p=38.89$ps（见表\ref{tab:task2_m}）。
 
-$m = 3$时：$S_N^{\text{NAND2}} = 2$，$S_P^{\text{NAND2}} = 1$，$S_N^{\text{NOR2}} = 1$，$S_P^{\text{NOR2}} = 2$，z1\_size = 3，z2\_size = 10，z3\_size = 33，得到$t_{pLH} = 38.02$ps，$t_{pHL} = 35.46$ps，$t_p = 36.74$ps。
+$m = 3$时：$S_N^{\text{NAND2}} = 2$，$S_P^{\text{NAND2}} = 1$，$S_N^{\text{NOR2}} = 1$，$S_P^{\text{NOR2}} = 2$，z1\_size = 3，z2\_size = 10，z3\_size = 33，得到$t_{pLH} = 38.02$ps，$t_{pHL} = 35.46$ps，$t_p = 36.74$ps。这一组数据由于理论最优尺寸参数组合得到的$t_p=37.41$ps（见表\ref{tab:task2_m}）。
 
-$m = 4$时：$S_N^{\text{NAND2}} = 2$，$S_P^{\text{NAND2}} = 1$，$S_N^{\text{NOR2}} = 1$，$S_P^{\text{NOR2}} = 2$，z1\_size = 3，z2\_size = 6，z3\_size = 16，z4\_size = 40，得到$t_{pLH} = 36.77$ps，$t_{pHL} = 38.63$ps，$t_p = 37.70$ps。
+$m = 4$时：$S_N^{\text{NAND2}} = 2$，$S_P^{\text{NAND2}} = 1$，$S_N^{\text{NOR2}} = 1$，$S_P^{\text{NOR2}} = 2$，z1\_size = 3，z2\_size = 6，z3\_size = 16，z4\_size = 40，得到$t_{pLH} = 36.77$ps，$t_{pHL} = 38.63$ps，$t_p = 37.70$ps。这一组数据由于理论最优尺寸参数组合得到的$t_p=37.81$ps（见表\ref{tab:task2_m}）。
 
 \begin{table}[htbp]
 \centering
@@ -552,11 +578,11 @@ $m$ & $S_N^{\text{NAND2}}$ & $S_P^{\text{NAND2}}$ & $S_N^{\text{NOR2}}$ & $S_P^{
 
 综合以上结果，在$m = 3$时获得了最优延迟$t_p = 36.74$ps。
 
-在最优解情况下，\textbf{电路详细尺寸参数为：}
+\textbf{在最优解情况下，电路详细尺寸参数组合}
 
 \textbf{1.} 关键路径为：
 
-$A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32} \rightarrow \text{PA}_3 \rightarrow \text{XNAND2\_7} \rightarrow \text{PA3\_PA2} \rightarrow \text{XNOR2\_15} \rightarrow \text{word}15 \rightarrow z_1 \rightarrow z_2 \rightarrow z_3 \rightarrow \text{Cload}(128\times{inv})$。
+$A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32} \rightarrow \text{PA}_3 \rightarrow \text{XNAND2\_7} \rightarrow \text{PA3\_PA2} \rightarrow \text{XNOR2\_15} \rightarrow \text{word}15 \rightarrow z_1 \rightarrow z_2 \rightarrow z_3 \rightarrow \text{Cload}(128\times{\text{ref inv}})$。
 
 \textbf{2.} 各门的逻辑努力、尺寸等参数如表\ref{tab:task2_best_gate_params}所示。注意：对于NAND2和NOR2，需要分别列出$S_N$和$S_P$。
 
@@ -564,23 +590,23 @@ $A_3 \rightarrow \text{Xinv31} \rightarrow \text{NA}_3 \rightarrow \text{Xinv32}
 \centering
 \caption{Task2 critical path各逻辑门最优尺寸参数组合}
 \label{tab:task2_best_gate_params}
-\begin{tabular}{cccccc}
+\begin{tabular}{ccccccc}
 \toprule
-逻辑门 & $S_N$ & $S_P$ & 逻辑努力$g$ & 分支努力$b$ & 等效扇出$f$ \\
+逻辑门 & $S_N$ & $S_P$ & 逻辑努力$g$ & 电容倍数$CM$ & 分支努力$b$ & 等效扇出$f$ \\
 \midrule
-Xinv32    & 1 & 1 & 1 & 2 & 1.5 \\
-XNAND2\_7 & 2 & 1 & 3/2 & 4 & 0.67 \\
-XNOR2\_15 & 1 & 2 & 3/2 & 1 & 3 \\
-$z_1$     & 3 & 3 & 1 & 1 & 3.33 \\
-$z_2$     & 10 & 10 & 1 & 1 & 3.3 \\
-$z_3$     & 33 & 33 & 1 & 1 & 3.88 \\
+Xinv32    & 1  & 1  & 1   & 1    & 2 & 1.5 \\
+XNAND2\_7 & 2  & 1  & 3/2 & 3/2  & 4 & 1 \\
+XNOR2\_15 & 1  & 2  & 3/2 & 3/2  & 1 & 2 \\
+$z_1$     & 3  & 3  & 1   & 3    & 1 & 3.33 \\
+$z_2$     & 10 & 10 & 1   & 10   & 1 & 3.3 \\
+$z_3$     & 33 & 33 & 1   & 33   & 1 & 3.88 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \textbf{3.} critical path路径参数见\ref{tab:task2_best_path_params}
 $G = 1 \times 3/2 \times 3/2 \times 1 \times 1 \times 1 = 9/4 $，$B = 8 $，
-$F = 1.5\times 0.67\times 3 \times 3.33 \times 3.3 \times 3.88 \approx 128$，
+$F = 1.5\times 1 \times 2 \times 3.33 \times 3.3 \times 3.88 \approx 128$，
 $H = GBF = 9/4 \times 8 \times 128 \approx 2304$。
 
 \begin{table}[htbp]
@@ -593,7 +619,7 @@ $H = GBF = 9/4 \times 8 \times 128 \approx 2304$。
     Path electrical effort($F$) & Path effort($H$) &
     Total parasitic delay($P$) & $D_{\text{min}}$ \\
     \midrule
-    $\frac{9}{4}$ & 8 & 128 & 2304 & 8 &  29.80 \\
+    $\frac{9}{4}$ & 8 & 128 & 2304 & 8 &  29.81 \\
     \bottomrule
     \end{tabularx}
 \end{table}
@@ -857,7 +883,7 @@ $$D_{\text{1pro}} = (m+3) \cdot 12288^{1/(m+3)} + m + 5$$
 
 为了更精确的分析，我们使用Task3/opt\_H2.py脚本，获得了在$m=4$附近的几个$m$值（m=2 to 8）对应的$h_{\text{opt}}$以及$D_{\text{min}}$。
 
-这三组路径的理论优化数据汇总见表\ref{tab:task3_theo_opt_all}。
+这三组路径的理论优化数据汇总见表\ref{tab:task3_theo_opt_all}。表中红色行代表当前路径计算方法下的最优值。
 
 \begin{table}[htbp]
     \centering
@@ -875,7 +901,7 @@ $$D_{\text{1pro}} = (m+3) \cdot 12288^{1/(m+3)} + m + 5$$
     4 & 4.84 & 30.80 & \textcolor{red}{4} & \textcolor{red}{3.62} & \textcolor{red}{35.36} & \textcolor{red}{4} & \textcolor{red}{3.84} & \textcolor{red}{36.87} \\
     5 & 3.89 & 28.78 & 5 & 3.08 & 35.68 & 5 & 3.24 & 36.96 \\
     6 & 3.30 & 27.80 & 6 & 2.72 & 36.49 & 6 & 2.85 & 37.62 \\
-    \textcolor{red}{7} & \textcolor{red}{2.90} & \textcolor{red}{27.40} & 7 & 2.46 & 37.62 & 7 & 2.56 & 38.64 \\
+    7 & 2.90 & 27.40 & 7 & 2.46 & 37.62 & 7 & 2.56 & 38.64 \\
     \textcolor{red}{8} & \textcolor{red}{2.62} & \textcolor{red}{27.36} & 8 & 2.27 & 38.95 & 8 & 2.35 & 39.89 \\
     9 & 2.40 & 27.57 & 9 & 2.12 & 40.43 & 9 & 2.19 & 41.30 \\
     10 & 3.00 & 33.48 & 10 & 2.00 & 42.00 & 10 & 2.06 & 42.82 \\
@@ -893,7 +919,7 @@ $$D_{\text{1pro}} = (m+3) \cdot 12288^{1/(m+3)} + m + 5$$
 
 每一次仿真时，\textcolor{red}{选取的逻辑门尺寸参数组合都是当前$m$值下理论分析计算出来的最优尺寸参数组合}。
 
-仿真结果如表\ref{tab:task3_sim_m_all}所示。其中蓝色部分数据为当前路径不同$m$值下的的最优延迟数据。
+仿真结果如表\ref{tab:task3_sim_m_all}所示。其中红色部分数据为当前路径不同$m$值下的的最优延迟数据。
 
 \begin{table}[htbp]
     \centering
@@ -906,30 +932,24 @@ $$D_{\text{1pro}} = (m+3) \cdot 12288^{1/(m+3)} + m + 5$$
     \multicolumn{4}{c|}{\textbf{Critical Path 1}} & \multicolumn{4}{c|}{\textbf{Critical Path 1 (Pro)}} & \multicolumn{4}{c}{\textbf{Critical Path 2}} \\
     $m$ & $t_{pLH}$ & $t_{pHL}$ & $t_p$ & $m$ & $t_{pLH}$ & $t_{pHL}$ & $t_p$ & $m$ & $t_{pLH}$ & $t_{pHL}$ & $t_p$ \\
     \midrule
-    1 & 79.67 & 103.90 & 91.79 & 1 & 147.30 & 156.90 & 152.10 & - & - & - & - \\
-    2 & 78.33 & 69.22 & 73.78 & 2 & 86.73 & 84.56 & 85.64 & 2 & 49.11 & 55.92 & 52.52 \\
-    3 & 68.47 & 72.35 & 70.41 & \textcolor{blue}{3} & \textcolor{blue}{73.05} & \textcolor{blue}{75.44} & \textcolor{blue}{74.25} & \textcolor{blue}{3} & \textcolor{blue}{46.96} & \textcolor{blue}{52.30} & \textcolor{blue}{49.63} \\
-    \textcolor{blue}{4} & \textcolor{blue}{71.62} & \textcolor{blue}{66.31} & \textcolor{blue}{68.96} & 4 & 67.98 & 62.36 & 65.17 & 4 & 49.21 & 51.32 & 50.27 \\
-    5 & 67.94 & 71.99 & 69.97 & 5 & 68.26 & 64.50 & 66.38 & 5 & 48.66 & 49.50 & 49.08 \\
-    6 & 80.27 & 76.68 & 78.48 & 6 & 69.39 & 72.64 & 71.02 & 6 & 51.73 & 56.88 & 54.31 \\
-    7 & 79.39 & 82.13 & 80.76 & 7 & 75.72 & 71.23 & 73.48 & 7 & 52.41 & 50.95 & 51.68 \\
-    8 & 83.51 & 79.99 & 81.75 & 8 & 75.07 & 78.88 & 76.98 & 8 & 57.30 & 61.65 & 59.48 \\
-    9 & 82.45 & 85.85 & 84.15 & & & & & & & & \\
+    1 & 92.59 & 94.45 & 93.52 & 1 & 147.30 & 156.90 & 152.10 & - & - & - & - \\
+    2 & 78.29 & 69.23 & 73.76 & 2 & 86.73 & 84.56 & 85.64 & 2 & 49.11 & 55.92 & 52.52 \\
+    3 & 68.50 & 72.34 & 70.42 & 3 & 73.05 & 75.44 & 74.25 & 3 & 46.96 & 52.30 & 49.63 \\
+    4 & 71.61 & 66.32 & \textcolor{red}{68.97} & 4 & 67.98 & 62.36 & \textcolor{red}{65.17} & 4 & 49.21 & 51.32 & 50.27 \\
+    5 & 67.94 & 72.01 & 69.98 & 5 & 63.28 & 68.01 & 65.65 & 5 & 48.66 & 49.50 & \textcolor{red}{49.08} \\
+    6 & 80.26 & 76.74 & 78.50 & 6 & 69.22 & 64.16 & 66.69 & 6 & 51.80 & 50.53 & 51.17 \\
+    7 & 79.44 & 82.14 & 80.79 & 7 & 69.22 & 73.37 & 71.29 & 7 & 51.97 & 52.42 & 52.20 \\
+    8 & 83.51 & 80.03 & 81.77 & 8 & 75.07 & 70.62 & 72.84 & 8 & 54.09 & 53.19 & 53.64 \\
+    9 & 82.54 & 85.89 & 84.21 & & & & & & & & \\
     \bottomrule
     \end{tabular}
 \end{table}
 
 
 
-可以发现，H1在$m=4$时获得最优延迟（$t_p = 68.96$ps），H1\_pro在$m = 3$时获得最优延迟（$t_p = 74.25$ps），H2在$m = 3$时获得最优延迟（$t_p = 49.63$ps）。
+可以发现，H1在$m=4$时获得最优延迟（$t_p = 68.97$ps），H1\_pro在$m = 4$时获得最优延迟（$t_p = 65.17$ps），H2在$m = 5$时获得最优延迟（$t_p = 49.08$ps）。
 
-三种情况的最优尺寸参数及对应延迟如下（或者参见表\ref{tab:task3_parc_best_tp}）：
-
-H1 ($m=4$)：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (2, 2)$，$(S_N^{\text{NAND2}}, S_P^{\text{NAND2}}) = (2, 1)$，$(S_N^{\text{NOR3}}, S_P^{\text{NOR3}}) = (1, 1)$, $z_1 \sim z_4$ = [1, 2, 11, 53]。
-
-H1\_pro ($m=3$)：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (4, 4)$，$(S_N^{\text{NAND2}}, S_P^{\text{NAND2}}) = (6, 3)$，$(S_N^{\text{NOR3}}, S_P^{\text{NOR3}}) = (1, 2)$, $z_1 \sim z_3$ = [3, 13, 57]。
-
-H2 ($m=3$)：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (2, 2)$，$(S_N^{\text{NAND2}}, S_P^{\text{NAND2}}) = (3, 2)$，$(S_N^{\text{NOR3}}, S_P^{\text{NOR3}}) = (1, 1)$, $z_1 \sim z_3$ = [2, 11, 53]。
+三种情况的最优尺寸参数及对应延迟参见表\ref{tab:task3_parc_best_tp}：
 
 \begin{table}[htbp]
     \centering
@@ -940,9 +960,9 @@ H2 ($m=3$)：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (2, 2)$，$(S_N^{\t
     \toprule
     Path & $m$ & $(S_N, S_P)^{\text{XinvPA0}}$ & $(S_N, S_P)^{\text{NAND2}}$ & $(S_N, S_P)^{\text{NOR3}}$ & $z_1 \sim z_m$ & $t_p$(ps) \\
     \midrule
-    H1 & 4 & (2, 2) & (2, 1) & (1, 1) & $[1, 2, 11, 53]$ & 68.96 \\
-    H1\_pro & 3 & (4, 4) & (6, 3) & (1, 2) & $[3, 13, 57]$ & 74.25 \\
-    H2 & 3 & (2, 2) & (3, 2) & (1, 1) & $[2, 11, 53]$ & 49.63 \\
+    H1 & 4 & (2, 2) & (2, 1) & (1, 1) & $[1, 2, 11, 53]$ & 68.97 \\
+    H1\_pro & 4 & (4, 4) & (5, 2) & (1, 1) & $[1, 5, 20, 71]$ & 65.17 \\
+    H2 & 5 & (2, 2) & (2, 1) & (1, 1) & $[1, 2, 7, 24, 79]$ & 49.08 \\
     \bottomrule
     \end{tabular}
 \end{table}
@@ -951,29 +971,60 @@ H2 ($m=3$)：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (2, 2)$，$(S_N^{\t
 
 由于计算资源有限，下面我们仅考虑H1\_pro（因为在之研究critical path1，而不是全部输入动态变化时，H1\_pro比H1更合理）以及H2，并且\textbf{仅在最优$m$值时进行精细参数扫描}。
 
-\textbf{此外，需要注意的是}，我们在搭建sp脚本时，搭建了全部的5 $\times$ 32 decoder，也就是说在仿真时需要为每一个逻辑门分配合适尺寸。方便起见，我们认为所有的2-NAND门尺寸一致，所有的3-NOR门尺寸一致。
+此外，我们发现，对于critical path2，表\ref{tab:task3_sim_m_all}中，当$m$从3增加到5时，最优$t_p$分别为：49.63ps，50.27ps，49.08ps，\textbf{出现了一个局部的由低到高再到低的“小波峰”}，这种情况在Task1~Task2中从未出现。在图\ref{fig:task3_plot}中，这一现象更加直观。\textbf{原因可能是NFIN取整数，导致实际上的组合逻辑们链的$CM$关系不与理论最优解完全相同。}因此，我们在后续精细扫描尺寸参数组合时，对于critical path2，不仅需要扫描$m=5$的情况，$m=3,4$的情况同样需要考虑，期望能够发现潜在中的最优解。
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width = 0.9\textwidth]{./Task3/tp_vs_m.pdf}
+    \caption{Task3: critical path1,2 $tp - m$ plot}
+    \label{fig:task3_plot}
+\end{figure}
+
+\textbf{此外，需要注意的是}，我们在搭建sp脚本时，搭建了全部的5 $\times$ 32 decoder，也就是说在仿真时需要为每一个逻辑门分配合适尺寸。方便起见，我们认为所有的2-NAND门尺寸一致，所有的3-NOR门尺寸一致。这一点与Task2相同。
 
 以每种情况的通过上述仿真得出的“最优尺寸组合”为中心参数组合，设置一定步长和半径，得到的待扫描参数范围如下：
 
-\textbf{1. 对于H1\_pro（$m = 3$），一共有多种参数组合需要仿真}
+\textbf{1. 对于H1\_pro（$m = 3$），一共有$3\times3\times2\times2\times3\times3\times5=1620$种参数组合需要仿真}
 \begin{enumerate}
     \item $S_N^{\text{XinvPA0}}$, $S_P^{\text{XinvPA0}}$扫描范围为[3, 4, 5]（同值）
-    \item $(S_N^{\text{NAND2}}, S_P^{\text{NAND2}})$扫描范围为[(4, 2), (5, 3), (6, 3)]，对应$CM$为[3, 4, 5]
-    \item $(S_N^{\text{NOR3}}, S_P^{\text{NOR3}})$扫描范围为[(1, 3)]，对应$CM$为[2]
-    \item $z_1$尺寸扫描范围为[1, 2, 3]
-    \item $z_2$尺寸扫描范围为[4, 6, 8]
+    \item $(S_N^{\text{NAND2}}, S_P^{\text{NAND2}})$扫描范围为[(4, 2), (5, 3), (6, 3)]
+    \item $(S_N^{\text{NOR3}}, S_P^{\text{NOR3}})$扫描范围为[(1, 3), (2, 6)]
+    \item $z_1$尺寸扫描范围为[1, 2]
+    \item $z_2$尺寸扫描范围为[4, 5, 6]
     \item $z_3$尺寸扫描范围为[18, 20, 22]
-    \item $z_4$尺寸扫描范围为[63, 67, 71, 75, 79, 83, 87]。
+    \item $z_4$尺寸扫描范围为[67, 69, 71, 73, 75]。
 \end{enumerate}
 
-\textbf{2. 对于H2（$m = 3$），一共有多种参数组合需要仿真}
+\textbf{2. 对于H2（$m = 3$），一共有$3\times3\times2\times3\times3\times5=810$组参数组合需要仿真}
 \begin{enumerate}
     \item $S_N^{\text{XinvPA0}}$, $S_P^{\text{XinvPA0}}$扫描范围为[1, 2, 3]（同值）
-    \item $(S_N^{\text{NAND2}}, S_P^{\text{NAND2}})$扫描范围为[(2, 1), (3, 2)]，对应$CM$为[1.5, 3]
-    \item $(S_N^{\text{NOR3}}, S_P^{\text{NOR3}})$扫描范围为[(1, 3)]，对应$CM$为[2]
-    \item $z_1$尺寸扫描范围为[2, 3, 4]
+    \item $(S_N^{\text{NAND2}}, S_P^{\text{NAND2}})$扫描范围为[(2, 1), (3, 2), (4, 2)]
+    \item $(S_N^{\text{NOR3}}, S_P^{\text{NOR3}})$扫描范围为[(1, 3), (2, 6)]
+    \item $z_1$尺寸扫描范围为[1, 2, 3]
     \item $z_2$尺寸扫描范围为[9, 11, 13]
-    \item $z_3$尺寸扫描范围为[43, 49, 55, 61, 67, 73]。
+    \item $z_3$尺寸扫描范围为[49, 51, 53, 55, 57]。
+\end{enumerate}
+
+\textbf{3. 对于H2（$m = 4$），一共有$3\times3\times2\times3\times3\times3\times5=2430$组参数组合需要仿真}
+\begin{enumerate}
+    \item $S_N^{\text{XinvPA0}}$, $S_P^{\text{XinvPA0}}$扫描范围为[1, 2, 3]（同值）
+    \item $(S_N^{\text{NAND2}}, S_P^{\text{NAND2}})$扫描范围为[(2, 1), (3, 2), (4, 2)]
+    \item $(S_N^{\text{NOR3}}, S_P^{\text{NOR3}})$扫描范围为[(1, 3), (2, 6)]
+    \item $z_1$尺寸扫描范围为[1, 2, 3]
+    \item $z_2$尺寸扫描范围为[4, 5, 6]
+    \item $z_3$尺寸扫描范围为[15, 17, 19]
+    \item $z_4$尺寸扫描范围为[63, 65, 67, 69, 71]。
+\end{enumerate}
+
+\textbf{4. 对于H2（$m = 5$），一共有$3\times2\times2\times2\times3\times3\times3\times3=1944$组参数组合需要仿真}
+\begin{enumerate}
+    \item $S_N^{\text{XinvPA0}}$, $S_P^{\text{XinvPA0}}$扫描范围为[1, 2, 3]（同值）
+    \item $(S_N^{\text{NAND2}}, S_P^{\text{NAND2}})$扫描范围为[(2, 1), (3, 2)]
+    \item $(S_N^{\text{NOR3}}, S_P^{\text{NOR3}})$扫描范围为[(1, 3), (2, 6)]
+    \item $z_1$尺寸扫描范围为[1, 2]
+    \item $z_2$尺寸扫描范围为[1, 2, 3]
+    \item $z_3$尺寸扫描范围为[6, 7, 8]
+    \item $z_4$尺寸扫描范围为[22, 24, 26]
+    \item $z_5$尺寸扫描范围为[71, 75, 79]。
 \end{enumerate}
 
 \textbf{注意}：由于服务器内存限制，除了DIC/Lab3/Task3\_opt/Lab3\_Task3\_H2\_m3\_task3\_opt\_H2\_m3.csv外，其余Task3\_opt/中的.csv文件均只包含大部分参数组合的仿真结果，而非全部。

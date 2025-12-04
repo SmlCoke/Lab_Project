@@ -1,0 +1,1290 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+    pdfborder={0 0 0},
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{longtable}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}p{#1}}
+
+\title{集成电路工艺技术基础 Chapter 7\\光刻工艺详细复习手稿}
+\author{冯峻}
+\date{\today}
+
+\fancyhead[L]{Chapter 7 复习手稿}
+\fancyhead[C]{光刻工艺}
+\fancyfoot[C]{\thepage}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{光刻技术基本概念}
+
+\subsection{光刻的起源与发展}
+
+\subsubsection{传统光刻技术的发明}
+
+\textbf{发明者：}Alois Senefelder
+
+\textbf{发明时间：}1796年
+
+\textbf{原始方法：}化学印刷（Chemical Printing）
+
+\textbf{工艺原理：}
+\begin{enumerate}
+    \item 用油基物质在石灰石上标记图案
+    \item 酸将图案蚀刻到表面
+    \item 阿拉伯树胶溶液仅粘附于非油性区域
+    \item 印刷时，水附着在树胶区域，油性墨（肥皂、蜡、油、煤黑）转移到纸上
+\end{enumerate}
+
+\textbf{词源：}
+\begin{itemize}
+    \item lithos = 石头（希腊语）
+    \item graphy = 书写
+\end{itemize}
+
+\subsubsection{现代半导体光刻}
+
+\textbf{在IC制造中的地位：}
+\begin{itemize}
+    \item 平面工艺中的关键工序
+    \item 成本占比超过60\%
+    \item 决定器件的最小尺寸和性能
+\end{itemize}
+
+\textbf{当前生产技术（2020年代）：}
+\begin{itemize}
+    \item \textbf{先进节点：}5 nm EUV光刻（TSMC）
+    \item \textbf{曝光波长：}193 nm（ArF浸没式）或13.5 nm（EUV）
+    \item \textbf{分辨率：}约$\lambda$/4，可达$\sim$5 nm（使用分辨率增强技术）
+    \item \textbf{产能：}100片晶圆/小时（300 mm晶圆）
+    \item \textbf{光刻胶：}化学放大型光刻胶（Chemically Amplified Resist）
+\end{itemize}
+
+\subsubsection{极限研究光刻}
+
+\textbf{STM原子操纵技术：}
+\begin{itemize}
+    \item \textbf{方法：}扫描隧道显微镜（STM）逐个拾取和放置原子
+    \item \textbf{条件：}
+    \begin{itemize}
+        \item 超高真空（UHV）
+        \item 低温环境
+        \item 原子级清洁表面
+        \item 原子级尖锐的STM针尖
+    \end{itemize}
+    \item \textbf{分辨率：}$\sim$0.3 nm（单原子）
+    \item \textbf{产能：}1原子/分钟$\approx$0.017像素/秒
+    \item \textbf{局限性：}非通用工艺，仅用于研究
+\end{itemize}
+
+\subsection{光刻技术的关键指标}
+
+\subsubsection{分辨率（Resolution）}
+
+\textbf{定义：}能够清晰成像的最小特征尺寸
+
+\textbf{衡量标准：}
+\begin{itemize}
+    \item 最小线宽
+    \item 尺寸控制精度（Dimensional control）
+    \begin{itemize}
+        \item 跨样品（across sample）
+        \item 样品间（sample to sample）
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{对比度（Contrast）}
+
+\textbf{定义：}区分曝光和未曝光区域的能力
+
+\textbf{重要性：}直接影响图形边缘的清晰度
+
+\subsubsection{产能（Throughput）}
+
+\textbf{定义：}单位时间内完成曝光的晶圆数量
+
+\textbf{影响因素：}
+\begin{itemize}
+    \item 像素曝光速率
+    \item 闪光速率（Flash rate）
+    \item 每次闪光的像素数
+    \item 光刻胶灵敏度
+\end{itemize}
+
+\subsubsection{套刻精度（Placement Accuracy/Overlay）}
+
+\textbf{定义：}不同层之间图形对准的精度
+
+\textbf{类型：}
+\begin{itemize}
+    \item 层间套刻（Layer to layer）
+    \item 特征间套刻（Feature to feature）
+\end{itemize}
+
+\subsection{通用光刻工艺流程}
+
+\textbf{光刻作为信息流动过程：}
+
+设计图形$\rightarrow$掩模制作$\rightarrow$曝光转移$\rightarrow$显影$\rightarrow$图形转移
+
+\textbf{完整光刻工艺步骤：}
+\begin{enumerate}
+    \item \textbf{涂胶（Spincoat）：}旋涂光刻胶
+    \item \textbf{前烘（Post-apply bake）：}溶剂挥发
+    \item \textbf{曝光（Exposure）：}紫外光通过掩模曝光
+    \item \textbf{曝光后烘焙（Post-exposure bake, PEB）：}促进化学反应
+    \item \textbf{显影（Development）：}溶解可溶部分
+    \item \textbf{干燥（Drying）：}去除显影液
+\end{enumerate}
+
+\section{光刻技术与曝光系统}
+
+\subsection{光源（Sources）}
+
+\subsubsection{汞灯（Hg Arc Lamp）}
+
+\textbf{主要谱线：}
+\begin{itemize}
+    \item \textbf{G线：}436 nm
+    \item \textbf{H线：}405 nm
+    \item \textbf{I线：}365 nm（最常用）
+\end{itemize}
+
+\textbf{特点：}
+\begin{itemize}
+    \item 多谱线，需滤光片限制波长
+    \item 强度均匀性需优于数个百分点
+    \item 光源老化需定期校准（使用光谱曝光计）
+\end{itemize}
+
+\subsubsection{准分子激光（Excimer Laser）}
+
+\textbf{KrF激光：}
+\begin{itemize}
+    \item \textbf{波长：}248 nm
+    \item \textbf{用途：}深紫外（DUV）光刻
+\end{itemize}
+
+\textbf{ArF激光：}
+\begin{itemize}
+    \item \textbf{波长：}193 nm
+    \item \textbf{用途：}当前主流光刻技术
+    \item \textbf{浸没式（Immersion）：}通过水介质提高分辨率
+\end{itemize}
+
+\textbf{F$_2$激光：}
+\begin{itemize}
+    \item \textbf{波长：}157 nm
+    \item \textbf{用途：}超准分子激光光刻
+\end{itemize}
+
+\textbf{脉冲特性：}
+\begin{itemize}
+    \item 脉冲宽度：20 nsec/脉冲
+    \item 脉冲数：约50次脉冲
+    \item 重复频率：几kHz
+\end{itemize}
+
+\subsection{曝光系统（Exposure Systems）}
+
+\subsubsection{接触式曝光（Contact Printing）}
+
+\textbf{原理：}掩模直接接触光刻胶表面
+
+\textbf{优点：}
+\begin{itemize}
+    \item 简单
+    \item 分辨率高
+\end{itemize}
+
+\textbf{缺点：}
+\begin{itemize}
+    \item 掩模易损坏
+    \item 污染问题严重
+    \item 1:1复制（无缩小）
+\end{itemize}
+
+\subsubsection{接近式曝光（Proximity Printing）}
+
+\textbf{原理：}掩模与晶圆保持小间隙g
+
+\textbf{衍射理论：}Fresnel衍射
+
+\textbf{适用间隙范围：}
+\begin{equation}
+g \ll \frac{W^2}{\lambda}
+\end{equation}
+
+\textbf{最小分辨尺寸：}
+\begin{equation}
+W_{min} = \sqrt{g\lambda}
+\end{equation}
+
+\textbf{示例计算：}
+\begin{itemize}
+    \item $\lambda$ = 250 nm，g = 50 $\mu$m：$W_{min}$ = 4.5 $\mu$m
+    \item $\lambda$ = 250 nm，g = 2 $\mu$m：$W_{min}$ = 0.9 $\mu$m
+    \item $\lambda$ = 400 nm，g = 50 $\mu$m：$W_{min}$ = 3.5 $\mu$m
+    \item $\lambda$ = 400 nm，g = 2 $\mu$m：$W_{min}$ = 0.7 $\mu$m
+\end{itemize}
+
+\textbf{优点：}
+\begin{itemize}
+    \item 简单
+    \item 避免掩模损坏
+\end{itemize}
+
+\textbf{缺点：}
+\begin{itemize}
+    \item 分辨率受间隙限制
+    \item 1:1复制
+\end{itemize}
+
+\subsubsection{投影式曝光（Projection Printing）}
+
+\textbf{原理：}通过透镜系统将掩模图形缩小投影到晶圆
+
+\textbf{缩小倍数（Demagnification）：}
+\begin{itemize}
+    \item 4X（最常用）
+    \item 5X
+    \item 10X
+\end{itemize}
+
+\textbf{优点：}
+\begin{itemize}
+    \item 超高分辨率（使用深紫外光）
+    \item 掩模图形4倍放大，制作容易
+    \item 掩模受保护，不接触晶圆
+\end{itemize}
+
+\textbf{缺点：}
+\begin{itemize}
+    \item 光学系统复杂
+    \item 设备昂贵
+\end{itemize}
+
+\subsubsection{对比：接近式 vs 投影式}
+
+\begin{longtable}{|L{5cm}|L{5cm}|L{5cm}|}
+\hline
+\textbf{特性} & \textbf{接近式} & \textbf{投影式} \\
+\hline
+\endfirsthead
+\hline
+\textbf{特性} & \textbf{接近式} & \textbf{投影式} \\
+\hline
+\endhead
+\hline
+\endfoot
+
+复杂度 & 简单 & 复杂 \\
+\hline
+
+分辨率控制因素 & $\lambda$和间隙z & $\lambda$和数值孔径NA \\
+\hline
+
+掩模问题 & 1:1，可能损坏 & 4X，受保护 \\
+\hline
+
+成本 & 低 & 高 \\
+\hline
+
+\end{longtable}
+
+\subsection{先进曝光设备}
+
+\subsubsection{掩模对准机（Mask Aligner）}
+
+\textbf{类型：}接近式印刷设备
+
+\textbf{用途：}简单图形、教学实验
+
+\subsubsection{步进机（Stepper）}
+
+\textbf{工作方式：}
+\begin{itemize}
+    \item 逐个芯片曝光（Step and Repeat）
+    \item 曝光一个die后，台移动到下一个位置
+\end{itemize}
+
+\textbf{特点：}
+\begin{itemize}
+    \item 高分辨率
+    \item 精确对准
+\end{itemize}
+
+\subsubsection{步进扫描机（Step and Scan）}
+
+\textbf{工作方式：}
+\begin{itemize}
+    \item 掩模和晶圆同时移动
+    \item 狭缝扫描曝光
+    \item 每个die扫描一次，然后步进到下一个die
+\end{itemize}
+
+\textbf{优势：}
+\begin{itemize}
+    \item 更大的曝光面积
+    \item 更好的均匀性
+    \item 主流生产设备（如ASML光刻机）
+\end{itemize}
+
+\subsection{光刻设备成本}
+
+\textbf{成本趋势：}
+\begin{itemize}
+    \item 光学元件成本$\propto$(NA)$^3$
+    \item 光学组件主导设备价格
+    \item 历史成本增长：
+    \begin{itemize}
+        \item 1975-1985年：\$100,000
+        \item 1985-2000年：\$1,000,000
+        \item 2000-2010年：\$10,000,000
+        \item 2010年后：接近\$100,000,000
+    \end{itemize}
+\end{itemize}
+
+\subsection{分辨率增强技术（RET）}
+
+近年来，临界尺寸显著小于光源波长，需要使用分辨率增强技术（tricks）：
+
+\subsubsection{离轴照明（Off-Axis Illumination）}
+
+改变照明角度，增强特定方向的分辨率
+
+\subsubsection{相移掩模（Phase Shift Mask）}
+
+利用相位差增强对比度
+
+\subsubsection{光学邻近修正（OPC）}
+
+Optical Proximity Correction：预先补偿邻近效应
+
+\section{光刻材料}
+
+\subsection{掩模（Mask）}
+
+\subsubsection{掩模组成}
+
+\textbf{1. 基板（Substrate）}
+
+\textbf{要求：}
+\begin{itemize}
+    \item 高透光率（在曝光波长下）
+    \item 低热膨胀系数
+    \item 高平整度
+    \item 最小的非线性
+\end{itemize}
+
+\textbf{常用材料：}
+\begin{itemize}
+    \item 石英（Quartz）
+    \item 熔融硅（Fused silica）
+    \item 硼硅酸盐玻璃（BSC）
+\end{itemize}
+
+\textbf{2. 吸收层（Absorber）}
+
+\textbf{要求：}
+\begin{itemize}
+    \item 在曝光波长$\lambda$处无透射
+    \item 与基板良好粘附
+    \item 耐久性
+\end{itemize}
+
+\textbf{常用材料：}
+\begin{itemize}
+    \item 铬（Chrome）
+    \item 乳剂（Emulsion）
+    \item Fe$_2$O$_3$
+\end{itemize}
+
+\subsubsection{掩模极性（Mask Polarity）}
+
+\textbf{暗场掩模（Dark Field）：}
+\begin{itemize}
+    \item 大部分区域不透光
+    \item 需要曝光的区域透光
+\end{itemize}
+
+\textbf{明场掩模（Light Field）：}
+\begin{itemize}
+    \item 大部分区域透光
+    \item 不需要曝光的区域不透光
+\end{itemize}
+
+\textbf{选择依据：}
+\begin{itemize}
+    \item 暗场：更少的邻近/背景曝光，缺陷影响小
+    \item 明场：适合光栅等特定图形
+\end{itemize}
+
+\subsection{光刻胶（Resist）}
+
+\subsubsection{光刻胶处理流程}
+
+\textbf{完整流程：}
+\begin{enumerate}
+    \item \textbf{旋涂（Spincoat）：}光刻胶均匀涂布
+    \item \textbf{涂胶后烘焙（Post-apply bake）：}溶剂挥发
+    \item \textbf{曝光（Exposure）：}光化学反应
+    \item \textbf{曝光后烘焙（Post-exposure bake, PEB）：}促进反应完成
+    \item \textbf{显影（Development）：}选择性溶解
+    \item \textbf{干燥（Drying）：}去除显影液
+\end{enumerate}
+
+\subsubsection{光刻胶厚度控制}
+
+\textbf{影响因素：}
+\begin{itemize}
+    \item 旋涂速度（Spin speed）
+    \item 光刻胶浓度（Resist concentration）
+    \item 分子量（Molecular weight），影响粘度
+\end{itemize}
+
+\textbf{经验公式：}
+\begin{equation}
+t = K \cdot C^\beta \cdot \eta^\gamma \cdot \omega^{-\alpha}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item t = 厚度
+    \item K = 校准常数
+    \item C = 聚合物浓度（g/ml）
+    \item $\eta$ = 本征粘度
+    \item $\omega$ = 转速（rpm）
+    \item $\beta$, $\gamma$, $\alpha$ = 经验因子
+\end{itemize}
+
+\subsubsection{光刻胶涂布要点}
+
+\textbf{影响因素：}
+\begin{itemize}
+    \item 旋涂过程
+    \item 粘度
+    \item 旋涂速度
+    \item 表面特性
+    \item 环境（Direct ambient）
+    \item 台阶覆盖（Step coverage）
+    \item 粘附性（Adhesion）
+\end{itemize}
+
+\subsubsection{光刻胶要求}
+
+\textbf{光学性能：}
+\begin{itemize}
+    \item \textbf{对比度（Contrast）：}区分曝光/未曝光区域
+    \item \textbf{分辨率（Resolution）：}能形成的最小特征尺寸
+    \item \textbf{灵敏度（Sensitivity）：}所需曝光剂量
+\end{itemize}
+
+\textbf{耐受性：}
+\begin{itemize}
+    \item 耐酸性
+    \item 耐碱性
+    \item 耐等离子体
+    \item 耐离子轰击
+    \item 耐反应离子刻蚀（RIE）
+\end{itemize}
+
+\textbf{工艺性能：}
+\begin{itemize}
+    \item 粘附性（Adhesion to substrates）
+    \item 均匀性（Homogeneity）
+    \item 易去除性（Ease of removal）
+    \item 工艺可重复性（Process repeatability）
+    \item 低缺陷密度（Low defect density）
+    \item 台阶覆盖（Topography coverage）
+    \item 温度稳定性（Temperature stability）
+    \item 保质期（Shelf life）
+    \item 纯净无污染（Purity from contaminants）
+\end{itemize}
+
+\subsubsection{光刻胶影响因素}
+
+\textbf{材料因素：}
+\begin{itemize}
+    \item 玻璃化转变温度T$_g$
+    \item 分子量
+    \item 衬底原子序数Z
+    \item 化学组成
+\end{itemize}
+
+\textbf{性能因素：}
+\begin{itemize}
+    \item 图形稳定性
+    \item 分辨率
+    \item 散射效应
+    \item 刻蚀抗性
+    \item 粘附性
+\end{itemize}
+
+\textbf{工艺因素：}
+\begin{itemize}
+    \item 显影（浓度、时间、温度）
+    \item 烘焙（时间、温度）
+    \item 后处理：去胶渣（descum）、天然氧化层去除等
+\end{itemize}
+
+\subsubsection{光刻胶类型}
+
+\textbf{1. 负性交联型光刻胶（Negative Cross-linking Polymer）}
+
+\textbf{原理：}曝光后聚合物交联，不溶于显影液
+
+\textbf{特点：}
+\begin{itemize}
+    \item 曝光区域保留
+    \item 未曝光区域溶解
+\end{itemize}
+
+\textbf{2. 正性酚醛树脂/重氮化合物光刻胶（Positive Novolak/Diazide）}
+
+\textbf{中文名：}线型酚醛清漆
+
+\textbf{原理：}曝光后光活性化合物变为可溶，增强溶解性
+
+\textbf{特点：}
+\begin{itemize}
+    \item 曝光区域溶解
+    \item 未曝光区域保留
+    \item 分辨率高
+\end{itemize}
+
+\textbf{3. 正性链断裂型光刻胶（Positive Chain-Scission Polymer）}
+
+\textbf{原理：}曝光导致聚合物链断裂，分子量降低，溶解性增强
+
+\textbf{4. 自显影光刻胶（Self-Developing）}
+
+\textbf{5. 化学放大型光刻胶（Chemically Amplified）}
+
+\textbf{原理：}
+\begin{itemize}
+    \item 曝光产生少量酸或碱
+    \item 后烘焙时催化链式反应
+    \item 大幅提高灵敏度
+\end{itemize}
+
+\textbf{优势：}灵敏度极高，适合短波长光刻
+
+\textbf{6. 硅化光刻胶（Silylated）}
+
+\textbf{中文名：}甲烷硅基化的光刻胶
+
+\subsubsection{光刻胶组成}
+
+\textbf{1. 基体材料（Matrix Material）}
+
+\textbf{也称：}树脂（Resin）
+
+\textbf{功能：}
+\begin{itemize}
+    \item 作为粘结剂
+    \item 粘附于衬底
+    \item 对辐射不敏感
+    \item 在显影液中快速溶解
+    \item 物理或化学耐受性
+\end{itemize}
+
+\textbf{2. 敏化剂/光活性化合物（Sensitizer/Photoactive Compound）}
+
+\textbf{功能：}
+\begin{itemize}
+    \item 无辐射时抑制溶解
+    \item 辐射将其从溶解抑制剂转变为溶解增强剂
+    \item 决定光刻胶的光化学响应
+\end{itemize}
+
+\textbf{作用机理：}
+\begin{itemize}
+    \item 溶解度变化可达约100:1
+    \item 通过化学修饰改变溶解性
+\end{itemize}
+
+\textbf{3. 溶剂（Solvent）}
+
+\textbf{功能：}
+\begin{itemize}
+    \item 保持光刻胶为液态
+    \item 允许旋涂
+    \item 浓度决定薄膜厚度
+\end{itemize}
+
+\subsubsection{光刻胶响应特性}
+
+\textbf{非线性溶解：}
+
+光刻胶的溶解不是线性的，存在阈值效应
+
+\textbf{关键剂量：}
+\begin{itemize}
+    \item D$_0$ = 初始溶解剂量（Initial dissolution dose）
+    \item D$_f$ = 100\%溶解剂量（100\% dissolution dose）
+\end{itemize}
+
+\textbf{理想情况：}
+\begin{itemize}
+    \item D$_f$ $\sim$ D$_0$ $\rightarrow$ 高对比度
+    \item D$_f$小 $\rightarrow$ 高灵敏度
+\end{itemize}
+
+\subsubsection{对比度（Contrast）}
+
+\textbf{定义：}
+\begin{equation}
+\gamma = [\log(D_f/D_0)]^{-1}
+\end{equation}
+
+\textbf{意义：}光刻胶区分未曝光和曝光区域的能力
+
+\textbf{影响因素：}
+\begin{itemize}
+    \item 光刻胶化学性质
+    \item 辐射类型
+    \item 工艺条件
+\end{itemize}
+
+\textbf{要求：}$\gamma$值越大，对比度越高
+
+\subsubsection{光刻胶灵敏度（Sensitivity）}
+
+\textbf{本征灵敏度定义：}
+\begin{equation}
+\Phi = \frac{\text{化学反应数}}{\text{吸收光子数/电子数}}
+\end{equation}
+
+\textbf{特性：}
+\begin{itemize}
+    \item 光刻胶对辐射的响应
+    \item 光谱响应：强吸收$\rightarrow$高灵敏度
+    \item \textbf{权衡：}高灵敏度通常对应较差的分辨率
+\end{itemize}
+
+\subsubsection{分辨率限制因素}
+
+\textbf{光刻胶与工艺：}
+
+\textbf{本征因素：}
+\begin{itemize}
+    \item 聚合物尺寸（回转半径）
+    \item 扩散
+\end{itemize}
+
+\textbf{工艺因素：}
+\begin{itemize}
+    \item 厚度
+    \item 有效对比度
+\end{itemize}
+
+\section{光学光刻的关键因素}
+
+\subsection{分辨率（Resolution）}
+
+\subsubsection{光学分辨率理论}
+
+\textbf{Fraunhofer衍射（远场投影）：}
+
+当光通过小孔时，会发生衍射，形成Airy盘
+
+\textbf{瑞利判据（Rayleigh Criterion）：}
+
+\textbf{定义：}一个点源的中央最大值位于另一个点源Airy盘的第一极小值处
+
+\textbf{瑞利公式：}
+\begin{equation}
+R = 0.61\frac{\lambda}{NA}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item R = 最小分辨尺寸
+    \item $\lambda$ = 曝光波长
+    \item NA = 数值孔径（Numerical Aperture）
+\end{itemize}
+
+\textbf{数值孔径定义：}
+\begin{equation}
+NA = n\sin(\alpha)
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item n = 介质折射率（空气中为1，水中约为1.33）
+    \item $\alpha$ = 半孔径角
+\end{itemize}
+
+\textbf{改进分辨率的方法：}
+\begin{enumerate}
+    \item 减小波长$\lambda$：使用深紫外、EUV光源
+    \item 增大NA：
+    \begin{itemize}
+        \item 增大孔径角$\alpha$（受透镜设计限制）
+        \item 增大折射率n（浸没式光刻）
+    \end{itemize}
+\end{enumerate}
+
+\subsection{光学投影中的对比度}
+
+\subsubsection{对比度定义}
+
+\textbf{公式：}
+\begin{equation}
+\text{Contrast} = \frac{I_{max} - I_{min}}{I_{max} + I_{min}}
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item I$_{max}$ = 最大光强
+    \item I$_{min}$ = 最小光强
+\end{itemize}
+
+\subsubsection{调制传输函数（MTF）}
+
+对比度即图形的调制传输函数（MTF）
+
+\textbf{特性：}
+\begin{itemize}
+    \item 无衍射效应时：MTF = 1
+    \item 有衍射效应时：MTF < 1
+    \item 图形尺寸越小$\rightarrow$MTF越小
+    \item 波长越短$\rightarrow$MTF越大
+\end{itemize}
+
+\subsection{临界尺寸（CD）控制}
+
+\textbf{Critical Dimension Control影响因素：}
+
+\subsubsection{曝光均匀性}
+
+\begin{itemize}
+    \item 工具依赖（Tool-dependent）
+\end{itemize}
+
+\subsubsection{照明}
+
+\begin{itemize}
+    \item 图形依赖（Pattern dependent）
+    \item 邻近效应（Proximity effects）
+\end{itemize}
+
+\subsubsection{光刻胶}
+
+\begin{itemize}
+    \item 厚度（Thickness）
+    \item 组成（Composition）
+\end{itemize}
+
+\subsubsection{显影液}
+
+显影液浓度、温度、时间
+
+\subsubsection{烘焙}
+
+\begin{itemize}
+    \item 曝光温度
+    \item 显影温度
+\end{itemize}
+
+\subsubsection{图形转移}
+
+刻蚀过程的精度
+
+\subsection{焦深（Depth of Focus, DOF）}
+
+\textbf{定义：}能够获得清晰成像的焦点深度范围
+
+\textbf{重要性：}
+\begin{itemize}
+    \item 晶圆表面不完全平坦
+    \item 需要足够的焦深容忍度
+    \item DOF与分辨率存在权衡关系
+\end{itemize}
+
+\subsection{套刻精度（Placement Accuracy）}
+
+\subsubsection{套刻类型}
+
+\textbf{1. 层间套刻（Layer to Layer）}
+
+不同掩模层之间的对准
+
+\textbf{2. 特征间套刻（Feature to Feature）}
+
+同一层内不同特征的对准
+
+\subsubsection{写入方式}
+
+\begin{itemize}
+    \item \textbf{并行写入（Parallel writing）：}全晶圆同时曝光
+    \item \textbf{串行写入（Serial writing）：}逐个区域曝光
+\end{itemize}
+
+\subsubsection{对准与套刻}
+
+\textbf{对准标记（Alignment marks）：}
+\begin{itemize}
+    \item 在晶圆和掩模上预先制作的标记
+    \item 用于精确定位
+\end{itemize}
+
+\textbf{套刻误差来源：}
+\begin{itemize}
+    \item 热膨胀/收缩
+    \item 机械应力
+    \item 台移精度
+    \item 光学畸变
+\end{itemize}
+
+\section{光刻胶剖面与问题}
+
+\subsection{光刻胶剖面类型}
+
+光刻胶剖面取决于曝光和显影条件，可促进或阻碍后续工艺
+
+\subsubsection{理想垂直剖面（Vertical）}
+
+\textbf{特点：}侧壁垂直
+
+\textbf{用途：}干法刻蚀
+
+\subsubsection{底切剖面（Undercut）}
+
+\textbf{特点：}底部比顶部窄
+
+\textbf{用途：}剥离工艺（Lift-off）
+
+\subsubsection{过切剖面（Overcut）}
+
+\textbf{特点：}顶部比底部窄
+
+\textbf{用途：}湿法刻蚀
+
+\subsection{光刻胶污染}
+
+\subsubsection{DUV光刻胶表面污染}
+
+\textbf{问题：}深紫外（DUV）光刻胶顶部表面被碱暴露污染
+
+\textbf{原因：}
+\begin{itemize}
+    \item 化学放大型光刻胶对碱敏感
+    \item 环境中的碱性物质（如胺类）
+\end{itemize}
+
+\textbf{影响：}
+\begin{itemize}
+    \item 表面失活
+    \item T-topping（顶部轮廓异常）
+\end{itemize}
+
+\textbf{解决方法：}
+\begin{itemize}
+    \item 控制环境
+    \item 使用顶部抗反射涂层（TARC）
+\end{itemize}
+
+\subsection{其他光刻胶问题}
+
+\subsubsection{胶渣（Scumming）}
+
+\textbf{定义：}显影后应溶解区域仍有残留
+
+\textbf{原因：}
+\begin{itemize}
+    \item 显影不充分
+    \item 光刻胶曝光不足
+\end{itemize}
+
+\textbf{影响：}短路、图形失真
+
+\subsubsection{图形坍塌（Pattern Collapse）}
+
+\textbf{定义：}高深宽比的光刻胶线条倒塌
+
+\textbf{原因：}
+\begin{itemize}
+    \item 表面张力（显影液干燥时）
+    \item 光刻胶强度不足
+    \item 深宽比过大
+\end{itemize}
+
+\textbf{解决方法：}
+\begin{itemize}
+    \item 优化光刻胶配方
+    \item 改进干燥方法（如临界点干燥）
+    \item 减小深宽比
+\end{itemize}
+
+\subsection{多层光刻胶（Multilayer Resists）}
+
+\textbf{目的：}
+\begin{itemize}
+    \item 改善台阶覆盖
+    \item 提高分辨率
+    \item 减少基底反射
+\end{itemize}
+
+\textbf{结构：}
+\begin{itemize}
+    \item 底层：厚平坦化层
+    \item 中间层：抗反射层或硬掩模
+    \item 顶层：成像光刻胶层
+\end{itemize}
+
+\section{章节总结与知识点梳理}
+
+\subsection{核心概念对照}
+
+\begin{longtable}{|L{4.5cm}|L{10.5cm}|}
+\hline
+\textbf{概念} & \textbf{关键要点} \\
+\hline
+\endfirsthead
+\hline
+\textbf{概念} & \textbf{关键要点} \\
+\hline
+\endhead
+\hline
+\endfoot
+
+光刻起源 & Alois Senefelder 1796年；化学印刷；lithos（石）+ graphy（写） \\
+\hline
+
+STM光刻 & 分辨率$\sim$0.3 nm；1原子/分钟；仅研究用 \\
+\hline
+
+现代光刻 & 5 nm EUV；193 nm ArF浸没式；化学放大胶；100片/小时 \\
+\hline
+
+光刻成本 & >60\%工艺成本；设备成本$\propto$(NA)$^3$；可达\$100M \\
+\hline
+
+分辨率 & 最小特征尺寸；尺寸控制精度 \\
+\hline
+
+对比度 & 区分曝光/未曝光区域能力 \\
+\hline
+
+产能 & 晶圆数/小时；受像素速率和胶灵敏度影响 \\
+\hline
+
+套刻精度 & 层间对准精度；包括层间和特征间 \\
+\hline
+
+Hg灯 & G线436 nm、H线405 nm、I线365 nm \\
+\hline
+
+准分子激光 & KrF 248 nm、ArF 193 nm、F$_2$ 157 nm \\
+\hline
+
+激光脉冲 & 20 nsec/脉冲；50次脉冲；几kHz重复率 \\
+\hline
+
+接触式曝光 & 掩模接触胶；简单但易损坏；1:1 \\
+\hline
+
+接近式曝光 & 间隙g；$W_{min}=\sqrt{g\lambda}$；Fresnel衍射 \\
+\hline
+
+投影式曝光 & 4X缩小；高分辨率；复杂昂贵；掩模受保护 \\
+\hline
+
+步进机 & Step and Repeat；逐die曝光 \\
+\hline
+
+步进扫描机 & Step and Scan；狭缝扫描；主流设备 \\
+\hline
+
+RET技术 & 离轴照明、相移掩模、光学邻近修正 \\
+\hline
+
+掩模基板 & 石英/熔融硅；高透光、低膨胀、高平整 \\
+\hline
+
+掩模吸收层 & 铬/Fe$_2$O$_3$；无透射、良好粘附、耐久 \\
+\hline
+
+暗场掩模 & 大部分不透光；少邻近曝光；缺陷影响小 \\
+\hline
+
+明场掩模 & 大部分透光；适合光栅 \\
+\hline
+
+光刻胶流程 & 旋涂$\rightarrow$前烘$\rightarrow$曝光$\rightarrow$PEB$\rightarrow$显影$\rightarrow$干燥 \\
+\hline
+
+胶厚控制 & $t \propto C^\beta \eta^\gamma \omega^{-\alpha}$ \\
+\hline
+
+负性胶 & 曝光后交联；曝光区保留 \\
+\hline
+
+正性胶 & 曝光后可溶；曝光区溶解；分辨率高 \\
+\hline
+
+化学放大胶 & 酸/碱催化链式反应；高灵敏度；用于短波长 \\
+\hline
+
+胶组成 & 基体（树脂）+ 敏化剂 + 溶剂 \\
+\hline
+
+敏化剂作用 & 溶解度变化100:1；抑制$\rightarrow$增强 \\
+\hline
+
+胶响应剂量 & D$_0$初始溶解；D$_f$完全溶解；理想D$_f\sim$D$_0$ \\
+\hline
+
+对比度公式 & $\gamma=[\log(D_f/D_0)]^{-1}$；$\gamma$越大越好 \\
+\hline
+
+胶灵敏度 & $\Phi=$化学反应数/光子数；高灵敏度$\leftrightarrow$低分辨率 \\
+\hline
+
+瑞利公式 & $R=0.61\lambda/NA$；$NA=n\sin(\alpha)$ \\
+\hline
+
+分辨率提高 & 减小$\lambda$；增大NA（大孔径、浸没） \\
+\hline
+
+光学对比度 & $(I_{max}-I_{min})/(I_{max}+I_{min})$；即MTF \\
+\hline
+
+MTF特性 & 无衍射MTF=1；尺寸小MTF小；波长短MTF大 \\
+\hline
+
+CD控制 & 曝光均匀性、照明、胶厚度、显影、烘焙、图形转移 \\
+\hline
+
+焦深DOF & 清晰成像的深度范围；与分辨率权衡 \\
+\hline
+
+垂直剖面 & 干法刻蚀用 \\
+\hline
+
+底切剖面 & 剥离工艺用 \\
+\hline
+
+过切剖面 & 湿法刻蚀用 \\
+\hline
+
+DUV胶污染 & 表面被碱污染；T-topping；需环境控制 \\
+\hline
+
+胶渣scumming & 显影不充分；曝光不足；导致短路 \\
+\hline
+
+图形坍塌 & 高深宽比；表面张力；需优化配方 \\
+\hline
+
+多层胶 & 底层平坦化、中层抗反射、顶层成像 \\
+\hline
+
+\end{longtable}
+
+\subsection{重要公式和数据}
+
+\begin{enumerate}
+    \item \textbf{接近式曝光分辨率：}$W_{min} = \sqrt{g\lambda}$
+    \item \textbf{瑞利判据：}$R = 0.61\lambda/NA$
+    \item \textbf{数值孔径：}$NA = n\sin(\alpha)$
+    \item \textbf{对比度：}$\gamma = [\log(D_f/D_0)]^{-1}$
+    \item \textbf{光学对比度：}Contrast = $(I_{max}-I_{min})/(I_{max}+I_{min})$
+    \item \textbf{胶厚度：}$t = K \cdot C^\beta \cdot \eta^\gamma \cdot \omega^{-\alpha}$
+    \item \textbf{灵敏度：}$\Phi = \frac{\text{化学反应数}}{\text{吸收光子数}}$
+    \item \textbf{光源波长：}I线365 nm、KrF 248 nm、ArF 193 nm、F$_2$ 157 nm、EUV 13.5 nm
+    \item \textbf{缩小倍数：}4X、5X、10X
+    \item \textbf{激光脉冲：}20 nsec/脉冲、约50脉冲、几kHz
+    \item \textbf{产能：}100片/小时（300 mm晶圆）
+    \item \textbf{光学成本：}Cost $\propto$ (NA)$^3$
+\end{enumerate}
+
+\subsection{关键工艺流程图}
+
+\textbf{完整光刻工艺流程：}
+\begin{enumerate}
+    \item 表面清洗与准备
+    \item 粘附促进剂处理（HMDS等）
+    \item 旋涂光刻胶
+    \item 前烘（90-120°C，60-90秒）
+    \item 对准
+    \item 曝光
+    \item 曝光后烘焙PEB（化学放大胶）
+    \item 显影
+    \item 后烘（硬烘）
+    \item 检查
+    \item 图形转移（刻蚀或离子注入）
+    \item 光刻胶去除
+\end{enumerate}
+
+\textbf{技术演进路线：}
+\begin{enumerate}
+    \item 接触式/接近式（早期）
+    \item I线步进机（365 nm）
+    \item DUV步进机（KrF 248 nm）
+    \item DUV步进扫描机（ArF 193 nm）
+    \item 浸没式光刻（193 nm + 水）
+    \item EUV光刻（13.5 nm）
+\end{enumerate}
+
+\subsection{常见考点和易错点}
+
+\begin{enumerate}
+    \item \textbf{正性胶 vs 负性胶}
+    \begin{itemize}
+        \item 正性：曝光区溶解，分辨率高
+        \item 负性：曝光区交联保留，膨胀问题
+    \end{itemize}
+    
+    \item \textbf{瑞利公式理解}
+    \begin{itemize}
+        \item $R \propto \lambda/NA$
+        \item 减小$\lambda$或增大NA都能提高分辨率
+        \item NA受透镜和介质限制
+    \end{itemize}
+    
+    \item \textbf{光刻胶三组分}
+    \begin{itemize}
+        \item 基体：粘结、溶解快
+        \item 敏化剂：控制溶解性，100:1变化
+        \item 溶剂：液态、旋涂、控制厚度
+    \end{itemize}
+    
+    \item \textbf{高灵敏度与低分辨率的权衡}
+    \begin{itemize}
+        \item 强吸收$\rightarrow$高灵敏度
+        \item 但通常导致分辨率下降
+    \end{itemize}
+    
+    \item \textbf{MTF与图形尺寸}
+    \begin{itemize}
+        \item 无衍射：MTF = 1
+        \item 有衍射：MTF < 1
+        \item 尺寸越小，MTF越小
+    \end{itemize}
+    
+    \item \textbf{对比度定义}
+    \begin{itemize}
+        \item 胶对比度：$\gamma = [\log(D_f/D_0)]^{-1}$
+        \item 光学对比度：$(I_{max}-I_{min})/(I_{max}+I_{min})$
+        \item 两者不同但相关
+    \end{itemize}
+    
+    \item \textbf{掩模极性选择}
+    \begin{itemize}
+        \item 暗场：少背景曝光，缺陷影响小
+        \item 选择取决于图形密度和类型
+    \end{itemize}
+    
+    \item \textbf{化学放大胶特点}
+    \begin{itemize}
+        \item 需要PEB步骤
+        \item 高灵敏度
+        \item 对环境敏感（碱污染）
+    \end{itemize}
+\end{enumerate}
+
+\subsection{与其他章节的联系}
+
+\begin{itemize}
+    \item \textbf{清洗（Chapter 2）：}光刻前需要清洁表面，光刻后需去除光刻胶
+    \item \textbf{氧化：}氧化层可作为光刻掩模
+    \item \textbf{刻蚀：}光刻胶作为刻蚀掩模，剖面影响刻蚀效果
+    \item \textbf{离子注入：}光刻胶作为注入掩模
+    \item \textbf{薄膜沉积：}台阶覆盖影响光刻胶涂布，剥离工艺需底切剖面
+    \item \textbf{CMP：}表面平坦化改善光刻质量
+\end{itemize}
+
+\section{复习建议}
+
+\subsection{重点掌握内容}
+
+\begin{enumerate}
+    \item 光刻的基本概念和历史发展
+    \item 三种曝光系统（接触、接近、投影）的原理和对比
+    \item 光源类型和波长（Hg灯I线、KrF、ArF）
+    \item 掩模的组成（基板和吸收层）和极性
+    \item 光刻胶的类型（正性、负性、化学放大）
+    \item 光刻胶的组成（基体、敏化剂、溶剂）
+    \item 光刻工艺流程（6步）
+    \item 瑞利公式和分辨率影响因素
+    \item 对比度的两种定义
+    \item 光刻胶剖面类型及应用
+    \item 常见光刻问题（污染、胶渣、坍塌）
+\end{enumerate}
+
+\subsection{理解性内容}
+
+\begin{enumerate}
+    \item 为什么现代光刻成本如此高？（光学元件复杂性）
+    \item 为什么投影式曝光成为主流？（高分辨率、掩模保护）
+    \item 如何提高光学光刻分辨率？（短波长、大NA、RET）
+    \item 化学放大胶为什么需要PEB？（催化反应完成）
+    \item 为什么高灵敏度与高分辨率难以兼得？（吸收与散射）
+    \item MTF如何影响图形质量？（衍射导致对比度下降）
+    \item 为什么需要多层光刻胶？（台阶覆盖、抗反射）
+    \item 步进扫描机相比步进机的优势？（更大曝光面积、更好均匀性）
+\end{enumerate}
+
+\subsection{计算题准备}
+
+\begin{enumerate}
+    \item 给定$\lambda$和间隙g，计算接近式曝光的$W_{min}$
+    \item 给定$\lambda$和NA，计算投影光刻分辨率R
+    \item 给定n和$\alpha$，计算NA
+    \item 给定D$_0$和D$_f$，计算对比度$\gamma$
+    \item 给定I$_{max}$和I$_{min}$，计算光学对比度
+    \item 浸没式光刻分辨率改善计算（水的n$\approx$1.33）
+\end{enumerate}
+
+\subsection{记忆技巧}
+
+\begin{itemize}
+    \item \textbf{光刻流程：}涂$\rightarrow$烘$\rightarrow$光$\rightarrow$烘$\rightarrow$显$\rightarrow$干（6步，两次烘焙）
+    \item \textbf{Hg灯GHI：}G(436) > H(405) > I(365)，波长递减
+    \item \textbf{准分子激光：}KrF(248) > ArF(193) > F$_2$(157)
+    \item \textbf{正负胶：}正性胶曝光区\textbf{正}好溶解
+    \item \textbf{胶三组分：}基（体）+ 感（敏化剂）+ 溶（剂）
+    \item \textbf{敏化剂作用：}无光抑制$\rightarrow$有光增强，100倍差异
+    \item \textbf{分辨率公式：}R = 0.61$\lambda$/NA，记住系数0.61
+    \item \textbf{NA提高：}大孔径or浸没（水n=1.33）
+    \item \textbf{剖面应用：}垂直干刻、底切剥离、过切湿刻
+\end{itemize}
+
+\subsection{与实际应用的联系}
+
+\begin{enumerate}
+    \item \textbf{摩尔定律：}光刻技术的进步是推动因素
+    \item \textbf{EUV光刻：}5 nm及以下节点的关键技术
+    \item \textbf{多重图案化：}在单一曝光分辨率限制下获得更小特征
+    \item \textbf{浸没式光刻：}通过水介质将193 nm光刻延伸至更小节点
+    \item \textbf{计算光刻：}OPC等技术应对亚波长光刻挑战
+    \item \textbf{成本考量：}光刻占IC制造成本60%以上，推动新技术平衡性能与成本
+\end{enumerate}
+
+\end{document}

@@ -66,12 +66,12 @@ xelatex 复习手稿_Chapter7_光刻工艺.tex  # 运行两次以生成目录
 
 ### 关键知识点
 
-- 瑞利公式：R = 0.61λ/NA
-- 光刻胶对比度：γ = [log(Df/D0)]^-1
-- 光学对比度：(Imax - Imin)/(Imax + Imin)
-- 接近式曝光分辨率：Wmin = √(gλ)
+- 瑞利公式：R = 0.61 * lambda / NA
+- 光刻胶对比度：gamma = [log(Df/D0)]^(-1)
+- 光学对比度：(I_max - I_min) / (I_max + I_min)
+- 接近式曝光分辨率：W_min = sqrt(g * lambda)
 - 光源波长：I线365nm、KrF 248nm、ArF 193nm、EUV 13.5nm
-- 光刻工艺6步：涂胶→前烘→曝光→PEB→显影→干燥
+- 光刻工艺6步：涂胶 → 前烘 → 曝光 → PEB → 显影 → 干燥
 
 ---
 

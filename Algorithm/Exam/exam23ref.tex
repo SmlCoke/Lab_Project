@@ -84,20 +84,853 @@
 
 
 
-% ------------------------- 伪代码展示 ----------------------------
-\begin{algorithm}[H]%
-	\caption{RAND-MIN-CUT($G=(V,E)$)}
+% ============================================================
+% 第1题：概念题
+% ============================================================
+\section*{第1题}
+\textbf{题目：}摊销复杂度和渐进复杂度的定义，摊销分析和渐进分析的意义？ NP-hard 是否是指NP里最难的问题？ NP和 NP-hard 的定义？
+
+\subsection*{(1) 摊销复杂度和渐进复杂度的定义}
+
+\textbf{渐进复杂度（Asymptotic Complexity）：}
+\begin{itemize}
+	\item \textbf{定义：}描述算法在输入规模 $n$ 趋向无穷大时的性能表现
+	\item 使用渐进记号：$O$（上界）、$\Omega$（下界）、$\Theta$（紧确界）
+	\item 关注最坏情况、平均情况或最好情况下单次操作的时间/空间消耗
+	\item 例如：快速排序的最坏情况时间复杂度为 $O(n^2)$，平均情况为 $O(n \log n)$
+\end{itemize}
+
+\textbf{摊销复杂度（Amortized Complexity）：}
+\begin{itemize}
+	\item \textbf{定义：}在最坏情况下，对一个数据结构进行 $n$ 次连续操作所需的平均时间
+	\item 计算方法：总代价 / 操作次数
+	\item 不是概率平均，而是对操作序列的整体分析
+	\item 某些单次操作可能代价很高，但通过分摊到整个序列，平均代价较低
+	\item 例如：动态数组扩容，单次扩容 $O(n)$，但 $n$ 次插入的摊销复杂度为 $O(1)$
+\end{itemize}
+
+\subsection*{(2) 摊销分析和渐进分析的意义}
+
+\textbf{渐进分析的意义：}
+\begin{itemize}
+	\item 提供算法效率的理论保证
+	\item 忽略常数因子和低阶项，关注增长趋势
+	\item 便于比较不同算法的优劣
+	\item 适用于单次操作的性能评估
+\end{itemize}
+
+\textbf{摊销分析的意义：}
+\begin{itemize}
+	\item 更准确地反映数据结构在实际使用中的性能
+	\item 避免过度悲观的估计（仅考虑最坏情况）
+	\item 适用于分析操作序列的整体效率
+	\item 三种主要方法：聚集法、记账法、势能法
+	\item 实际应用：动态表、斐波那契堆、Splay树等
+\end{itemize}
+
+\subsection*{(3) NP-hard 是否是指NP里最难的问题？}
+
+\textbf{答案：不完全准确。}
+
+\textbf{更准确的理解：}
+\begin{itemize}
+	\item NP-hard 问题\textbf{不一定}属于 NP 类
+	\item NP-hard 是指"至少和 NP 中最难的问题一样难"的问题
+	\item NP-hard 问题可能比 NP 问题更难（例如，可能不在 NP 中）
+	\item NP-Complete 问题才是"NP 中最难的问题"（既在 NP 中，又是 NP-hard）
+\end{itemize}
+
+\subsection*{(4) NP和 NP-hard 的定义}
+
+\textbf{NP类（Nondeterministic Polynomial time）：}
+\begin{itemize}
+	\item \textbf{定义：}能够在多项式时间内\textbf{验证}一个给定解（证书）是否正确的判定问题类
+	\item 形式化：如果存在多项式时间算法 $V$，对于任意实例 $x$，$x$ 有解当且仅当存在证书 $y$（长度为 $|x|$ 的多项式）使得 $V(x, y) = $ Yes
+	\item 例子：哈密尔顿回路问题、子集和问题、SAT问题
+	\item 注意：P $\subseteq$ NP（能快速求解的一定能快速验证）
+\end{itemize}
+
+\textbf{NP-Hard类：}
+\begin{itemize}
+	\item \textbf{定义：}至少和NP中最难的问题一样难的问题类
+	\item 形式化：问题 $H$ 是 NP-Hard，如果 NP 中的每个问题都可以在多项式时间内归约到 $H$
+	\item \textbf{关键点：}NP-Hard 问题\textbf{不要求}属于 NP
+	\item 例子：停机问题（不在NP中）、优化版TSP（求最短路径，而非判定是否存在）
+\end{itemize}
+
+\textbf{NP-Complete类（NPC）：}
+\begin{itemize}
+	\item 同时满足：(1) 属于 NP，(2) 是 NP-Hard
+	\item 即：NPC = NP $\cap$ NP-Hard
+	\item 是 NP 类中最难的判定问题
+\end{itemize}
+
+\textbf{关系图示：}
+\begin{itemize}
+	\item P $\subseteq$ NP
+	\item NPC = NP $\cap$ NP-Hard
+	\item 存在 NP-Hard 问题不在 NP 中
+	\item P = NP 问题至今未解决
+\end{itemize}
+
+
+% ============================================================
+% 第2题：递归方程求解
+% ============================================================
+\section*{第2题}
+\textbf{题目：}求递归方程 $T(n) = 4 T(n/2) + n^2 \lg n$ 的上界
+
+\textbf{解答：}
+
+使用主定理求解。递归方程形式：
+$$T(n) = 4 T(n/2) + n^2 \lg n$$
+
+主定理参数：
+\begin{itemize}
+	\item $a = 4$，$b = 2$
+	\item $f(n) = n^2 \lg n$
+	\item $n^{\log_b a} = n^{\log_2 4} = n^2$
+\end{itemize}
+
+比较 $f(n)$ 与 $n^{\log_b a}$：
+$$f(n) = n^2 \lg n \quad \text{vs} \quad n^{\log_b a} = n^2$$
+
+显然 $f(n) = n^2 \lg n = \Theta(n^2 \lg n)$
+
+这对应主定理的扩展情况：
+$$f(n) = \Theta(n^{\log_b a} \log^k n), \quad k = 1$$
+
+根据主定理扩展：当 $f(n) = \Theta(n^{\log_b a} \log^k n)$ 时，
+$$T(n) = \Theta(n^{\log_b a} \log^{k+1} n)$$
+
+因此：
+$$T(n) = \Theta(n^2 \log^2 n)$$
+
+\textbf{结论：}递归方程的上界为 $O(n^2 \log^2 n)$。
+
+\textbf{验证：}也可以用迭代法验证：
+\begin{align*}
+T(n) &= 4T(n/2) + n^2 \lg n \\
+&= 4[4T(n/4) + (n/2)^2 \lg(n/2)] + n^2 \lg n \\
+&= 16T(n/4) + n^2 \lg(n/2) + n^2 \lg n \\
+&= 16T(n/4) + n^2(\lg n - 1) + n^2 \lg n \\
+&= 16T(n/4) + 2n^2 \lg n - n^2
+\end{align*}
+
+继续展开 $k$ 层：
+$$T(n) = 4^k T(n/2^k) + \sum_{i=0}^{k-1} 4^i \cdot \frac{n^2}{2^{2i}} \lg(n/2^i)$$
+
+当 $k = \lg n$ 时，$n/2^k = 1$，总和约为 $O(n^2 \log^2 n)$。
+
+
+% ============================================================
+% 第3题：分治/二分查找算法
+% ============================================================
+\section*{第3题}
+\textbf{题目：}一个数组储存了 $n$ 个不同元素，其中各元素可能是负整数、零、正整数，且按照元素大小递增排序，现需要找到一个元素满足 $A[i] = i$，请找到一个时间复杂度尽可能小的算法实现该需求。
+
+\subsection*{算法设计思路}
+
+这是一个在有序数组中查找特殊元素的问题，可以使用\textbf{二分查找}。
+
+\textbf{关键观察：}
+\begin{itemize}
+	\item 数组按递增顺序排序
+	\item 要找满足 $A[i] = i$ 的索引 $i$
+	\item 定义函数 $f(i) = A[i] - i$，我们要找 $f(i) = 0$ 的位置
+\end{itemize}
+
+\textbf{单调性分析：}
+
+虽然 $f(i) = A[i] - i$ 不一定单调，但我们可以利用以下性质：
+\begin{itemize}
+	\item 如果 $A[mid] > mid$：由于数组元素各不相同且递增，对于 $j > mid$，有：
+	$$A[j] \geq A[mid] + (j - mid) > mid + (j - mid) = j$$
+	因此右半部分不可能有解
+	
+	\item 如果 $A[mid] < mid$：类似地，左半部分不可能有解
+	
+	\item 如果 $A[mid] = mid$：找到答案
+\end{itemize}
+
+因此可以使用二分查找。
+
+\subsection*{算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{查找固定点 $A[i] = i$}
 	\begin{algorithmic}[1]
-		\State 为图$G$的所有边都随机赋予一个正权值
-		\State 找出$G$的最小生成树$T$
-		\State 删除$T$中权值最大的一条边得到两棵子树$T_1,~T_2$
-		\State 令$T_1$的顶点集为$V_1$，则$T_2$的顶点集为$V_2=V-V_1$
-		\State $C=\{ uv|uv\in E, u\in V_1, v\in V_2 \}$
-		\State \Return{$C$}
+		\Require 递增有序数组 $A[1..n]$（元素各不相同）
+		\Ensure 满足 $A[i] = i$ 的索引 $i$，若不存在返回 -1
+		\State $left \gets 1$, $right \gets n$
+		\While{$left \leq right$}
+			\State $mid \gets \lfloor (left + right) / 2 \rfloor$
+			\If{$A[mid] = mid$}
+				\State \Return $mid$ \Comment{找到固定点}
+			\ElsIf{$A[mid] > mid$}
+				\State $right \gets mid - 1$ \Comment{在左半部分查找}
+			\Else \Comment{$A[mid] < mid$}
+				\State $left \gets mid + 1$ \Comment{在右半部分查找}
+			\EndIf
+		\EndWhile
+		\State \Return $-1$ \Comment{不存在固定点}
 	\end{algorithmic}
 \end{algorithm}
 
-上述算法中，第1行XXX；第XXX行开始循环，处理XXX。算法的时间复杂度为$O(n^2)$。
+\subsection*{时间复杂度分析}
+
+\begin{itemize}
+	\item 二分查找每次将搜索范围减半
+	\item 最多需要 $\lceil \log_2 n \rceil$ 次比较
+	\item 每次比较和索引计算都是 $O(1)$
+\end{itemize}
+
+\textbf{时间复杂度：}$O(\log n)$
+
+\textbf{空间复杂度：}$O(1)$（仅使用常数额外空间）
+
+\subsection*{正确性说明}
+
+\textbf{示例：}
+\begin{itemize}
+	\item 数组 $A = [-10, -5, 0, 3, 7]$（索引从1开始）
+	\item $A[1] = -10 < 1$，$A[2] = -5 < 2$，$A[3] = 0 < 3$，$A[4] = 3 < 4$，$A[5] = 7 > 5$
+	\item 不存在固定点
+\end{itemize}
+
+\begin{itemize}
+	\item 数组 $A = [-10, -5, 2, 3, 7]$（索引从1开始）
+	\item $A[3] = 2 < 3$，$A[4] = 3 < 4$
+	\item 如果从0开始索引：$A = [-10, -5, 2, 3, 7]$，则 $A[2] = 2$，$A[3] = 3$ 都是固定点
+\end{itemize}
+
+算法能够高效找到任一固定点，时间复杂度远小于线性扫描的 $O(n)$。
+
+
+% ============================================================
+% 第4题：贪心算法（加油站问题）
+% ============================================================
+\section*{第4题}
+\textbf{题目：}驾驶一辆汽车出游，汽车油箱的最大油量为 $c$，且汽车的耗油量恒定为 $c/k$（每公里耗油量），沿路上有许多加油站，最远的加油站距离起始点的距离 $d > k$，请设计一个贪心算法，要求汽车的加油次数最少。
+
+\subsection*{问题分析}
+
+\textbf{理解题意：}
+\begin{itemize}
+	\item 油箱容量：$c$
+	\item 每公里耗油：$c/k$
+	\item 满油可行驶距离：$c \div (c/k) = k$ 公里
+	\item 目标：从起点到目的地（距离 $d > k$），加油次数最少
+\end{itemize}
+
+\textbf{贪心策略：}每次加油后，尽可能行驶最远距离再加油（即在能到达的最远加油站加油）。
+
+\subsection*{贪心选择性质证明}
+
+\textbf{贪心选择：}在当前位置，选择能到达的最远的加油站。
+
+\textbf{证明：}
+
+假设最优解在位置 $p$ 加油后，选择在位置 $s_1$ 加油（$s_1$ 不是从 $p$ 能到达的最远加油站）。设 $s_2$ 是从 $p$ 能到达的最远加油站，且 $s_1 < s_2 \leq p + k$。
+
+考虑替代方案：在 $p$ 加油后直接到 $s_2$ 加油。
+\begin{itemize}
+	\item 原方案中从 $s_1$ 能到达的所有位置，从 $s_2$ 也能到达（因为 $s_2 > s_1$）
+	\item 替代方案的加油次数不会增加
+	\item 后续的行程从 $s_2$ 开始比从 $s_1$ 开始更有优势
+\end{itemize}
+
+因此，贪心选择是安全的。
+
+\subsection*{优化子结构}
+
+如果我们已经贪心地选择了前 $m$ 个加油站，那么从第 $m$ 个加油站到目的地的问题，仍然是一个最少加油次数问题，具有相同的结构。
+
+\subsection*{算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{最少加油次数贪心算法}
+	\begin{algorithmic}[1]
+		\Require 加油站位置数组 $stations[1..n]$（按距离起点的位置递增排序），目的地距离 $d$，满油行驶距离 $k$
+		\Ensure 最少加油次数，若无法到达返回 -1
+		\State $currentPos \gets 0$ \Comment{当前位置（起点）}
+		\State $fuelCount \gets 0$ \Comment{加油次数}
+		\State $i \gets 1$ \Comment{下一个考虑的加油站索引}
+		\While{$currentPos + k < d$} \Comment{还未能直接到达目的地}
+			\State $nextPos \gets currentPos$ \Comment{下一个加油位置}
+			\While{$i \leq n$ and $stations[i] \leq currentPos + k$}
+				\State $nextPos \gets stations[i]$ \Comment{更新为能到达的最远加油站}
+				\State $i \gets i + 1$
+			\EndWhile
+			\If{$nextPos = currentPos$} \Comment{没有可达的加油站}
+				\State \Return $-1$ \Comment{无法到达目的地}
+			\EndIf
+			\State $currentPos \gets nextPos$ \Comment{移动到该加油站并加油}
+			\State $fuelCount \gets fuelCount + 1$
+		\EndWhile
+		\State \Return $fuelCount$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection*{时间复杂度分析}
+
+\begin{itemize}
+	\item 外层 while 循环：最多执行 $O(n)$ 次（每次至少考虑一个加油站）
+	\item 内层 while 循环：每个加油站最多被访问一次
+	\item 总时间复杂度：$O(n)$
+\end{itemize}
+
+\textbf{空间复杂度：}$O(1)$（仅使用常数额外空间）
+
+\subsection*{示例}
+
+假设 $k = 400$ 公里，加油站位置：$[100, 200, 300, 400, 500, 600]$，目的地 $d = 550$。
+
+\begin{enumerate}
+	\item 起点 $pos = 0$，能到达 $[100, 200, 300, 400]$，选择 400，加油次数 = 1
+	\item $pos = 400$，能到达 $[500, 600]$，但目的地 550 在 $pos + k = 800$ 范围内
+	\item 无需再加油，直接到达目的地
+\end{enumerate}
+
+最少加油次数：1 次。
+
+
+% ============================================================
+% 第5题：动态规划（礼品分配）
+% ============================================================
+\section*{第5题}
+\textbf{题目：}有 $n$ 个礼品的总价值为 $w$，现在将这些礼品分配给两个孩子，要求找到一个分配方案，使得最后两个人得到的礼品价值相等，请设计一个动态规划算法验证是否存在这种方案。
+
+\subsection*{问题分析}
+
+这是一个\textbf{子集和问题（Subset Sum Problem）}的变体：
+\begin{itemize}
+	\item 要使两个孩子得到的价值相等，每人应得 $w/2$
+	\item 等价于：是否存在一个子集，其价值和为 $w/2$
+	\item 前提条件：$w$ 必须是偶数（否则不可能均分）
+\end{itemize}
+
+\subsection*{算法设计思路}
+
+使用动态规划求解子集和问题：
+
+\textbf{状态定义：}
+$$dp[i][j] = \begin{cases}
+\text{True} & \text{前 } i \text{ 个礼品中存在子集，和为 } j \\
+\text{False} & \text{否则}
+\end{cases}$$
+
+\textbf{目标：}计算 $dp[n][w/2]$
+
+\subsection*{优化子结构}
+
+对于第 $i$ 个礼品（价值 $v_i$），有两种选择：
+\begin{enumerate}
+	\item \textbf{不选：}$dp[i][j] = dp[i-1][j]$
+	\item \textbf{选：}$dp[i][j] = dp[i-1][j-v_i]$（需要 $j \geq v_i$）
+\end{enumerate}
+
+只要有一种选择可行，$dp[i][j]$ 就为真。
+
+\subsection*{递推方程}
+
+\textbf{边界条件：}
+\begin{itemize}
+	\item $dp[0][0] = \text{True}$（0个礼品，和为0）
+	\item $dp[0][j] = \text{False}$，$\forall j > 0$（0个礼品，和不能为正）
+\end{itemize}
+
+\textbf{递推关系：}对于 $i \geq 1$，$j \geq 0$：
+$$dp[i][j] = dp[i-1][j] \text{ OR } (j \geq v_i \text{ AND } dp[i-1][j-v_i])$$
+
+\subsection*{算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{礼品均分验证（动态规划）}
+	\begin{algorithmic}[1]
+		\Require 礼品价值数组 $v[1..n]$，总价值 $w$
+		\Ensure 是否存在均分方案（True/False）
+		\If{$w \bmod 2 = 1$} \Comment{总价值为奇数}
+			\State \Return False \Comment{无法均分}
+		\EndIf
+		\State $target \gets w / 2$
+		\State 初始化 $dp[0..n][0..target]$ 全部为 False
+		\State $dp[0][0] \gets$ True
+		\For{$i = 1$ to $n$}
+			\For{$j = 0$ to $target$}
+				\State $dp[i][j] \gets dp[i-1][j]$ \Comment{不选第 $i$ 个礼品}
+				\If{$j \geq v[i]$ and $dp[i-1][j - v[i]]$}
+					\State $dp[i][j] \gets$ True \Comment{选第 $i$ 个礼品}
+				\EndIf
+			\EndFor
+		\EndFor
+		\State \Return $dp[n][target]$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection*{时间复杂度分析}
+
+\begin{itemize}
+	\item 状态数量：$O(n \cdot w)$
+	\item 每个状态的计算：$O(1)$
+	\item 总时间复杂度：$O(nw)$
+\end{itemize}
+
+\textbf{空间复杂度：}$O(nw)$
+
+\textbf{空间优化：}可以使用滚动数组优化到 $O(w)$：
+
+\begin{algorithm}[H]
+	\caption{空间优化版本}
+	\begin{algorithmic}[1]
+		\State 初始化 $dp[0..target]$ 全部为 False
+		\State $dp[0] \gets$ True
+		\For{$i = 1$ to $n$}
+			\For{$j = target$ downto $v[i]$} \Comment{逆序遍历}
+				\If{$dp[j - v[i]]$}
+					\State $dp[j] \gets$ True
+				\EndIf
+			\EndFor
+		\EndFor
+		\State \Return $dp[target]$
+	\end{algorithmic}
+\end{algorithm}
+
+优化后空间复杂度：$O(w)$
+
+
+% ============================================================
+% 第6题：摊销分析（表扩张）
+% ============================================================
+\section*{第6题}
+\textbf{题目：}回忆摊销分析中讲的表扩张问题，解释为什么不能在装载因子小于 1/2 时就收缩表，请设计一个可行的新方案。
+
+\subsection*{为什么不能在装载因子小于 1/2 时就收缩表}
+
+\textbf{装载因子定义：}$\alpha = \frac{\text{元素个数}}{\text{表大小}}$
+
+\textbf{问题分析：}
+
+如果在 $\alpha < 1/2$ 时立即收缩表（缩小一半），会导致\textbf{抖动（thrashing）}现象：
+
+\textbf{示例：}
+\begin{enumerate}
+	\item 假设表大小为 $m$，元素个数为 $m/2$，装载因子 $\alpha = 0.5$
+	\item 插入一个元素：$n = m/2 + 1 > m/2$，$\alpha > 0.5$
+	\item 删除一个元素：$n = m/2 < m/2$，触发收缩，表大小变为 $m/2$，$\alpha = 1$
+	\item 再插入一个元素：$n = m/2 + 1 > m/2$，触发扩展，表大小变为 $m$
+	\item 再删除一个元素：$n = m/2$，又触发收缩...
+\end{enumerate}
+
+在元素数量在 $m/2$ 附近波动时，每次插入/删除都会触发扩展/收缩，导致：
+\begin{itemize}
+	\item 每次操作都是 $O(m)$，而不是摊销 $O(1)$
+	\item 摊销分析失效
+	\item 性能严重下降
+\end{itemize}
+
+\subsection*{可行的新方案}
+
+\textbf{改进策略：}使用不同的扩展和收缩阈值，增加\textbf{迟滞（hysteresis）}。
+
+\textbf{方案设计：}
+\begin{itemize}
+	\item \textbf{扩展：}当 $\alpha \geq 1$ 时，表大小翻倍（$m \rightarrow 2m$）
+	\item \textbf{收缩：}当 $\alpha \leq 1/4$ 时，表大小减半（$m \rightarrow m/2$）
+\end{itemize}
+
+\textbf{方案优点：}
+\begin{enumerate}
+	\item 避免抖动：扩展和收缩阈值之间有足够的间隔
+	\item 在 $\alpha = 1/4$ 收缩后，$\alpha$ 变为 $1/2$
+	\item 在 $\alpha = 1$ 扩展后，$\alpha$ 变为 $1/2$
+	\item 需要连续多次操作才能触发下一次扩展/收缩
+\end{enumerate}
+
+\subsection*{摊销分析}
+
+使用\textbf{势能法}分析：
+
+\textbf{势能函数定义：}
+$$\Phi(T) = \begin{cases}
+2n - m & \text{if } \alpha \geq 1/2 \\
+m/2 - n & \text{if } \alpha < 1/2
+\end{cases}$$
+
+其中 $n$ 是元素个数，$m$ 是表大小。
+
+\textbf{插入操作摊销代价分析：}
+
+\textbf{情况1：}插入后 $\alpha < 1$（不扩展）
+\begin{itemize}
+	\item 实际代价：$c_i = 1$
+	\item 势能变化：$\Delta \Phi = 2$（假设 $\alpha \geq 1/2$）
+	\item 摊销代价：$\hat{c}_i = c_i + \Delta \Phi = 1 + 2 = 3$
+\end{itemize}
+
+\textbf{情况2：}插入后 $\alpha = 1$（触发扩展）
+\begin{itemize}
+	\item 实际代价：$c_i = n + 1$（复制 $n$ 个元素 + 插入1个）
+	\item 扩展前：$n = m$，$\Phi = 2m - m = m$
+	\item 扩展后：$n = m + 1$，$m' = 2m$，$\Phi' = 2(m+1) - 2m = 2$
+	\item 势能变化：$\Delta \Phi = 2 - m$
+	\item 摊销代价：$\hat{c}_i = (m + 1) + (2 - m) = 3$
+\end{itemize}
+
+\textbf{删除操作摊销代价分析：}
+
+\textbf{情况1：}删除后 $\alpha > 1/4$（不收缩）
+\begin{itemize}
+	\item 实际代价：$c_i = 1$
+	\item 势能变化：$\Delta \Phi = -2$ 或 $+1$（取决于 $\alpha$ 范围）
+	\item 摊销代价：$\hat{c}_i = O(1)$
+\end{itemize}
+
+\textbf{情况2：}删除后 $\alpha = 1/4$（触发收缩）
+\begin{itemize}
+	\item 类似分析，摊销代价仍为 $O(1)$
+\end{itemize}
+
+\textbf{结论：}在新方案下，插入和删除的摊销时间复杂度均为 $O(1)$，且避免了抖动问题。
+
+
+% ============================================================
+% 第7题：随机算法（素数测试）
+% ============================================================
+\section*{第7题}
+\textbf{题目：}类似蒙特卡洛随机算法中的素数测试问题。
+
+\subsection*{Miller-Rabin 素数测试算法}
+
+\textbf{问题：}给定一个大整数 $n$，判断 $n$ 是否为素数。
+
+\textbf{算法类型：}蒙特卡洛算法
+\begin{itemize}
+	\item 如果返回"合数"，则 $n$ 一定是合数（确定性）
+	\item 如果返回"可能是素数"，则 $n$ 可能是素数，也可能是合数（有错误概率）
+\end{itemize}
+
+\subsection*{算法原理}
+
+基于\textbf{费马小定理}和\textbf{二次探测}：
+
+\textbf{费马小定理：}如果 $n$ 是素数，$a$ 是小于 $n$ 的正整数，则：
+$$a^{n-1} \equiv 1 \pmod{n}$$
+
+\textbf{Miller-Rabin 测试：}
+
+将 $n - 1$ 写成 $2^s \cdot d$ 的形式，其中 $d$ 是奇数。
+
+对于随机选择的 $a \in [2, n-2]$，如果 $n$ 是素数，则必满足以下之一：
+\begin{enumerate}
+	\item $a^d \equiv 1 \pmod{n}$
+	\item 存在 $r \in [0, s-1]$，使得 $a^{2^r \cdot d} \equiv -1 \pmod{n}$
+\end{enumerate}
+
+如果都不满足，则 $n$ 一定是合数。
+
+\subsection*{算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{Miller-Rabin 素数测试}
+	\begin{algorithmic}[1]
+		\Require 待测试整数 $n > 2$，测试轮数 $k$
+		\Ensure "素数" 或 "合数"
+		\If{$n = 2$ or $n = 3$}
+			\State \Return "素数"
+		\EndIf
+		\If{$n < 2$ or $n \bmod 2 = 0$}
+			\State \Return "合数"
+		\EndIf
+		\State 将 $n - 1$ 写成 $2^s \cdot d$ 形式（$d$ 为奇数）
+		\For{$i = 1$ to $k$} \Comment{执行 $k$ 轮测试}
+			\State $a \gets$ 在 $[2, n-2]$ 中随机选择
+			\State $x \gets a^d \bmod n$ \Comment{快速幂计算}
+			\If{$x = 1$ or $x = n - 1$}
+				\State \textbf{continue} \Comment{通过本轮测试}
+			\EndIf
+			\For{$r = 1$ to $s - 1$}
+				\State $x \gets x^2 \bmod n$
+				\If{$x = n - 1$}
+					\State \textbf{break} \Comment{通过本轮测试}
+				\EndIf
+			\EndFor
+			\If{$x \neq n - 1$}
+				\State \Return "合数" \Comment{未通过测试}
+			\EndIf
+		\EndFor
+		\State \Return "可能是素数"
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection*{复杂度分析}
+
+\textbf{时间复杂度：}
+\begin{itemize}
+	\item 单轮测试：$O(\log n)$（快速幂的复杂度）
+	\item $k$ 轮测试：$O(k \log n)$
+\end{itemize}
+
+\subsection*{错误概率分析}
+
+\textbf{定理：}如果 $n$ 是合数，则至少 3/4 的 $a \in [2, n-2]$ 会使测试失败（检测出合数）。
+
+因此，单轮测试的错误概率（将合数误判为素数）$\leq 1/4$。
+
+$k$ 轮独立测试的错误概率：
+$$P(\text{错误}) \leq \left(\frac{1}{4}\right)^k = \frac{1}{4^k}$$
+
+\textbf{实践中的选择：}
+\begin{itemize}
+	\item $k = 10$：错误概率 $\leq 10^{-6}$
+	\item $k = 20$：错误概率 $\leq 10^{-12}$
+\end{itemize}
+
+\textbf{结论：}Miller-Rabin 是一个高效的概率算法，通过增加测试轮数可以将错误概率降到任意小。
+
+
+% ============================================================
+% 第8题：近似算法（最短并行调度）
+% ============================================================
+\section*{第8题}
+\textbf{题目：}回忆近似算法中的最短并行调度问题，现在对该方法改进，将各带权区间按照权值从大到小排列，顺序将各区间分配给当时各机器总时间最短的机器上（与讲过的处理方法区别仅在于：以前是将各区间随机排列的），证明这种近似算法的近似比为 3/2。
+
+\subsection*{问题描述}
+
+\textbf{最短并行调度问题（Makespan Scheduling）：}
+\begin{itemize}
+	\item 输入：$n$ 个任务，处理时间分别为 $t_1, t_2, \ldots, t_n$；$m$ 台机器
+	\item 目标：将任务分配到机器上，最小化完成时间（makespan）
+	\item makespan = $\max_{i=1}^{m} T_i$，其中 $T_i$ 是机器 $i$ 的总处理时间
+\end{itemize}
+
+\subsection*{改进的贪心算法}
+
+\textbf{算法描述：}
+\begin{enumerate}
+	\item 将任务按处理时间从大到小排序：$t_1 \geq t_2 \geq \cdots \geq t_n$
+	\item 依次考虑每个任务，将其分配给当前负载最小的机器
+\end{enumerate}
+
+这被称为\textbf{LPT（Longest Processing Time）算法}。
+
+\subsection*{算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{LPT 调度算法}
+	\begin{algorithmic}[1]
+		\Require 任务处理时间 $t[1..n]$，机器数 $m$
+		\Ensure 每台机器的任务分配
+		\State 将任务按 $t_i$ 从大到小排序
+		\State 初始化 $Load[1..m] = 0$ \Comment{每台机器的当前负载}
+		\For{$i = 1$ to $n$}
+			\State $j \gets \arg\min_{k=1}^{m} Load[k]$ \Comment{选择负载最小的机器}
+			\State 将任务 $i$ 分配给机器 $j$
+			\State $Load[j] \gets Load[j] + t[i]$
+		\EndFor
+		\State \Return makespan $= \max_{k=1}^{m} Load[k]$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection*{近似比证明：近似比为 3/2}
+
+\textbf{记号：}
+\begin{itemize}
+	\item $OPT$：最优解的 makespan
+	\item $ALG$：LPT 算法的 makespan
+	\item $T_{max}$：机器的最大负载（$ALG$ 的值）
+	\item $t_{last}$：最后一个被分配到负载最大机器上的任务
+\end{itemize}
+
+\textbf{下界1：}
+$$OPT \geq \frac{\sum_{i=1}^{n} t_i}{m}$$
+（最优解至少要平均分配）
+
+\textbf{下界2：}
+$$OPT \geq t_1 \geq t_{last}$$
+（最优解至少要能处理最大的任务）
+
+\textbf{关键观察：}
+
+假设机器 $j$ 达到了最大负载 $T_{max}$，且 $t_{last}$ 是最后一个分配到机器 $j$ 的任务。
+
+在分配 $t_{last}$ 之前，机器 $j$ 的负载最小，因此：
+$$T_{max} - t_{last} \leq \frac{\sum_{i: t_i > t_{last}} t_i}{m}$$
+
+\textbf{情况分析：}
+
+\textbf{情况1：}如果 $t_{last} \leq OPT/3$
+
+则：
+\begin{align*}
+ALG &= T_{max} \\
+&= (T_{max} - t_{last}) + t_{last} \\
+&\leq \frac{\sum_{i=1}^{n} t_i}{m} + t_{last} \\
+&\leq OPT + \frac{OPT}{3} \\
+&= \frac{4OPT}{3}
+\end{align*}
+
+近似比 $\leq 4/3 < 3/2$。
+
+\textbf{情况2：}如果 $t_{last} > OPT/3$
+
+由于任务按降序排列，所有 $t_i \geq t_{last} > OPT/3$。
+
+这意味着每个这样的任务都不能与其他任务放在同一台机器上（否则负载 $> 2 \cdot OPT/3$ 可能超过 $OPT$）。
+
+因此，这样的任务数量 $\leq m$（每台机器最多一个）。
+
+如果 $t_{last}$ 是第 $k$ 个任务，则 $k \leq m$。
+
+对于 $k \leq m$，LPT 的分配结果是：前 $m$ 个任务分别放在 $m$ 台机器上，后续任务依次添加。
+
+在这种情况下：
+$$ALG = \max(t_1, t_2 + t_{m+1}, \ldots) \leq t_1 + t_{m+1}$$
+
+但由于 $t_1 \geq t_2 \geq \cdots \geq t_m > OPT/3$ 且 $k \leq m$：
+
+如果所有前 $m$ 个任务都 $> OPT/3$，则：
+$$m \cdot \frac{OPT}{3} < \sum_{i=1}^{m} t_i \leq \sum_{i=1}^{n} t_i \leq m \cdot OPT$$
+
+这是可能的。但关键是，如果 $t_{last} > OPT/3$，则：
+$$ALG \leq t_1 + t_{m+1} \leq OPT + \frac{OPT}{3} = \frac{4OPT}{3}$$
+
+（因为 $t_{m+1} \leq OPT/3$）
+
+更严格的分析表明，LPT 的近似比为：
+$$\frac{ALG}{OPT} \leq \frac{3}{2} - \frac{1}{2m}$$
+
+\textbf{结论：}LPT 算法的近似比为 $3/2$（当 $m \to \infty$ 时）。
+
+
+% ============================================================
+% 第9题：NP问题+模拟退火
+% ============================================================
+\section*{第9题}
+\textbf{题目：}现有最大路径问题，在无向图（非完全图）上找两点之间的最大路径，请判断该问题是 NP 问题还是 NPC 问题，如果是 NPC 问题，请用模拟退火算法框架给出该问题的解决方法。
+
+\subsection*{问题判定：NPC 问题}
+
+\textbf{最长简单路径问题（Longest Simple Path）：}在无向图中找两点之间的最长简单路径（不重复访问顶点）。
+
+\textbf{判定：}
+
+\textbf{1. 该问题属于 NP：}
+\begin{itemize}
+	\item 给定一条路径（证书），可以在多项式时间内验证：
+	\item 检查路径连接给定的两点
+	\item 检查路径上的顶点不重复
+	\item 计算路径长度
+	\item 验证复杂度：$O(n)$
+\end{itemize}
+
+\textbf{2. 该问题是 NP-Hard：}
+\begin{itemize}
+	\item \textbf{哈密尔顿路径问题}可以归约到最长路径问题
+	\item 哈密尔顿路径：判断是否存在经过所有顶点恰好一次的路径
+	\item 归约：在图中是否存在长度为 $n-1$ 的路径（$n$ 个顶点）
+	\item 因此，最长路径问题至少和哈密尔顿路径问题一样难
+	\item 而哈密尔顿路径问题是 NPC 问题
+\end{itemize}
+
+\textbf{结论：}最长路径问题是 NPC 问题。
+
+\subsection*{模拟退火算法求解}
+
+\subsubsection*{算法设计}
+
+\textbf{1. 解的表示：}
+\begin{itemize}
+	\item 一个解表示为从起点到终点的一条路径
+	\item 编码：顶点序列 $[v_1, v_2, \ldots, v_k]$，其中 $v_1$ 是起点，$v_k$ 是终点
+\end{itemize}
+
+\textbf{2. 目标函数：}
+$$f(\text{path}) = \text{路径长度（经过的边数或边权之和）}$$
+
+目标：最大化 $f$。
+
+\textbf{3. 初始解：}
+\begin{itemize}
+	\item 使用 BFS 或 DFS 找一条从起点到终点的简单路径
+	\item 或随机生成一条路径
+\end{itemize}
+
+\textbf{4. 邻域操作（生成新解）：}
+
+从当前路径生成邻域解的方法：
+\begin{enumerate}
+	\item \textbf{插入顶点：}在路径中间插入一个不在路径上的顶点（如果可行）
+	\item \textbf{删除顶点：}从路径中删除一个中间顶点（保持连通性）
+	\item \textbf{替换顶点：}用不在路径上的顶点替换路径中的某个顶点
+	\item \textbf{2-opt 交换：}选择路径上的两段，尝试重新连接
+\end{enumerate}
+
+\textbf{5. 接受准则：}
+
+使用 Metropolis 准则：
+\begin{itemize}
+	\item 如果新解更优（$f_{new} > f_{current}$），接受新解
+	\item 如果新解更差，以概率 $e^{(f_{new} - f_{current}) / T}$ 接受（$T$ 为温度）
+\end{itemize}
+
+\textbf{6. 温度调度：}
+\begin{itemize}
+	\item 初始温度 $T_0$：较高（如 100）
+	\item 降温策略：$T_{k+1} = \alpha \cdot T_k$，其中 $\alpha \in (0.9, 0.99)$
+	\item 终止温度 $T_{min}$：很小（如 0.01）
+\end{itemize}
+
+\subsection*{算法伪代码}
+
+\begin{algorithm}[H]
+	\caption{模拟退火求解最长路径}
+	\begin{algorithmic}[1]
+		\Require 无向图 $G=(V,E)$，起点 $s$，终点 $t$
+		\Ensure 近似最长路径
+		\State $current \gets$ 初始路径（从 $s$ 到 $t$）
+		\State $best \gets current$
+		\State $T \gets T_0$ \Comment{初始温度}
+		\While{$T > T_{min}$}
+			\For{$iter = 1$ to $L$} \Comment{每个温度下的迭代次数}
+				\State $neighbor \gets$ 从 $current$ 生成邻域解
+				\If{$neighbor$ 是有效路径}
+					\State $\Delta f \gets f(neighbor) - f(current)$
+					\If{$\Delta f > 0$} \Comment{新解更优}
+						\State $current \gets neighbor$
+						\If{$f(current) > f(best)$}
+							\State $best \gets current$
+						\EndIf
+					\Else \Comment{新解更差}
+						\State $p \gets e^{\Delta f / T}$
+						\If{random() $< p$} \Comment{以概率接受}
+							\State $current \gets neighbor$
+						\EndIf
+					\EndIf
+				\EndIf
+			\EndFor
+			\State $T \gets \alpha \cdot T$ \Comment{降温}
+		\EndWhile
+		\State \Return $best$
+	\end{algorithmic}
+\end{algorithm}
+
+\subsection*{参数设置建议}
+
+\begin{itemize}
+	\item 初始温度 $T_0$：100-1000（取决于目标函数的范围）
+	\item 降温系数 $\alpha$：0.90-0.99
+	\item 每温度迭代次数 $L$：$10n$ 到 $100n$（$n$ 为顶点数）
+	\item 终止温度 $T_{min}$：0.01-0.1
+\end{itemize}
+
+\subsection*{算法特点}
+
+\begin{itemize}
+	\item \textbf{优点：}能跳出局部最优，探索更广的解空间
+	\item \textbf{缺点：}不保证找到全局最优解，参数敏感
+	\item \textbf{适用性：}对于 NPC 问题，是一种实用的启发式方法
+\end{itemize}
 
 
 

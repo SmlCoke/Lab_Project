@@ -1027,9 +1027,6 @@ $$D_{\text{1pro}} = (m+3) \cdot 12288^{1/(m+3)} + m + 5$$
     \item $z_5$尺寸扫描范围为[71, 75, 79]。
 \end{enumerate}
 
-\textbf{注意}：由于服务器内存限制，除了DIC/Lab3/Task3\_opt/Lab3\_Task3\_H2\_m3\_task3\_opt\_H2\_m3.csv外，其余Task3\_opt/中的.csv文件均只包含大部分参数组合的仿真结果，而非全部。
-
-
 \subsubsection{仿真结果与分析}
 
 \textbf{精细扫描后的最优结果}如下：
@@ -1042,20 +1039,21 @@ H2路径（$m = 4$）：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (1, 1)$�
 
 H2路径（$m = 5$）：$(S_N^{\text{XinvPA0}}, S_P^{\text{XinvPA0}}) = (1, 1)$，$(S_N^{\text{NAND2}}, S_P^{\text{NAND2}}) = (3, 2)$，$(S_N^{\text{NOR3}}, S_P^{\text{NOR3}}) = (1, 3)$，z1\_size = 2，z2\_size = 3，z3\_size = 8，z4\_size = 24，z5\_size = 71，得到$t_{pLH} = 52.89$ps，$t_{pHL} = 48.44$ps，$t_p = 50.67$ps。
 
-\textbf{重要注意事项}：
-\begin{enumerate}
-\item 在Task3\_opt/中的所有电路设计时，均采用了让PUN和PDN导通电阻相同的设计方法。因此，精细扫描的参数组合范围与Task3/中的理论最优配置有所差异。
-\item H2路径在$m=5$的理论最优尺寸配置下（Task3/H2\_m5）取得了在所有$m$中的最小延迟（约48.66ps），但该配置\textbf{未包含在Task3\_opt/的精细扫描参数范围中}，原因如上述第1点所述。
-\item 因此，DIC/Lab3/Task3\_opt/task3\_opt\_H1\_pro\_prac\_optimal.txt、DIC/Lab3/Task3\_opt/task3\_opt\_H2\_m[3,4,5]\_prac\_optimal.txt给出的实际最优解，\textbf{可能并不是真正的全局最优解}，而是在PUN与PDN导通电阻相等约束下的最优解。
-\end{enumerate}
 
-更加详细的数据请参见附录代码中的相关csv文件。
+在\texttt{尺寸参数的精细扫描}这一节（文件夹Task3/opt/）中的所有电路设计中，均采用了让PUN和PDN导通电阻相同的设计方法。因此，精细扫描的参数组合范围与\texttt{插入反相器技术的进一步确定}这一节（文件夹Task3/）中的理论最优配置有所差异。在\texttt{插入反相器技术的进一步确定}这一节中出现的理论最优尺寸参数组合，在\texttt{尺寸参数的精细扫描这一节}中可能并未被采用，原因是取整的先后次序不同。
+
+例如H2路径在$m=5$的理论最优尺寸配置下（Task3/H2\_m5）取得了在所有$m$中的最小延迟（约49.08ps），但该配置\textbf{未包含在Task3\_opt/的精细扫描参数范围中}，我们从精细扫描的最优结果中也可以看到，$m=5$得出的$H_2$最优延迟为$t_p = 50.67$ps。
+
+因此，Task3\_opt/task3\_opt\_...\_prac\_optimal.txt给出的实际最优解，\textbf{可能并不是真正的全局最优解}，而是在PUN与PDN导通电阻相等约束下的最优解。
+
+
+更加详细的数据请参见附录代码中Task3\_opt文件夹下的csv文件。
 
 汇总表格如表\ref{tab:task3_final_best_tp}所示。
 
 \begin{table}[htbp]
 \centering
-\caption{Task3 精细扫描后各路径对应的最优延迟以及尺寸参数组合（PUN与PDN导通电阻相等约束下）}
+\caption{Task3 精细扫描后各路径对应的最优延迟以及尺寸参数组合}
 \label{tab:task3_final_best_tp}
 \small
 \begin{tabular}{cccccccc}
@@ -1095,25 +1093,12 @@ $z_4$     & 67 & 67 & 67 & 1 & 1 & 3.82 \\
 \end{tabular}
 \end{table}
 
-Critical Path 1 (H1\_pro) 路径参数见表\ref{tab:task3_h1_best_path_params}。
-其中$G = 1 \times 1 \times 2 \times 1 \times 1 \times 1 \times 1 = 2$，$B = 1 \times 16 \times 1 \dots = 16$，
+Critical Path 1 (H1\_pro) 路径参数为：
+
+$G = 1 \times 1 \times 2 \times 1 \times 1 \times 1 \times 1 = 2$，$B = 1 \times 16 \times 1 \dots = 16$，
 $F = 5 \times 0.4 \times 1 \times 3 \times 3.33 \times 3.35 \times 3.82 \approx 256$，
 $H = GBF = 2 \times 16 \times 256 = 8192$。
 
-\begin{table}[htbp]
-    \centering
-    \caption{Task3 Critical Path 1 (H1\_pro) 最优路径参数}
-    \label{tab:task3_h1_best_path_params}
-    \begin{tabularx}{\linewidth}{XXXXXX}
-    \toprule
-    Path logical effort($G$) & Branching effort($B$) &
-    Path electrical effort($F$) & Path effort($H$) &
-    Total parasitic delay($P$) & $D_{\text{min}}$(Theory) \\
-    \midrule
-    2 & 16 & 256 & 8192 & 9 & 35.36 \\
-    \bottomrule
-    \end{tabularx}
-\end{table}
 
 \textbf{2. 对于Critical Path 2 (H2)}
 
@@ -1129,8 +1114,8 @@ $H = GBF = 2 \times 16 \times 256 = 8192$。
 \toprule
 逻辑门 & $S_N$ & $S_P$ & $CM$ & 逻辑努力$g$ & 分支努力$b$ & 等效扇出$f$ \\
 \midrule
-Xinv12    & 1 & 1 & 1 & 1 & 2 & 3 \\
-XNAND2\_1 & 3 & 2 & 3 & 3/2 & 8 & 0.67 \\
+Xinv12    & 1 & 1 & 1 & 1 & 2 & 2.5 \\
+XNAND2\_1 & 3 & 2 & 2.5 & 3/2 & 8 & 0.8 \\
 XNOR3\_2  & 1 & 3 & 2 & 2 & 1 & 1.5 \\
 $z_1$     & 3 & 3 & 3 & 1 & 1 & 3.67 \\
 $z_2$     & 11 & 11 & 11 & 1 & 1 & 4.45 \\
@@ -1139,27 +1124,13 @@ $z_3$     & 49 & 49 & 49 & 1 & 1 & 5.22 \\
 \end{tabular}
 \end{table}
 
-Critical Path 2 (H2) 路径参数见表\ref{tab:task3_h2_best_path_params}。
-其中$G = 1 \times 1.5 \times 2 \times 1 \times 1 \times 1 = 3$，$B = 2 \times 8 \times 1 \dots = 16$，
+Critical Path 2 (H2) 路径参数为：。
+
+$G = 1 \times 1.5 \times 2 \times 1 \times 1 \times 1 = 3$，$B = 2 \times 8 \times 1 \dots = 16$，
 $F = 3 \times 0.67 \times 1.5 \times 3.67 \times 4.45 \times 5.22 \approx 256$，
 $H = GBF = 3 \times 16 \times 256 = 12288$。
 
-\begin{table}[htbp]
-    \centering
-    \caption{Task3 Critical Path 2 (H2) 最优路径参数}
-    \label{tab:task3_h2_best_path_params}
-    \begin{tabularx}{\linewidth}{XXXXXX}
-    \toprule
-    Path logical effort($G$) & Branching effort($B$) &
-    Path electrical effort($F$) & Path effort($H$) &
-    Total parasitic delay($P$) & $D_{\text{min}}$(Theory) \\
-    \midrule
-    3 & 16 & 256 & 12288 & 8 & 36.87 \\
-    \bottomrule
-    \end{tabularx}
-\end{table}
-
-
+\newpage
 \section{Observations and conclusions}
 
 对于本次实验任务的三个critical path的研究，我们能够得出的最重要的结论是：

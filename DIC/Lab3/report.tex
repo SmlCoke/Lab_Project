@@ -1220,35 +1220,34 @@ Mn3 out in3 gnd gnd nfet L='Lg' NFIN='SN'
 .1 Code/.
 .2 Task1/ : sp and py of Task1.
 .3 opt.py : 求解各逻辑门的等效扇出、尺寸的理论最优解.
+.3 generate\_sp.py : 生成HSPICE仿真脚本
 .3 task1.sp : 仿真脚本.
 .3 task1.csv : HSPICE多参数扫描给出的不同参数组合的解.
 .2 Task2/ : sp and py of Task2（级数优化）.
 .3 m=0\textasciitilde m=5/.
 .4 task2\_m0\textasciitilde 5.sp : 仿真脚本.
-.4 task2\_m0\textasciitilde 5.log : 该种参数组合的参数配置.
+.4 task2\_m0\textasciitilde 5.txt : 该种参数组合的参数配置.
 .4 task2\_m0\textasciitilde 5.csv : HSPICE的仿真结果.
 .3 generate\_sp.py : 自动生成对应不同m值sp脚本的python脚本.
-.3 merge\_csv.py : 合并不同m值的csv文件.
 .3 opt.py : 求解各逻辑门的等效扇出、尺寸的理论最优解.
 .3 run\_sp : 批量运行sp脚本.
-.3 task2\_s\_opt\_m\_optimal.log : 仿真得到的具有最优延迟的m值即延迟.
 .2 Task2\_opt/ : sp and py of Task2（精细扫描）.
-.3 generate\_sp\_m1\textasciitilde 3.py : 自动生成对应不同m值sp脚本、并且包含sweep data的python脚本.
-.3 task2\_s\_opt\_m1\textasciitilde 3.sp : 仿真脚本.
-.3 task2\_s\_opt\_m1\textasciitilde 3.csv : HSPICE的仿真结果.
-.3 task2\_s\_opt\_m1\textasciitilde 3\_optimal.log : 不同m值下的最优延迟参数组合.
+.3 generate\_sp\_m2\textasciitilde 4.py : 自动生成对应不同m值sp脚本、并且包含sweep data的python脚本.
+.3 task2\_s\_opt\_m2\textasciitilde 4.sp : 仿真脚本.
+.3 task2\_s\_opt\_m2\textasciitilde 4.csv : HSPICE的仿真结果.
+.3 task2\_s\_opt\_m2\textasciitilde 4\_prac\_optimal.txt : 不同m值下的最优延迟参数组合.
 .2 Task3/ : sp and py of Task2（级数优化）.
 .3 H1\_m1\textasciitilde 9/.
 .4 task3\_H1\_m1\textasciitilde 9.sp : 仿真脚本.
-.4 task3\_H1\_m1\textasciitilde 9.log : 该种参数组合的参数配置.
+.4 task3\_H1\_m1\textasciitilde 9.txt : 该种参数组合的参数配置.
 .4 task3\_H1\_m1\textasciitilde 9.csv : HSPICE的仿真结果.
 .3 H1\_pro\_m1\textasciitilde 8/.
 .4 task3\_H1\_pro\_m1\textasciitilde 8.sp : 仿真脚本.
-.4 task3\_H1\_pro\_m1\textasciitilde 8.log : 该种参数组合的参数配置.
+.4 task3\_H1\_pro\_m1\textasciitilde 8.txt : 该种参数组合的参数配置.
 .4 task3\_H1\_pro\_m1\textasciitilde 8.csv : HSPICE的仿真结果.
 .3 H2\_m2\textasciitilde 8/.
 .4 task3\_H2\_m2\textasciitilde 8.sp : 仿真脚本.
-.4 task3\_H2\_m2\textasciitilde 8.log : 该种参数组合的参数配置.
+.4 task3\_H2\_m2\textasciitilde 8.txt : 该种参数组合的参数配置.
 .4 task3\_H2\_m2\textasciitilde 8.csv : HSPICE的仿真结果.
 .3 generate\_sp\_H1\_simplification.py : 自动化生成不同m值的理论最优尺寸组合的H1\_pro脚本.
 .3 generate\_sp\_H1.py : 自动化生成path1不同m值的理论最优尺寸组合的python脚本.
@@ -1262,10 +1261,10 @@ Mn3 out in3 gnd gnd nfet L='Lg' NFIN='SN'
 .3 generate\_sp\_H2.py : 自动生成path2不同m值、并且包含sweep data的python脚本.
 .3 task3\_opt\_H1\_pro.sp : path1仿真脚本.
 .3 task3\_opt\_H1\_pro.csv : path1HSPICE的仿真结果.
-.3 task3\_opt\_H1\_pro\_optimal.log : 仿真得到的path1的尺寸最优配置.
+.3 task3\_opt\_H1\_pro\_prac\_optimal.txt : 仿真得到的path1的尺寸最优配置.
 .3 task3\_opt\_H2.sp : path2仿真脚本.
 .3 task3\_opt\_H2.csv : path2HSPICE的仿真结果.
-.3 task3\_opt\_H2\_optimal.log : 仿真得到的path2的尺寸最优配置.
+.3 task3\_opt\_H2\_prac\_optimal.txt : 仿真得到的path2的尺寸最优配置.
 .2 parser\_mt.py : 将hspice仿真输出.mt文件解析为.csv文件.
 .2 stat\_optimal.py : 统计.csv文件中的最优延迟对应的参数组合.
 }

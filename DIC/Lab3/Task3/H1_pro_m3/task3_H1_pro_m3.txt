@@ -1,0 +1,23 @@
+
+    When num of Inverters is 3:
+    hopt: 4.80374782070401
+    
+    XinvPA0 (INV):
+        CM_XinvPA0: 4.489848193237491
+        SN_XinvPA0（已取整）: 4
+        SP_XinvPA0（已取整）: 4
+    
+    NAND2:
+        CM_NAND2: 4.489848193237491
+        SN_NAND2（已取整）: 6
+        SP_NAND2（已取整）: 3
+
+    NOR3:
+        CM_NOR3: 1.2599210498948727
+        SN_NOR3（已取整）: 1
+        SP_NOR3（已取整）: 2
+
+    反相器链: (CM, for INV: SN=SP=CM):
+        CM values: [2.8284271247461885, 12.699208415745586, 57.017517960981664]
+        Sizes for use: [3, 13, 57]
+    

@@ -1,0 +1,177 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption} %\caption*需要
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	breaklines,
+	tabsize=4,
+	extendedchars=false,
+	columns=fixed,
+	%numbers=left,                                        % 在左侧显示行号
+	numbers=none,
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	xleftmargin=1em,
+	%xrightmargin=1em,
+	%aboveskip=-0.5em
+	language=c++,                                        % 设置语言
+}
+
+% title依据是作业还是实验报告，以及是第几次作业/实验报告，
+% 比如第1次分治算法作业，则命名为"算法原理 HW1 分治算法";
+% 第1次分治算法实验报告，则命名为"算法原理 Lab1 分治算法"
+\title{算法原理 HW2 作业}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+% 如下两行请按实际情况修改
+\fancyhead[L]{冯峻}
+\fancyhead[C]{HW2}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+%\tableofcontents
+%\newpage
+
+\begin{enumerate}[1.]
+	\item \textbf{给定两个已升序排列的数组$A$和$B$，其所包含的元素个数分别为$m$和$n$。请设计算法找到这$m+n$个元素的中位数，要求复杂度为$O(log(m+n))$，并说明算法的复杂度满足要求。}
+	
+	解：
+	
+	我们当然可以将两个升序数组合并为一个大数组然后直接根据索引输出中位数。但是这样的时间复杂度为$O(m+n)$
+
+	事实上，我们没必要直接进行合并，我们要筛选的只是中位数，也就是说，我们只需要筛选掉$A$和$B$总体中比较小的一半数就行。我们不妨先直接构造出这样一组数，然后根据边界条件调整数范围：
+
+	我们在 A 中取一个切分位置$i$，在 B 中取一个切分位置$j$， 要求：
+	\begin{equation}
+		i + j = \frac{m+n+1}{2}
+	\end{equation}
+	这样，$A[0]$-$A[i-1]$和$B[0]$-$B[j-1]$总长度就是A和B总长度的二分之一，向上取整。
+
+	如果我们能够确定$A[0]$-$A[i-1]$和$B[0]$-$B[j-1]$（我们极为数组$P$）就是比较小的那一半数，那么中位数必然存在于$A[i-1]$和$B[j-1]$中：
+
+	如果m+n为偶数，那么中位数就是$\frac{A[i-1]+B[j-1]}{2}$；
+
+	如果m+n为奇数，那么中位数就是$\text{max}\{A[i-1], B[j-1]\}$。
+
+	因此，我们只需要不断调整i, j的相对大小，筛选出较小的一半数，就能筛选出中位数。
+
+	显然，当$B[j-1] <= A[i]$ and $A[i-1] <= B[j]$时，我们筛选出的数组$P$就是较小的那一半数，可以直接判定m+n的奇偶性然后求得中位数。
+
+	当$B[j-1] > A[i]$时，这意味着数组$P$中，A数组的部分偏小，$A[i]$相比$B[j-1]$更有可能是中位数，这就意味着$A[0]$-$A[i-1]$之中绝对找不到中位数，我们下次应该在$A[i]$-$A[m-1]$中寻找中位数，\textbf{这样就排除了一半范围的数}
+
+	同理，当$A[i-1] > B[j]$时，这意味着数组$P$中，B数组的部分偏小，$B[j]$相比$A[i-1]$更有可能是中位数，这就意味着$B[0]$-$B[j-1]$之中绝对找不到中位数，我们下次应该在$B[j]$-$B[n-1]$中寻找中位数，\textbf{这样就排除了一半范围的数}
+
+	我们只会扫描数组A，而且我们每次循环，都能排除掉一半数，也就是说，每一次处理的数据规模是上一次的二分之一，但是我们中间的操作只涉及有限次的比较操作，时间复杂度是常数级别的。所以，该算法的递归方程是：
+	\begin{equation}
+		T(m) = T(m/2) + O(1)
+		\label{eq:T1}
+	\end{equation}
+	解得：
+	\begin{equation}
+		T(n) = O(\text{log}m) = O(\text{log}(m + n))
+	\end{equation}
+
+	算法伪代码：
+	\begin{algorithm}[H]
+		\caption{Find Median of Two Sorted Arrays}
+		\begin{algorithmic}[1]
+		\Require Two sorted arrays $A[0 \dots m-1]$ and $B[0 \dots n-1]$
+		\Ensure The median of the combined sorted array of $A$ and $B$
+	
+		\State Initialize $\text{left} \gets 0$, $\text{right} \gets m$, $\text{Half} \gets \lfloor (m + n + 1)/2 \rfloor$
+		\While{$\text{left} \le \text{right}$}
+			\State $i \gets \lfloor (\text{left} + \text{right})/2 \rfloor$, $j \gets \text{Half} - i$
+			\If{$B[j-1] <= A[i]$ and $A[i-1] <= B[j]$}
+				\If{$m+n$ is odd}
+					\State  return max\{$B[j-1]$, $A[i-1]$\}
+				\Else
+					\State return $(B[j-1]+A[i-1])/2$
+				\EndIf
+			\ElsIf{$B[j-1] > A[i]$}
+				\State left = $i + 1$
+			\Else
+				\State right = $i - 1$
+			\EndIf
+		\EndWhile
+		\end{algorithmic}
+		\end{algorithm}
+		
+	
+	\item \textbf{《银河系漫游指南》里，超级电脑“深思”（DeepThought）花了750万年计算和验证关于生命、宇宙以及任何事情的终极答案，结果是42。假设给定n个实数组成的一个集合S，需要判定是否其中有两个实数的和是42。由于n异常庞大，所以需要设计一个快速的算法，除了判断是否两个实数的和为42外，还希望该算法可以用于判断集合S中是否有两个数的和是任意其它数字（比如真空光速）。请给出算法的思路、伪代码，并分析算法时间复杂度。}
+
+	解：
+
+	由于还需要判定集合S中是否存在两个实数之和是其他实数，所以我们不妨直接将问题转化为：
+
+	\textbf{判断集合S中是否有两个数的和是给定实数m}
+
+	我们首先可以利用\textbf{归并排序}对数组进行升序排序（时间复杂度为: $O(n\text{log}n)$），然后利用双指针法判断是否存在两个实数之和为特定实数。需要注意的是，这样的实数对可能有多个，例如对于集合$S=\{2,3,4,5\}$，若$m=7$，则实数对$(2,5), (3,4)$都能满足要求。
+
+	归并排序算法在此不再赘述，我们假设我们已经获得了升序排序好的数组$S'$，假设长度为$n$。此时我们初始化两个指针$i,j$分别指向数组的第一项和最后一项。然后判断指针指向的两个实数之和是否为$m$，如果是，则将该实数对添加进入输出集合$P$；否则如果和小于$m$，令$i$加1；否则，令$j$减1。直到$i>=j$时停止遍历。这样就能找到所有满足条件的实数对。
+
+	在这个过程中，我们可以证明，在发现两个实数之和小于$m$时，应该选择让$i$加1而不是让$j$加1，原因为如果我们采取让j加1的操作，就会发生如下两种情况：
+
+	\begin{enumerate}
+		\item 如果$S'[i] + S'[j+1] > m$，那么我们选择让$j+1$变为$j$，此时如果发现$S'[i] + S'[j] < m$，再回退回$j+1$是无意义的，会导致死循环
+		\item 如果$S'[i] + S'[j+1] < m$，那么我们肯定不可能让$j+1$变为$j$，因为这样会使得两个整数和减小，那么我们就不可能得到$S'[i] + S'[j]$这个状态。
+	\end{enumerate}
+
+	综上，我们在上述遍历过程中使得两个指针$i, j$互相靠近而不是单方远离的策略是合理的。
+
+	\textbf{复杂度分析}：归并排序的时间复杂度是$O(n\text{log}n)$，排序好后利用双指针探测线性扫描一次数组，时间复杂度是$O(n)$，因此总时间复杂度是: $O(n\text{log}n)$
+
+	算法伪代码为：
+	\begin{algorithm}[H]
+		\caption{Two-Sum Detection in Large Set}
+		\begin{algorithmic}[1]
+		\Require A set of real numbers $S = \{x_1, x_2, \dots, x_n\}$ and a target real number $m$
+		\Ensure A set of real number pair $\{(x_{i_{1}}, x_{j_{1}}), (x_{i_{2}}, x_{j_{2}}), ..., (x_{i_{k}}, x_{j_{k}})\}$ if there exist $x_i, x_j \in S$ such that $x_i + x_j = m$, otherwise $\emptyset$
+		\State Sort $S$ in non-decreasing order with Merge sort algorithm to $S'$
+		\State Initialize $i \gets 0$, $j \gets n - 1$, $P=\{\}$
+		\While{$i < j$}
+			\State $\text{sum} \gets S'[i] + S'[j]$
+			\If{$\text{sum} == m$}
+				\State $P = P\cup{\{(S'[i], S'[j])\}}$
+			\ElsIf{$\text{sum} < m$}
+				\State $i \gets i + 1$
+			\Else
+				\State $j \gets j - 1$
+			\EndIf
+		\EndWhile
+		\State \Return $P$
+		\end{algorithmic}
+		\end{algorithm}
+		
+\end{enumerate}
+
+\end{document}

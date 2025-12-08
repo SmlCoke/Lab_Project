@@ -33,7 +33,7 @@ _codeql_detected_source_root
 *.out
 *.synctex.gz
 
-# HSPICE temporary or outpu files
+# HSPICE temporary or output files
 *. tr0
 *.tr*
 *.sw0
@@ -49,5 +49,13 @@ _codeql_detected_source_root
 *. lis
 *.ma0
 *.ms0
-# Generated PDF (should be re-compiled locally)
-Algorithm/Lab3/main.pdf
+
+# Compiled pdf
+main.pdf
+report.pdf
+hw*.pdf
+
+# Office Document
+*.pptx
+*.docx
+*.xlsx

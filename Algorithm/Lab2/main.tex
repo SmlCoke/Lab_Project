@@ -125,26 +125,28 @@
 
 \subsubsection{算法流程}
 
+% ...existing code...
 \begin{algorithm}[H]
-	\caption{动态规划求解TSP}
-	\begin{algorithmic}[1]
-		\Require 邻接矩阵$adj[n][n]$，结点数量$n$
-		\Ensure 最短路径长度和路径序列
-		\State 初始化$dp[\{0\}][0] = 0$，其余为$\infty$
-		\For{$k = 2$ to $n$} \Comment{按照集合大小递增}
-		\For{所有大小为$k$且包含结点0的集合$S$}
-		\For{$i \in S$且$i \neq 0$}
-		\For{$j \in S - \{i\}$}
-		\State $dp[S][i] = \min_{k \in S, k \neq 0}\{d[S-\{k\}][k] + d_{i,k}\}$ 
-		\EndFor
-		\EndFor
-		\EndFor
-		\EndFor
-		\State $result = \min_{i=1}^{n-1}\{dp[V-\{i\}][i] + d_{0,i}\}$
-		\State \Return $result$和通过记录路径回溯得到的完整路径
-	\end{algorithmic}
+    \caption{动态规划求解TSP}
+    \begin{algorithmic}[1]
+        \Require 邻接矩阵$adj[n][n]$，结点数量$n$
+        \Ensure 最短路径长度和路径序列
+        \State 初始化$dp[\{0\}][0] = 0$，其余为$\infty$
+        \For{$s = 2$ to $n$} \Comment{按照集合大小递增，避免变量名冲突}
+        \For{所有大小为$s$且包含结点0的集合$S$}
+        \For{$i \in S$且$i \neq 0$}
+        \State $dp[S][i] = \infty$
+        \For{$j \in S$且$j \neq i$} \Comment{枚举前驱结点j}
+        \State $dp[S][i] = \min(dp[S][i], dp[S \setminus \{i\}][j] + adj[j][i])$
+        \EndFor
+        \EndFor
+        \EndFor
+        \EndFor
+        \State $result = \min_{i=1}^{n-1}\{dp[V][i] + adj[i][0]\}$ \Comment{加上回到起点的距离}
+        \State \Return $result$和通过记录路径回溯得到的完整路径
+    \end{algorithmic}
 \end{algorithm}
-
+% ...existing code...
 \subsection{算法优化策略}
 
 本实验实现了四个版本的动态规划算法，每个版本在前一版本基础上进行了优化：

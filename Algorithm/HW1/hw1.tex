@@ -1,0 +1,144 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption} %\caption*需要
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	breaklines,
+	tabsize=4,
+	extendedchars=false,
+	columns=fixed,
+	%numbers=left,                                        % 在左侧显示行号
+	numbers=none,
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	xleftmargin=1em,
+	%xrightmargin=1em,
+	%aboveskip=-0.5em
+	language=c++,                                        % 设置语言
+}
+
+% title依据是作业还是实验报告，以及是第几次作业/实验报告，
+% 比如第1次分治算法作业，则命名为"算法原理 HW1 分治算法";
+% 第1次分治算法实验报告，则命名为"算法原理 Lab1 分治算法"
+\title{算法原理 HW1 作业}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+% 如下两行请按实际情况修改
+\fancyhead[L]{冯峻}
+\fancyhead[C]{HW1}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+%\tableofcontents
+%\newpage
+
+% \emph{以下内容仅针对作业，按照作业题目编号，将题目誊写过来，然后依次予以回答}
+\begin{enumerate}[1.]
+	\item \textbf{验证$f(n) = 2n^3+5n^2+7n+9$的复杂度是否是$\Theta(n^3)$？如是，请根据同阶函数集合的定义
+	找出$c_1, c_2, n_0$；如不是，请给出证据。}
+
+	答：\textbf{其复杂度是$\Theta(n^3)$}，参数取值以及理由如下：
+	
+	设$c_1 n^3 \leq 2n^3+5n^2+7n+9 \leq c_2 n^3$
+
+	易知，如果要使得左式成立，只需要$c_1 = 2$，则在$n > 0$时即可满足$c_1 n^3 \leq 2n^3+5n^2+7n+9$时恒成立
+
+	现在我们来论证右式的成立性，我们不妨直接令$c_2 = 23$，那么右式等价为：
+	\begin{equation}
+		2n^3+5n^2+7n+9 \leq 2n^3+5n^3+7n^3+9n^3
+		\label{eq:T1}
+	\end{equation}
+
+	易知该式在$n\geq1$时恒成立。
+
+	因此，我们可以取：$c_1 = 2, c_2 = 23, n_0 = 1$
+	\item \textbf{参考课件，求解递归方程$T(n)=2T(\sqrt{n})+3\text{log}n$}
+
+	答：
+
+	令$m=\text{log}_2 n$，带入原递归方程后递归方程化为：
+	\begin{equation}
+		T(2^m)=2T(2^{m/2})+3m
+		\label{eq:T2_trans}
+	\end{equation}
+	记$S(m) = T(2^m)$，则方程\eqref{eq:T2_trans}等效为：
+	\begin{equation}
+		S(m) = S(m/2) + 3m
+		\label{eq:T_trans_2}
+	\end{equation}
+	有$\Theta(m^{\text{log}_{b}a})=\Theta(m)\text{与}3m\text{同阶}$
+	
+	因此根据主定理，我们有：
+	\begin{equation}
+		S(m) = \Theta(m\text{log}m)
+	\end{equation}
+	所以有：
+	\begin{equation}
+		T(n) = S(\text{log}m) = \Theta(\log(m)\log(\log(m)))
+	\end{equation}
+
+	\item \textbf{求解递归方程$T(n)=4T(n/2)+n^2\text{log}^2n$的上界。注意：如果要用主定理，请严格按照课
+	件判定适用性。}
+
+	答：
+
+	因为我们只需要求解该复杂度的上界，所以我们不妨构造这样一个递归方程：
+	\begin{equation}
+		S(n)=4S(n/2)+n^3
+		\label{eq:T3_up}
+	\end{equation}
+	已知$\sqrt{n} > \text{log}n$对任意$n>0$恒成立，因此有：
+	\begin{equation}
+		n^3 > n^2\text{log}^2 n
+		\label{eq:T3_n_log_relation}
+	\end{equation}
+	那么由递归方程易知：$T(n) < S(n)$，即$S(n)$是$T(n)$的一个上界
+
+	因此，我们只需要求解递归方程\eqref{eq:T3_up}，就能求解得到$T(n)$的一个上界。
+
+	根据主定理的形式：在递归方程\eqref{eq:T3_up}中，有$a=4, b=2, f(n) = n^3$
+
+	根据主定理的第三条，对于大于0的$\epsilon$，例如取$\epsilon=0.5$，我们有：$f(n) = n^3 = \Omega(n^{\text{log}_b a + \epsilon}) = \Omega({n^{2+\epsilon}})$
+
+	同时，对于$n>1$的任意$n$，取$c=0.6<1$，我们有：$af(n/b)=4(\frac{n}{2})^3=\frac{n^3}{2}<0.6n^3=cf(n)$，满足正则条件，因此有：
+	\begin{equation}
+		S(n) = \Theta(n^3)
+		\label{eq:S}
+	\end{equation}
+	因此，我们求得了$T(n)$的一个上界：$\Theta({n^3})$
+
+\end{enumerate}
+
+
+
+\end{document}

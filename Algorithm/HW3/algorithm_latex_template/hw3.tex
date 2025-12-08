@@ -1,0 +1,161 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption} %\caption*需要
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,                                % 传统上，代码打字机字体好些
+	breaklines,
+	tabsize=4,
+	extendedchars=false,
+	columns=fixed,
+	%numbers=left,                                        % 在左侧显示行号
+	numbers=none,
+	frame=none,                                          % 不显示背景边框
+	backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+	keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+	numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+	commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+	stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+	showstringspaces=false,                              % 不显示字符串中的空格
+	xleftmargin=1em,
+	%xrightmargin=1em,
+	%aboveskip=-0.5em
+	language=c++,                                        % 设置语言
+}
+
+% title依据是作业还是实验报告，以及是第几次作业/实验报告，
+% 比如第1次分治算法作业，则命名为"算法原理 HW1 分治算法";
+% 第1次分治算法实验报告，则命名为"算法原理 Lab1 分治算法"
+\title{算法原理 HW3 作业}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+% 如下两行请按实际情况修改
+\fancyhead[L]{冯峻}
+\fancyhead[C]{贪心算法}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+%\tableofcontents
+%\newpage
+
+
+\begin{enumerate}[1.]
+	\item 你作为某公司的经理，今天有$n$件事情$a_1,a_2,··· ,a_n$ 需要处理。对于每件事情$a_i$，其处理时长为$l_i$，即需要$l_i$时间进行处理；同时每件事情$a_i$具有截止时间$e_i$，即事情$a_i$必须在时间$e_i$之前得到处理。已知只要按照正确的顺序进行处理，今天的n件事情都可以在其截止时间之前得到妥善处理。注意，你每次只能处理一件事情，且处理过程中不能中断去处理别的事情。请证明，只要每次选择截止时间最早的事情进行处理，即可让今天的n件事情都可以在截止时间之前得到处理。
+
+	\textbf{解：}
+
+	我们只需要构造这样一种任务序列： $(a_{j1}, a_{j2}, \dots, a_{jn})$，满足$e_{j1}\leq e_{j2}\leq \dots e_{jn}$，然后证明该任务序列能够保证所有任务都在截止时间处理完即可。
+
+	设存在一种可行任务序列$\sigma=(a_{i_1},a_{i_2},\dots,a_{i_n})$，\textbf{其中每个任务均能在其截止时间之前完成。}
+	
+	若$\sigma$不是按截止时间非递减的顺序排列，则必存在相邻两任务$a_{i_k},a_{i_{k+1}}$使得$e_{i_k}>e_{i_{k+1}}$。考虑交换它们的执行顺序，得到新任务序列$\sigma'=(a_{i_1},\dots,a_{i_{k+1}},a_{i_k},\dots,a_{i_n})$。
+
+	设$a_{i_k}$与$a_{i_{k+1}}$在原任务序列中开始时刻为$t$，则原任务序列满足：
+	\[
+	\begin{cases}
+	t+l_{i_k} \le e_{i_k}, \dots (1)\\
+	t+l_{i_k}+l_{i_{k+1}} \le e_{i_{k+1}}. \dots (2)
+	\end{cases}
+	\]
+	交换后，$a_{i_{k+1}}$完成于$t+l_{i_{k+1}}$，$a_{i_k}$完成于$t+l_{i_{k+1}}+l_{i_k}$。我么们需要证明：
+	\[
+	\begin{cases}
+	t+l_{i_{k+1}} \le e_{i_{k+1}}, \dots (3)\\
+	t+l_{i_{k+1}}+l_{i_{k}} \le e_{i_{k}}. \dots (4)
+	\end{cases}
+	\]
+	由(2)式易知：$t+l_{i_{k+1}} < t+l_{i_k}+l_{i_{k+1}} \le e_{i_{k+1}}$
+
+	由于$e_{i_{k+1}}<e_{i_k}$，显然有：$t+l_{i_{k+1}}+l_{i_k} \le e_{i_{k+1}} \le e_{i_k}$
+	
+	故交换后两任务仍能在截止时间前完成，新任务序列仍然可行。
+
+	重复此交换操作，直至所有相邻任务满足$e_{i_1}\le e_{i_2}\le\dots\le e_{i_n}$，即可得到一个按截止时间非递减排序的可行任务序列。
+
+	\item 假设有 $n$ 个文件需要存储到 U 盘上，文件 $F_i$ 的尺寸为 $S_i$，已知 U 盘的容量为 $D$，且$D<\sum_{i=1}^{n}S_i$，即 U 盘不能放下所有的$n$个文件。
+
+	1) 如果对文件按照其尺寸的升序排列，然后从最小文件开始，依次选择文件放入U盘，是否可使得U盘中存放最多数目的文件？如是，请证明；如不是，请给出反例。
+
+	2) 如果对文件按照其尺寸的降序排列，然后从最大文件开始，依次选择文件放入U盘，是否可使得U盘空间的利用率最高，即剩余最少的空间？如是，请证明；如不是，请给出反例
+
+	\textbf{1) 解：}
+	是的，证明如下：
+	我们只需要证明算法的贪心性质，即只需要证明每次都选择尺寸最小的文件，就能够得多文件个数最多的集合$P$。在下面的证明过程中，我们不妨设：
+	$$S_1 \leq S_2 \leq S_3 \leq \dots \leq S_\text{n}$$
+	用$|P|$表示集合$P$中\textbf{文件尺寸之和}
+	\begin{enumerate}
+		\item \textbf{1. 贪心选择性：必然存在某个优化解$P$包括文件$F_1$}
+		
+		我们假设集合$P$是一个优化解，并且$F_1 \notin P$。
+		
+		因为$P$是一个优化解，所以必然满足：$|P| \leq D$
+		
+		我们假设$F_k$是结合$P$中尺寸最小的文件，则必然有$S_k \geq S_1$。
+		
+		我们构造另一个集合：$P' = (P - F_k) \cup \{F_1\}$
+		
+		那么有：
+		$$|P'| = |P| - S_k + S_1 \leq |P| \leq D $$
+		并且集合$P'$与$P$包含的文件总数相同，
+
+		所以$P'$也是原问题的一个优化解。
+
+		所以我们证明了必然存在某个优化解包含尺寸最小的文件$F_1$
+		
+		\item \textbf{2. 优化子结构：集合$P$是一个优化解并且包含$F_1$，则集合$Q = P - F_1$必然是$D' = D - S_1$问题的优化解。}
+		
+		我们假设$Q$不是新问题的优化解，也就是说必然存在一个集合：$R$，满足：
+		$$|R| < D'$$
+		并且$R$中的文件总数多于$Q$
+		
+		那么有：
+		$$|R \cup {F_1}| < D' + S_1 < D$$
+		并且并且$R$中的文件总数多于$P$
+		
+		这就说明$P$并不是原问题的优化解，与题设矛盾，因此假设错误。
+
+		因此我们证明了集合$Q = P - F_1$必然是$D' = D - S_1$问题的优化解。
+
+		综上所述，原问题可以采取每次“选择最小的文件”的贪心算法解决，因此结论得证。
+	\end{enumerate}
+
+	\textbf{2) 解：}
+
+	不是，反例如下：
+
+	$n=4, S_1 = 3, S_2 = 3, S_3 = 3, S_4 = 8, D=9$
+	
+	这种情况，如果选择文件：$F_1, F_2, F_3$，空间利用率可以达到：$\frac{3+3+3}{9}=100\%$
+	
+	但是如果按照贪心的策略，第一次选择了文件：$F_4$，剩余空间：$D-S_4=1<3$，不可再放入任何文件，此时空间利用率只有：$\frac{8}{9}=88.9\%$
+
+	因此，这种问题采用贪心策略无法得到全局最优解。
+\end{enumerate}
+
+
+
+\end{document}

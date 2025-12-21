@@ -1,15 +1,30 @@
-# 计算
+## 计算
+### 1.1 第一根钉子：补偿电容$C_c$
+$C_c \geq 0.22 C_L \geq 2.2pF$
+我们直接取$C_c = 3pF$
 
-## 1. SR to $I_{tail}$
-$SR \geq 10V/\mu s$
-$SR = 12V/\mu s$
-$C_c \geq 0.22C_L, 0.24\times 10pF = 2.4pF$($C_c \geq 2.2pF$)
-$I_{tail} = SR\times C_c = 12 \times 10^6 \times 2.4 \times 10^{-12} = 28.8\mu A $
-$I_{tail} \geq 22\mu A$ 
+### 1.2 第二根钉子：由GBW确定$g_{m1} = g_{m2} = g_{mI}$
+$g_{mI} = 2\pi f_u C_c \geq \times 2\pi 40MHz \times 2.2pF = 552.92\mu S$
+我们直接取$C_c = 3pF, f_u = 50MHz$
+得到$g_{mI} = 942.47 \mu S$
 
+### 1.3 根据$g_m/I_D$关系确定M1, M2晶体管电流量级
+$g_{mI}/I_D \geq 15$
+我们取$g_{mI}/I_{D} = 18$
+$I_D = 942.47/18 = 52.35 \mu A$
+> 极限值：$552.92\mu S / 15 = 36.86\mu A$
 
+### 1.4 确定尾电流
+$I_{tail} = 2I_{D} = 104.7 \mu A$
+> 极限值：$I_{tail} = 73.72\mu A$
 
-## 2. $GB/f_u \rightarrow g_{m1} = g_{m2} = g_{mII}$
-$GB = f_u \geq 40MHz$
-$g_{m1} = 2\pi f_u C_c \geq 2\pi\times 88 \mu S \approx 553 \mu S$
-We use $g_{m1} = 2\pi \times 50MHz \times 2.4pF = 2\pi \times 120\mu S \approx 754 \mu S$
+### 1.5 检查压摆率
+$SR = I_{tail}/C_c = 34.9 V/\mu S > 10\mu S$
+
+### 1.6 $g_{m6}$
+
+$g_{m6} \ge 2.2 \cdot g_{m1} \cdot \frac{C_L}{C_c} = 2.2\times 942.47\mu S \times 10/3 = 6.22m S$
+我们取：$g_{m6} = 2.2\times 1.03\times 10/3 = 7.5m S$
+### 1.7 第二级电路的尾电流
+$I_D \geq 6.22m S/15 = 414.7 \mu A$
+我们取$I_{D} = 7.5 mS/ 18 = 416.7\mu A$

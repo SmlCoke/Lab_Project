@@ -174,15 +174,17 @@
 C_c \geq 0.22 C_L = 0.22 \times 10\text{ pF} = 2.2\text{ pF}
 \end{equation}
 
-为留出PVT裕量，并考虑深亚微米工艺的寄生效应，选择：
+为留出PVT裕量，并考虑深亚微米工艺的寄生效应，初始设计选择：
 \begin{equation}
-C_c = 3\text{ pF}
+C_c^{initial} = 3\text{ pF}
 \end{equation}
 
-实际仿真优化后，最终取值为：
+经过仿真迭代优化，在保证相位裕度的前提下，为了提高单位增益带宽和FOM，最终取值为：
 \begin{equation}
-C_c = 2.4\text{ pF}
+C_c^{final} = 2.4\text{ pF}
 \end{equation}
+
+注：以下计算均使用初始值进行设计分析，实际电路采用优化后的最终值。
 
 \subsection{第一级跨导$g_{m1}$}
 
@@ -210,11 +212,12 @@ I_5 = 2I_D \approx 104.7\ \mu\text{A}
 
 \subsection{压摆率验证}
 
+基于初始设计电流$I_5 \approx 104.7\ \mu\text{A}$和初始补偿电容$C_c^{initial} = 3$ pF：
 \begin{equation}
-SR = \frac{I_5}{C_c} = \frac{104.7\ \mu\text{A}}{3\text{ pF}} \approx 34.9\text{ V/}\mu\text{s} > 10\text{ V/}\mu\text{s}
+SR^{initial} = \frac{I_5}{C_c^{initial}} = \frac{104.7\ \mu\text{A}}{3\text{ pF}} \approx 34.9\text{ V/}\mu\text{s} > 10\text{ V/}\mu\text{s}
 \end{equation}
 
-满足压摆率要求。
+满足压摆率要求。采用优化后的$C_c^{final} = 2.4$ pF，压摆率裕量更大。
 
 \subsection{第二级跨导$g_{m6}$}
 
@@ -364,7 +367,7 @@ M7 & 278.6 & 526.5 & 592.8 & 3600.9 & 372.1 & 97.6 \\
 \begin{itemize}
     \item 所有晶体管的$|V_{DS}| > |V_{dsat}|$，确保工作在饱和区
     \item M1、M2的跨导达到952.4 $\mu$S，接近设计目标
-    \item M6的跨导达到3.5 mS，满足稳定性要求
+    \item M6的跨导达到3.5 mS（3495.5 $\mu$S），满足稳定性要求
     \item 总静态电流$I_{DD} = 371.4\ \mu$A，功耗较低
 \end{itemize}
 

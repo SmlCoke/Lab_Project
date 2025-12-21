@@ -92,8 +92,7 @@ Design targets:
 - Output Swing ≥ 0.6 V
 - PM ≥ 60°
 
-![alt text](image.png)
-
+![alt text](circuit.png)
 
 ### 1. Device Dimension Choice
 

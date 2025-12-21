@@ -32,11 +32,11 @@ $I_D \geq 6.22m S/15 = 414.7 \mu A$
 ## 设计
 ### 2.1 找到满足尾电流条件的M5管尺寸
 #### 2.1.1 扫描M5 $W$
-当$L=60nm, W\approx 1.878\mu m, VDD=1.2V$，GCB电路采用Lab2原配置的情况下，得到了$I_5 \approx 104.5954\mu A$
+当$L=60nm, W\approx 1.878\mu m, VDD=1.2V$，CGB(Cosnt Gm Bias)电路采用Lab2原配置的情况下，得到了$I_5 \approx 104.5954\mu A$
 ![alt text](image.png)
 ![alt text](image-1.png)
 #### 2.1.2 扫描M5 $I_D$
-当$L=60nm, VDS = 0.2V$时，采用原Lab2 GCB配置，$I_D$随着$W$变化曲线：
+当$L=60nm, VDS = 0.2V$时，采用原Lab2 CGB(Cosnt Gm Bias)配置，$I_D$随着$W$变化曲线：
 ![alt text](image-2.png)
 当$W = 5\mu m$时，满足$I_D = 105.49\mu A$
 

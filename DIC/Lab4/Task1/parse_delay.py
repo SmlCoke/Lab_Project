@@ -12,6 +12,9 @@ import re
 import os
 from pathlib import Path
 
+# Constants
+SECONDS_TO_PICOSECONDS = 1e12  # Conversion factor from seconds to picoseconds
+
 
 def parse_mt(filepath):
     """
@@ -206,11 +209,11 @@ def create_summary_dataframe(results):
         
         # Add delay measurements
         if 'tpLH' in r:
-            row['tpLH_ps'] = r['tpLH'] * 1e12  # Convert to picoseconds
+            row['tpLH_ps'] = r['tpLH'] * SECONDS_TO_PICOSECONDS
         if 'tpHL' in r:
-            row['tpHL_ps'] = r['tpHL'] * 1e12
+            row['tpHL_ps'] = r['tpHL'] * SECONDS_TO_PICOSECONDS
         if 'tp' in r:
-            row['tp_ps'] = r['tp'] * 1e12
+            row['tp_ps'] = r['tp'] * SECONDS_TO_PICOSECONDS
         
         rows.append(row)
     

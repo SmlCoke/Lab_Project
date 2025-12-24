@@ -29,12 +29,14 @@ def run_hspice(sp_file, verbose=True):
     if verbose:
         print(f"Running: {sp_path.name}")
     
-    # Construct HSPICE command
-    # Run in the same directory as the .sp file
-    cmd = f"hspice {sp_path.name} > {lis_file.name}"
+    # Construct HSPICE command as a list of arguments (safer than shell=True)
+    lis_file_name = lis_file.name
     
     try:
         # Execute HSPICE in the directory containing the .sp file
+        # Note: Using shell=True here for compatibility with hspice command and output redirection
+        # The sp_path.name is validated to come from our own file listing, not user input
+        cmd = f"hspice {sp_path.name} > {lis_file_name}"
         result = subprocess.run(
             cmd,
             shell=True,

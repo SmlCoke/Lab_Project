@@ -1,5 +1,5 @@
 *****************************************************
-* Lab3 - Task 2: Use Logical Effort to Optimize 4×16 Decoder
+* Lab4 - subckt
 *****************************************************
 * global configuration
 .option post=2 RUNLVL = 6
@@ -91,3 +91,5 @@ Mn5 A AxnorB Cout gnd nfet L='Lg' NFIN='1'
 Xinv1 in mid vdd gnd INV size='size' Lg='Lg'
 Xinv2 mid out vdd gnd INV size='size' Lg='Lg'
 .ends
+
+.end

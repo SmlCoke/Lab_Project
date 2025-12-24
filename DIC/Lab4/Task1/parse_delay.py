@@ -36,7 +36,7 @@ def parse_mt(filepath):
             break
     
     if title_idx is None:
-        raise ValueError(f"未找到 .TITLE 行: {filepath}")
+        raise ValueError(f"Could not find .TITLE line: {filepath}")
 
     # Extract data section
     data_start = title_idx + 1

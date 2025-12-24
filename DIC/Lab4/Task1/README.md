@@ -1,122 +1,124 @@
 # Lab4 Task1 Delay Measurement Automation
 
-本目录包含了用于自动化全加器（Full Adder）延迟测量的Python脚本。
+This directory contains Python automation scripts for Full Adder delay measurements.
 
-## 文件说明
+**中文文档**: 请参阅 [快速开始.md](./快速开始.md)
 
-- `generate_sp.py`: 生成不同输入模式的HSPICE测试脚本
-- `run_sp.py`: 批量运行HSPICE仿真
-- `parse_delay.py`: 解析仿真结果并生成统计报告
-- `subckt.sp`: 全加器子电路定义（在Lab4根目录）
+## Files
 
-## 使用流程
+- `generate_sp.py`: Generate HSPICE testbench files for different input patterns
+- `run_sp.py`: Batch run HSPICE simulations
+- `parse_delay.py`: Parse simulation results and generate statistics
+- `subckt.sp`: Full Adder subcircuit definitions (in Lab4 root directory)
 
-### 1. 生成HSPICE测试脚本
+## Workflow
+
+### 1. Generate HSPICE Testbench Files
 
 ```bash
-# 生成FA16和FA28的所有延迟测试脚本
+# Generate all delay test scripts for both FA16 and FA28
 python3 generate_sp.py --fa-type both --output-dir .
 
-# 只生成FA16的测试脚本
+# Generate FA16 test scripts only
 python3 generate_sp.py --fa-type FA16 --output-dir .
 
-# 只生成FA28的测试脚本
+# Generate FA28 test scripts only
 python3 generate_sp.py --fa-type FA28 --output-dir .
 ```
 
-生成的文件将保存在以下目录结构中：
+Generated files will be saved in the following directory structure:
 ```
 Task1/
 ├── FA16/
 │   └── delay/
 │       ├── FA16_delay_A_to_Sum_B0_Cin0.sp
 │       ├── FA16_delay_A_to_Sum_B0_Cin1.sp
-│       └── ... (共24个测试文件)
+│       └── ... (24 test files total)
 └── FA28/
     └── delay/
         ├── FA28_delay_A_to_Sum_B0_Cin0.sp
         ├── FA28_delay_A_to_Sum_B0_Cin1.sp
-        └── ... (共24个测试文件)
+        └── ... (24 test files total)
 ```
 
-### 2. 运行HSPICE仿真
+### 2. Run HSPICE Simulations
 
 ```bash
-# 运行所有delay测试
+# Run all delay tests
 python3 run_sp.py --base-dir .
 
-# 只运行FA16的测试
+# Run FA16 tests only
 python3 run_sp.py --base-dir . --fa-type FA16
 
-# 只运行FA28的测试
+# Run FA28 tests only
 python3 run_sp.py --base-dir . --fa-type FA28
 
-# 预览将要运行的文件（不实际运行）
+# Preview files to be processed (dry-run, no actual simulation)
 python3 run_sp.py --base-dir . --dry-run
 ```
 
-注意：确保系统中已安装HSPICE并且`hspice`命令可用。
+Note: Ensure HSPICE is installed and the `hspice` command is available in your PATH.
 
-### 3. 解析结果并生成统计
+### 3. Parse Results and Generate Statistics
 
 ```bash
-# 解析所有延迟测试结果
+# Parse all delay measurement results
 python3 parse_delay.py . --output delay_summary
 
-# 指定不同的输出文件名
+# Specify a different output filename
 python3 parse_delay.py . --output my_results
 ```
 
-这将生成以下文件：
-- `delay_summary.csv`: 详细的延迟测量数据（CSV格式）
-- `delay_summary.xlsx`: 详细的延迟测量数据（Excel格式）
-- `delay_summary_stats.txt`: 统计摘要（文本格式）
+This will generate the following files:
+- `delay_summary.csv`: Detailed delay measurement data (CSV format)
+- `delay_summary.xlsx`: Detailed delay measurement data (Excel format)
+- `delay_summary_stats.txt`: Statistical summary (text format)
 
-## 延迟测试模式说明
+## Delay Test Patterns
 
-对于全加器的每个输入到输出的路径，脚本会测试所有可能的静态输入组合：
+For each input-to-output path of the Full Adder, the scripts test all possible static input combinations:
 
-### 测试路径
+### Test Paths
 
-1. **A -> Sum**: 测量A输入变化时Sum输出的延迟
-   - 静态输入组合: B=0/1, Cin=0/1 (共4种)
+1. **A -> Sum**: Measure delay when A input changes and Sum output responds
+   - Static input combinations: B=0/1, Cin=0/1 (4 combinations total)
 
-2. **B -> Sum**: 测量B输入变化时Sum输出的延迟
-   - 静态输入组合: A=0/1, Cin=0/1 (共4种)
+2. **B -> Sum**: Measure delay when B input changes and Sum output responds
+   - Static input combinations: A=0/1, Cin=0/1 (4 combinations total)
 
-3. **Cin -> Sum**: 测量Cin输入变化时Sum输出的延迟
-   - 静态输入组合: A=0/1, B=0/1 (共4种)
+3. **Cin -> Sum**: Measure delay when Cin input changes and Sum output responds
+   - Static input combinations: A=0/1, B=0/1 (4 combinations total)
 
-4. **A -> Cout**: 测量A输入变化时Cout输出的延迟
-   - 静态输入组合: B=0/1, Cin=0/1 (共4种)
+4. **A -> Cout**: Measure delay when A input changes and Cout output responds
+   - Static input combinations: B=0/1, Cin=0/1 (4 combinations total)
 
-5. **B -> Cout**: 测量B输入变化时Cout输出的延迟
-   - 静态输入组合: A=0/1, Cin=0/1 (共4种)
+5. **B -> Cout**: Measure delay when B input changes and Cout output responds
+   - Static input combinations: A=0/1, Cin=0/1 (4 combinations total)
 
-6. **Cin -> Cout**: 测量Cin输入变化时Cout输出的延迟
-   - 静态输入组合: A=0/1, B=0/1 (共4种)
+6. **Cin -> Cout**: Measure delay when Cin input changes and Cout output responds
+   - Static input combinations: A=0/1, B=0/1 (4 combinations total)
 
-总计：每种全加器设计（FA16/FA28）有 6路径 × 4组合 = 24个测试用例
+Total: Each Full Adder design (FA16/FA28) has 6 paths × 4 combinations = 24 test cases
 
-### 延迟测量指标
+### Delay Metrics
 
-每个测试用例测量以下三个指标：
+Each test case measures three metrics:
 
-- **tpLH**: 低到高传播延迟（输入上升沿到输出上升沿）
-- **tpHL**: 高到低传播延迟（输入下降沿到输出下降沿）
-- **tp**: 平均传播延迟 = (tpLH + tpHL) / 2
+- **tpLH**: Low-to-high propagation delay (input rising edge to output rising edge)
+- **tpHL**: High-to-low propagation delay (input falling edge to output falling edge)
+- **tp**: Average propagation delay = (tpLH + tpHL) / 2
 
-## 结果分析
+## Results Analysis
 
-运行`parse_delay.py`后，可以通过以下方式查看结果：
+After running `parse_delay.py`, you can view results in the following ways:
 
-1. **详细数据**: 打开`delay_summary.xlsx`查看每个测试用例的完整数据
-2. **统计摘要**: 查看`delay_summary_stats.txt`获取每条路径的最小、最大和平均延迟
-3. **自定义分析**: 使用`delay_summary.csv`进行进一步的数据处理和可视化
+1. **Detailed Data**: Open `delay_summary.xlsx` to view complete data for each test case
+2. **Statistical Summary**: Check `delay_summary_stats.txt` for min, max, and average delays for each path
+3. **Custom Analysis**: Use `delay_summary.csv` for further data processing and visualization
 
-## 示例输出
+## Example Output
 
-统计摘要示例：
+Example statistical summary:
 ```
 Delay Measurement Statistics (in picoseconds)
 ======================================================================
@@ -139,16 +141,16 @@ FA28:
   ...
 ```
 
-## 参考资料
+## References
 
-这些脚本的设计参考了以下Lab3中的脚本：
-- `DIC/Lab3/parser_mt.py`: .mt文件解析方法
-- `DIC/Lab3/Task2/generate_sp.py`: .sp脚本生成模板
-- `DIC/Lab3/Task2/run_sp.py`: 批量运行HSPICE的方法
+These scripts were designed with reference to the following Lab3 scripts:
+- `DIC/Lab3/parser_mt.py`: .mt file parsing methods
+- `DIC/Lab3/Task2/generate_sp.py`: .sp script generation template
+- `DIC/Lab3/Task2/run_sp.py`: Batch HSPICE execution methods
 
-## 注意事项
+## Notes
 
-1. 运行仿真前确保HSPICE已正确安装并配置
-2. 仿真时间取决于测试用例数量和系统性能，请耐心等待
-3. 如果某些仿真失败，可以查看对应的.lis文件了解错误信息
-4. 生成的.tr0, .ic0, .st0等中间文件可以根据需要删除以节省空间
+1. Ensure HSPICE is properly installed and configured before running simulations
+2. Simulation time depends on the number of test cases and system performance; please be patient
+3. If some simulations fail, check the corresponding .lis files for error messages
+4. Generated intermediate files (.tr0, .ic0, .st0, etc.) can be deleted to save space if needed

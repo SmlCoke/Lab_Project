@@ -29,17 +29,21 @@ python3 generate_sp.py --fa-type FA28 --output-dir .
 Generated files will be saved in the following directory structure:
 ```
 Task1/
-├── FA16/
-│   └── delay/
-│       ├── FA16_delay_A_to_Sum_B0_Cin0.sp
-│       ├── FA16_delay_A_to_Sum_B0_Cin1.sp
-│       └── ... (24 test files total)
-└── FA28/
-    └── delay/
-        ├── FA28_delay_A_to_Sum_B0_Cin0.sp
-        ├── FA28_delay_A_to_Sum_B0_Cin1.sp
-        └── ... (24 test files total)
+├── FA16/delay/
+│   ├── A_000_100_S/FA16.sp    (A: 000→100, output: Sum)
+│   ├── A_001_101_CO/FA16.sp   (A: 001→101, output: Cout)
+│   ├── CI_100_101_CO/FA16.sp  (Cin: 100→101, output: Cout)
+│   └── ... (18 test folders total)
+└── FA28/delay/
+    ├── A_000_100_S/FA28.sp
+    ├── A_001_101_CO/FA28.sp
+    └── ... (18 test folders total)
 ```
+
+Each test case is in its own folder named: `InputSignal_InitialState_FinalState_OutputSignal`
+- Input signals: `A`, `B`, `CI` (for Cin)
+- State format: ABC (3 binary digits representing A, B, Cin values)
+- Output signals: `S` (Sum), `CO` (Cout)
 
 ### 2. Run HSPICE Simulations
 
@@ -76,29 +80,41 @@ This will generate the following files:
 
 ## Delay Test Patterns
 
-For each input-to-output path of the Full Adder, the scripts test all possible static input combinations:
+For each input-to-output path of the Full Adder, the scripts test specific transition patterns:
 
 ### Test Paths
 
-1. **A -> Sum**: Measure delay when A input changes and Sum output responds
-   - Static input combinations: B=0/1, Cin=0/1 (4 combinations total)
+**For Sum output (12 patterns per FA type):**
 
-2. **B -> Sum**: Measure delay when B input changes and Sum output responds
-   - Static input combinations: A=0/1, Cin=0/1 (4 combinations total)
+1. **A → Sum**: 4 transition patterns
+   - A transitions from 0→1 with all combinations of B and Cin static values
+   - Examples: `000→100`, `001→101`, `010→110`, `011→111`
 
-3. **Cin -> Sum**: Measure delay when Cin input changes and Sum output responds
-   - Static input combinations: A=0/1, B=0/1 (4 combinations total)
+2. **B → Sum**: 4 transition patterns  
+   - B transitions from 0→1 with all combinations of A and Cin static values
+   - Examples: `000→010`, `001→011`, `100→110`, `101→111`
 
-4. **A -> Cout**: Measure delay when A input changes and Cout output responds
-   - Static input combinations: B=0/1, Cin=0/1 (4 combinations total)
+3. **Cin → Sum**: 4 transition patterns
+   - Cin transitions from 0→1 with all combinations of A and B static values
+   - Examples: `000→001`, `010→011`, `100→101`, `110→111`
 
-5. **B -> Cout**: Measure delay when B input changes and Cout output responds
-   - Static input combinations: A=0/1, Cin=0/1 (4 combinations total)
+**For Cout output (6 patterns per FA type - specific transitions only):**
 
-6. **Cin -> Cout**: Measure delay when Cin input changes and Cout output responds
-   - Static input combinations: A=0/1, B=0/1 (4 combinations total)
+4. **A → Cout**: 2 specific transition patterns
+   - `001→101` (when B=0, Cin=1)
+   - `010→110` (when B=1, Cin=0)
 
-Total: Each Full Adder design (FA16/FA28) has 6 paths × 4 combinations = 24 test cases
+5. **B → Cout**: 2 specific transition patterns
+   - `100→110` (when A=1, Cin=0)
+   - `001→011` (when A=0, Cin=1)
+
+6. **Cin → Cout**: 2 specific transition patterns
+   - `100→101` (when A=1, B=0)
+   - `010→011` (when A=0, B=1)
+
+**Total**: Each Full Adder design has 12 + 6 = **18 test cases**
+
+Note: For Sum output, all input combinations affect the output, so all 4 transitions are tested per input signal. For Cout output, only specific input combinations cause transitions, so only 2 critical patterns per input signal are tested.
 
 ### Delay Metrics
 

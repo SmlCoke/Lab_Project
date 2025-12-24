@@ -115,32 +115,47 @@ def parse_delay_file(sp_file):
         print(f"Error parsing {mt0_file}: {e}")
         return None
     
-    # Extract information from filename
-    # Format: FA16_delay_A_to_Sum_B0_Cin0.sp
-    filename = sp_path.stem
-    parts = filename.split('_')
+    # Extract information from folder name
+    # Format: InputSignal_InitialState_FinalState_OutputSignal
+    # Example: CI_100_101_CO or A_000_100_S
+    folder_name = sp_path.parent.name
+    parts = folder_name.split('_')
     
-    # Parse filename components
-    fa_type = parts[0]  # FA16 or FA28
-    input_signal = parts[2]  # A, B, or Cin
-    output_signal = parts[4]  # Sum or Cout
+    if len(parts) != 4:
+        print(f"Warning: Unexpected folder name format: {folder_name}")
+        return None
     
-    # Parse static input values
-    static_values = {}
-    for part in parts[5:]:
-        # Extract signal name and value (e.g., "B0" -> B=0, "Cin1" -> Cin=1)
-        match = re.match(r'([A-Z][a-z]*)(\d+)', part)
-        if match:
-            signal, value = match.groups()
-            static_values[signal] = int(value)
+    # Parse folder name components
+    input_map = {'A': 'A', 'B': 'B', 'CI': 'Cin'}
+    output_map = {'S': 'Sum', 'CO': 'Cout'}
+    
+    input_signal = input_map.get(parts[0], parts[0])
+    initial_state = parts[1]  # e.g., "100"
+    final_state = parts[2]     # e.g., "101"
+    output_signal = output_map.get(parts[3], parts[3])
+    
+    # Parse initial and final states (format: ABC where A, B, C are binary digits)
+    def parse_state(state_str):
+        return {
+            'A': int(state_str[0]),
+            'B': int(state_str[1]),
+            'Cin': int(state_str[2])
+        }
+    
+    initial = parse_state(initial_state)
+    final = parse_state(final_state)
+    
+    # Get FA type from the filename
+    fa_type = sp_path.stem  # FA16 or FA28
     
     # Extract delay measurements from dataframe
     result = {
         'fa_type': fa_type,
         'input': input_signal,
         'output': output_signal,
-        'static_values': static_values,
-        'filename': filename,
+        'initial_state': initial,
+        'final_state': final,
+        'folder_name': folder_name,
     }
     
     # Extract tpLH, tpHL, and tp values if they exist
@@ -170,11 +185,11 @@ def parse_all_delay_files(base_dir, pattern='delay'):
     results = []
     base_path = Path(base_dir)
     
-    # Find all 'delay' subdirectories
+    # Find all 'delay' subdirectories and recursively search for .sp files
     for delay_dir in base_path.rglob(pattern):
         if delay_dir.is_dir():
-            # Find all .sp files in this directory
-            for sp_file in sorted(delay_dir.glob('*.sp')):
+            # Recursively find all .sp files under this directory
+            for sp_file in sorted(delay_dir.rglob('*.sp')):
                 result = parse_delay_file(sp_file)
                 if result and 'tp' in result:  # Only include if we have delay data
                     results.append(result)
@@ -200,12 +215,19 @@ def create_summary_dataframe(results):
             'FA_Type': r['fa_type'],
             'Input': r['input'],
             'Output': r['output'],
+            'Initial_State': f"{r['initial_state']['A']}{r['initial_state']['B']}{r['initial_state']['Cin']}",
+            'Final_State': f"{r['final_state']['A']}{r['final_state']['B']}{r['final_state']['Cin']}",
         }
         
-        # Add static input values
-        for sig in ['A', 'B', 'Cin']:
-            if sig in r['static_values']:
-                row[sig] = r['static_values'][sig]
+        # Add initial state values individually
+        row['Init_A'] = r['initial_state']['A']
+        row['Init_B'] = r['initial_state']['B']
+        row['Init_Cin'] = r['initial_state']['Cin']
+        
+        # Add final state values individually
+        row['Final_A'] = r['final_state']['A']
+        row['Final_B'] = r['final_state']['B']
+        row['Final_Cin'] = r['final_state']['Cin']
         
         # Add delay measurements
         if 'tpLH' in r:

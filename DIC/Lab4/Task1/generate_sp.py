@@ -136,39 +136,34 @@ Xinv_sum Sum_bar Sum vdd gnd INV size = '1' Lg = 'Lg'
 .ends"""
 
 
-def generate_voltage_sources(input_signal, static_values):
+def generate_voltage_sources(input_signal, initial_state, final_state):
     """
     Generate voltage source definitions for the testbench.
     
     Args:
         input_signal: The signal that transitions ('A', 'B', or 'Cin')
-        static_values: Dict with static values for the other two inputs
+        initial_state: Dict with initial values {'A': 0/1, 'B': 0/1, 'Cin': 0/1}
+        final_state: Dict with final values {'A': 0/1, 'B': 0/1, 'Cin': 0/1}
     
     Returns:
         String containing voltage source definitions
     """
     sources = []
     
-    # Create the pulse source for the input signal
-    # PULSE format: (V1 V2 TD TR TF PW PER)
-    # Transition from 0 to SUPPLY at 2ns, with rise/fall time of 100ps
-    if input_signal == 'A':
-        sources.append("VA Ain GND PULSE (0 'SUPPLY' 2n 100p 100p 6n 16n)")
-    else:
-        val = "'SUPPLY'" if static_values.get('A', 0) == 1 else "0"
-        sources.append(f"VA Ain GND DC {val}")
-    
-    if input_signal == 'B':
-        sources.append("VB Bin GND PULSE (0 'SUPPLY' 2n 100p 100p 6n 16n)")
-    else:
-        val = "'SUPPLY'" if static_values.get('B', 0) == 1 else "0"
-        sources.append(f"VB Bin GND DC {val}")
-    
-    if input_signal == 'Cin':
-        sources.append("VCI CIin GND PULSE (0 'SUPPLY' 2n 100p 100p 6n 16n)")
-    else:
-        val = "'SUPPLY'" if static_values.get('Cin', 0) == 1 else "0"
-        sources.append(f"VCI CIin GND DC {val}")
+    # For each signal, check if it transitions or stays static
+    for signal, node in [('A', 'Ain'), ('B', 'Bin'), ('Cin', 'CIin')]:
+        init_val = initial_state[signal]
+        final_val = final_state[signal]
+        
+        if signal == input_signal:
+            # This is the transitioning signal - use PULSE
+            v1 = "'SUPPLY'" if init_val == 1 else "0"
+            v2 = "'SUPPLY'" if final_val == 1 else "0"
+            sources.append(f"V{signal[0] if signal != 'Cin' else 'CI'} {node} GND PULSE ({v1} {v2} 2n 100p 100p 6n 16n)")
+        else:
+            # Static signal - use DC
+            val = "'SUPPLY'" if init_val == 1 else "0"
+            sources.append(f"V{signal[0] if signal != 'Cin' else 'CI'} {node} GND DC {val}")
     
     return '\n'.join(sources)
 
@@ -208,7 +203,7 @@ def generate_measure_statements(input_signal, output_signal):
     return '\n'.join(measures)
 
 
-def generate_delay_testbench(fa_type, input_signal, output_signal, static_values, output_dir):
+def generate_delay_testbench(fa_type, input_signal, output_signal, initial_state, final_state, output_dir):
     """
     Generate a single delay measurement testbench file.
     
@@ -216,21 +211,36 @@ def generate_delay_testbench(fa_type, input_signal, output_signal, static_values
         fa_type: 'FA16' or 'FA28'
         input_signal: Input that transitions ('A', 'B', or 'Cin')
         output_signal: Output being measured ('Sum' or 'Cout')
-        static_values: Dict with values for the other two inputs
+        initial_state: Dict with initial values {'A': 0/1, 'B': 0/1, 'Cin': 0/1}
+        final_state: Dict with final values {'A': 0/1, 'B': 0/1, 'Cin': 0/1}
         output_dir: Directory to save the .sp file
     """
-    # Create static description for the filename and comments
+    # Create state strings for folder naming (format: A B CI)
+    def state_to_str(state):
+        return f"{state['A']}{state['B']}{state['Cin']}"
+    
+    init_str = state_to_str(initial_state)
+    final_str = state_to_str(final_state)
+    
+    # Map signal names for folder naming
+    signal_map = {'A': 'A', 'B': 'B', 'Cin': 'CI'}
+    output_map = {'Sum': 'S', 'Cout': 'CO'}
+    
+    # Create folder name: InputSignal_InitialState_FinalState_OutputSignal
+    folder_name = f"{signal_map[input_signal]}_{init_str}_{final_str}_{output_map[output_signal]}"
+    
+    # Create static description for comments
     static_parts = []
     for sig in ['A', 'B', 'Cin']:
         if sig != input_signal:
-            static_parts.append(f"{sig}={static_values[sig]}")
+            static_parts.append(f"{sig}={initial_state[sig]}")
     static_desc = ', '.join(static_parts)
     
     # Select appropriate subcircuit definition
     subckt_def = FA16_SUBCKT if fa_type == 'FA16' else FA28_SUBCKT
     
     # Generate voltage sources
-    voltage_sources = generate_voltage_sources(input_signal, static_values)
+    voltage_sources = generate_voltage_sources(input_signal, initial_state, final_state)
     
     # Generate measure statements
     measure_statements = generate_measure_statements(input_signal, output_signal)
@@ -246,15 +256,11 @@ def generate_delay_testbench(fa_type, input_signal, output_signal, static_values
         measure_statements=measure_statements
     )
     
-    # Create filename
-    filename = f"{fa_type}_delay_{input_signal}_to_{output_signal}_"
-    for sig in ['A', 'B', 'Cin']:
-        if sig != input_signal:
-            filename += f"{sig}{static_values[sig]}_"
-    filename = filename.rstrip('_') + '.sp'
+    # Create filename - just use fa_type.sp since it's in a uniquely named folder
+    filename = f"{fa_type}.sp"
     
-    # Save file
-    output_path = Path(output_dir) / filename
+    # Save file in its own folder
+    output_path = Path(output_dir) / fa_type / 'delay' / folder_name / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(content, encoding='utf-8')
     print(f"Generated: {output_path}")
@@ -269,63 +275,86 @@ def generate_all_delay_testbenches(fa_type, output_dir):
         output_dir: Base output directory
     """
     # Define all test patterns
-    # For each input->output path, test all combinations of the other two inputs
+    # For Sum output: all combinations work (4 cases per input)
+    # For Cout output: only specific transitions matter (2 cases per input)
     
     patterns = []
     
-    # A -> Sum delay (vary B and Cin)
+    # A -> Sum delay (vary B and Cin) - 4 cases
     for b in [0, 1]:
         for cin in [0, 1]:
             patterns.append({
                 'input': 'A',
                 'output': 'Sum',
-                'static': {'B': b, 'Cin': cin}
+                'initial': {'A': 0, 'B': b, 'Cin': cin},
+                'final': {'A': 1, 'B': b, 'Cin': cin}
             })
     
-    # B -> Sum delay (vary A and Cin)
+    # B -> Sum delay (vary A and Cin) - 4 cases
     for a in [0, 1]:
         for cin in [0, 1]:
             patterns.append({
                 'input': 'B',
                 'output': 'Sum',
-                'static': {'A': a, 'Cin': cin}
+                'initial': {'A': a, 'B': 0, 'Cin': cin},
+                'final': {'A': a, 'B': 1, 'Cin': cin}
             })
     
-    # Cin -> Sum delay (vary A and B)
+    # Cin -> Sum delay (vary A and B) - 4 cases
     for a in [0, 1]:
         for b in [0, 1]:
             patterns.append({
                 'input': 'Cin',
                 'output': 'Sum',
-                'static': {'A': a, 'B': b}
+                'initial': {'A': a, 'B': b, 'Cin': 0},
+                'final': {'A': a, 'B': b, 'Cin': 1}
             })
     
-    # A -> Cout delay (vary B and Cin)
-    for b in [0, 1]:
-        for cin in [0, 1]:
-            patterns.append({
-                'input': 'A',
-                'output': 'Cout',
-                'static': {'B': b, 'Cin': cin}
-            })
+    # A -> Cout delay - ONLY 2 specific cases
+    # Sequence order: A B CI
+    # A to CO: 001→101, 010→110
+    patterns.append({
+        'input': 'A',
+        'output': 'Cout',
+        'initial': {'A': 0, 'B': 0, 'Cin': 1},
+        'final': {'A': 1, 'B': 0, 'Cin': 1}
+    })
+    patterns.append({
+        'input': 'A',
+        'output': 'Cout',
+        'initial': {'A': 0, 'B': 1, 'Cin': 0},
+        'final': {'A': 1, 'B': 1, 'Cin': 0}
+    })
     
-    # B -> Cout delay (vary A and Cin)
-    for a in [0, 1]:
-        for cin in [0, 1]:
-            patterns.append({
-                'input': 'B',
-                'output': 'Cout',
-                'static': {'A': a, 'Cin': cin}
-            })
+    # B -> Cout delay - ONLY 2 specific cases
+    # B to CO: 100→110, 001→011
+    patterns.append({
+        'input': 'B',
+        'output': 'Cout',
+        'initial': {'A': 1, 'B': 0, 'Cin': 0},
+        'final': {'A': 1, 'B': 1, 'Cin': 0}
+    })
+    patterns.append({
+        'input': 'B',
+        'output': 'Cout',
+        'initial': {'A': 0, 'B': 0, 'Cin': 1},
+        'final': {'A': 0, 'B': 1, 'Cin': 1}
+    })
     
-    # Cin -> Cout delay (vary A and B)
-    for a in [0, 1]:
-        for b in [0, 1]:
-            patterns.append({
-                'input': 'Cin',
-                'output': 'Cout',
-                'static': {'A': a, 'B': b}
-            })
+    # Cin -> Cout delay - ONLY 2 specific cases
+    # CI to CO: 100→101, 010→011
+    patterns.append({
+        'input': 'Cin',
+        'output': 'Cout',
+        'initial': {'A': 1, 'B': 0, 'Cin': 0},
+        'final': {'A': 1, 'B': 0, 'Cin': 1}
+    })
+    patterns.append({
+        'input': 'Cin',
+        'output': 'Cout',
+        'initial': {'A': 0, 'B': 1, 'Cin': 0},
+        'final': {'A': 0, 'B': 1, 'Cin': 1}
+    })
     
     # Generate testbenches for all patterns
     for pattern in patterns:
@@ -333,7 +362,8 @@ def generate_all_delay_testbenches(fa_type, output_dir):
             fa_type=fa_type,
             input_signal=pattern['input'],
             output_signal=pattern['output'],
-            static_values=pattern['static'],
+            initial_state=pattern['initial'],
+            final_state=pattern['final'],
             output_dir=output_dir
         )
     
@@ -362,12 +392,10 @@ def main():
     base_dir = Path(args.output_dir)
     
     if args.fa_type in ['FA16', 'both']:
-        fa16_dir = base_dir / 'FA16' / 'delay'
-        generate_all_delay_testbenches('FA16', fa16_dir)
+        generate_all_delay_testbenches('FA16', base_dir)
     
     if args.fa_type in ['FA28', 'both']:
-        fa28_dir = base_dir / 'FA28' / 'delay'
-        generate_all_delay_testbenches('FA28', fa28_dir)
+        generate_all_delay_testbenches('FA28', base_dir)
     
     print("\nAll testbenches generated successfully!")
 

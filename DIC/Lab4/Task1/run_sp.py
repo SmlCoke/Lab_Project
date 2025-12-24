@@ -78,11 +78,11 @@ def find_sp_files(base_dir, pattern='delay'):
     sp_files = []
     base_path = Path(base_dir)
     
-    # Find all 'delay' subdirectories
+    # Find all 'delay' subdirectories and their subdirectories
     for delay_dir in base_path.rglob(pattern):
         if delay_dir.is_dir():
-            # Find all .sp files in this directory
-            for sp_file in delay_dir.glob('*.sp'):
+            # Recursively find all .sp files under this directory
+            for sp_file in delay_dir.rglob('*.sp'):
                 sp_files.append(sp_file)
     
     return sorted(sp_files)

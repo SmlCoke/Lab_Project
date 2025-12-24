@@ -44,3 +44,13 @@ $I_D \geq 6.22m S/15 = 414.7 \mu A$
 
 ## 最终参数
 ![alt text](image-4.png)
+
+
+## 1221-2341更新只有1.1V, ss, 105不行
+![alt text](image-3.png) 
+
+## 只有1.1V, ff, 105不行
+![alt text](image-5.png)
+
+## 更新
+![alt text](image-6.png)

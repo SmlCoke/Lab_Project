@@ -1,0 +1,32 @@
+# HSPICE simulation output files
+*.lis
+*.mt0
+*.mt*
+*.tr0
+*.tr*
+*.ic0
+*.ic*
+*.st0
+*.st*
+*.pa0
+*.pa*
+*.ms0
+*.ms*
+*.sw0
+*.sw*
+*.ac0
+*.ac*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Excel temporary files
+~$*.xlsx
+~$*.xls
+
+# Simulation summary files (keep these for now, user can remove later if needed)
+# delay_summary.csv
+# delay_summary.xlsx
+# delay_summary_stats.txt

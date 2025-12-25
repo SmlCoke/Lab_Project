@@ -1,0 +1,96 @@
+\documentclass[UTF8,12pt,a4paper]{ctexart}
+
+\usepackage{amsmath}
+\usepackage{cases}
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{algorithm}
+\usepackage{caption}   % \caption*需要
+\usepackage{subcaption} % 子图布局
+\usepackage[noend]{algpseudocode} %algorithmicx
+\makeatletter
+\renewcommand{\fnum@algorithm}{\fname@algorithm}
+\makeatother
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage[margin=1in]{geometry}
+\geometry{a4paper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\usepackage{xcolor}
+
+% ------------------- 健全表格环境 ----------------------
+\usepackage{tabularx}
+\usepackage{booktabs} % 三线表
+\usepackage{multirow}
+% ------------------- 自定义代码展示风格 -----------------
+\usepackage{listings}
+\usepackage{xcolor}
+\lstdefinestyle{hspice}{
+    language=C,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{brown},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{black},
+    tabsize=2,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=true,
+    escapeinside={\%*}{*)},
+    morekeywords={param, include, temp, option, probe, DC, dc, measure, alter, VDD, GND, gnd, NMOS, PMOS,FIND, WHEN, sweep, abs, I, SUPPLY, lg, fin_height, fin_width, tran, ac, op, model, end, subckt,ends,global, nmos, pmos, inv, data, +}, % 根据需要添加更多HSPICE关键字
+    comment=[l]{*} % 在这里设置注释
+}
+
+\lstset{style=hspice} % 只应用样式
+
+
+
+% ------------------- 设置超链接，便于跳转 -----------------
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+    pdfborder={0 0 0},    % 消除超链接边框
+    colorlinks=true,       % 将边框改为颜色标记（可选）
+    linkcolor=black,       % 内部链接颜色（目录、引用等）
+    citecolor=black,       % 引用颜色
+    urlcolor=blue          % URL链接颜色（保持蓝色以便区分）
+}
+
+
+% ------------------------ 文件目录树 ------------------------
+\usepackage{dirtree}
+
+% ------------------------ 标题区 ----------------------------
+\title{DIC Lab4 Report}
+\author{
+	姓名：\underline{冯峻}~~~~~~
+	学号：\underline{523031910148}~~~~~~}
+\date{\today}
+\pagenumbering{arabic}
+
+\begin{document}
+
+
+
+% ------------------------ 页眉和页脚 ----------------------------
+\fancyhead[L]{冯峻}
+\fancyhead[C]{Lab3 Report}
+\fancyfoot[C]{\thepage}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\end{document}

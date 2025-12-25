@@ -86,11 +86,363 @@
 
 % ------------------------ 页眉和页脚 ----------------------------
 \fancyhead[L]{冯峻}
-\fancyhead[C]{Lab3 Report}
+\fancyhead[C]{Lab4 Report}
 \fancyfoot[C]{\thepage}
 
 \maketitle
 \tableofcontents
 \newpage
+
+%================================================================================
+% Introduction
+%================================================================================
+\section{Introduction}
+
+本实验基于PTM 16HP FinFET工艺，对两种全加器电路（16T FA和28T FA）及其构成的8位加法器链路进行了仿真与性能分析。实验主要聚焦于延迟（delay）和功耗（power）两个关键性能指标的测量与比较。
+
+\subsection{实验全局配置}
+
+本实验采用HSPICE进行电路仿真，仿真环境配置如下：
+
+\begin{enumerate}
+    \item 工艺库：PTM 16HP FinFETs
+    \item 仿真等级：RUNLVL = 6
+    \item 栅极长度：$L_g = 20$nm
+    \item 供电电压：$V_{\text{DD}} = 0.75$V
+    \item 仿真温度：$T = 25^\circ\mathrm{C}$
+\end{enumerate}
+
+\subsection{全加器电路设计}
+
+实验中使用了两种不同的全加器电路设计：
+
+\subsubsection{16T全加器（FA16）}
+
+16T全加器采用传输门（pass transistor）逻辑，共使用16个晶体管，具有较低的晶体管数量，但可能在某些输入模式下性能不及28T全加器。其逻辑表达式为：
+
+\begin{align}
+\text{Sum} &= A \oplus B \oplus C_{\text{in}} \\
+C_{\text{out}} &= (A \oplus B) \cdot C_{\text{in}} + (A \odot B) \cdot A
+\end{align}
+
+其中$\oplus$表示XOR运算，$\odot$表示XNOR运算。
+
+\subsubsection{28T全加器（FA28）}
+
+28T全加器采用标准CMOS逻辑门设计，共使用28个晶体管（包括2个反相器），具有更对称的上拉网络（PUN）和下拉网络（PDN），理论上具有更好的噪声容限和更均衡的延迟特性。其逻辑表达式为：
+
+\begin{align}
+C_{\text{out}} &= AB + (A+B) \cdot C_{\text{in}} \\
+\text{Sum} &= ABC_{\text{in}} + \overline{C_{\text{out}}}(A + B + C_{\text{in}})
+\end{align}
+
+%================================================================================
+% Task 1
+%================================================================================
+\newpage
+\section{Task 1: 全加器性能分析}
+
+\subsection{电路搭建}
+
+Task 1中分别对16T全加器（FA16）和28T全加器（FA28）进行了性能测试。每个全加器的输入端（A、B）通过buffer与激励源连接，输出端（Sum、Cout）各连接一个尺寸为2的反相器作为负载。
+
+\subsection{激励源和输入模式说明}
+
+\subsubsection{延迟仿真输入模式}
+
+为了全面测量全加器的延迟特性，实验对所有可能的输入转换进行了仿真。延迟测量包括：
+
+\textbf{1. 输入到Sum的延迟}（每个输入信号4种模式，共12种）：
+\begin{itemize}
+    \item A $\rightarrow$ Sum：固定B和$C_{\text{in}}$的4种组合（00, 01, 10, 11），A从0到1跳变
+    \item B $\rightarrow$ Sum：固定A和$C_{\text{in}}$的4种组合，B从0到1跳变
+    \item $C_{\text{in}}$ $\rightarrow$ Sum：固定A和B的4种组合，$C_{\text{in}}$从0到1跳变
+\end{itemize}
+
+\textbf{2. 输入到$C_{\text{out}}$的延迟}（每个输入信号2种模式，共6种）：
+\begin{itemize}
+    \item A $\rightarrow$ $C_{\text{out}}$：001$\rightarrow$101和010$\rightarrow$110
+    \item B $\rightarrow$ $C_{\text{out}}$：100$\rightarrow$110和001$\rightarrow$011
+    \item $C_{\text{in}}$ $\rightarrow$ $C_{\text{out}}$：100$\rightarrow$101和010$\rightarrow$011
+\end{itemize}
+
+每种模式下测量$t_{\text{pLH}}$（低到高传播延迟）和$t_{\text{pHL}}$（高到低传播延迟），并计算平均延迟$t_{\text{p}} = (t_{\text{pLH}} + t_{\text{pHL}})/2$。
+
+\subsubsection{功耗仿真输入模式}
+
+功耗仿真采用动态激励模式，三个输入端（A、B、$C_{\text{in}}$）施加周期性脉冲信号，频率相同但相位不同，使电路在运行过程中产生动态功耗。通过HSPICE的功耗分析命令测量电路的平均功耗。
+
+\subsection{面积计算}
+
+电路面积以晶体管数量为度量标准。根据HSPICE子电路定义：
+
+\textbf{FA16面积}：
+\begin{itemize}
+    \item 核心逻辑电路：16个晶体管（8个NMOS + 8个PMOS）
+    \item 反相器（用于生成$\overline{B}$和$\overline{A \oplus B}$）：2个反相器 $\times$ 2 = 4个晶体管
+    \item \textbf{总计}：16 + 4 = \textbf{20个晶体管}
+\end{itemize}
+
+\textbf{FA28面积}：
+\begin{itemize}
+    \item Carry模块：10个晶体管（5个NMOS + 5个PMOS）
+    \item Sum模块：14个晶体管（7个NMOS + 7个PMOS）
+    \item 反相器（Cout和Sum输出）：2个反相器 $\times$ 2 = 4个晶体管
+    \item \textbf{总计}：10 + 14 + 4 = \textbf{28个晶体管}
+\end{itemize}
+
+\subsection{延迟仿真结果与分析}
+
+表\ref{tab:task1_delay_summary}展示了FA16和FA28在各输入模式下的延迟测量结果的统计分析。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task1 FA16与FA28延迟统计分析（单位：ps）}
+    \label{tab:task1_delay_summary}
+    \begin{tabular}{lcccccc}
+    \toprule
+    \multirow{2}{*}{输入$\rightarrow$输出} & \multicolumn{3}{c}{FA16} & \multicolumn{3}{c}{FA28} \\
+    \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+     & $t_{\text{pLH}}$ & $t_{\text{pHL}}$ & $t_{\text{p}}$ & $t_{\text{pLH}}$ & $t_{\text{pHL}}$ & $t_{\text{p}}$ \\
+    \midrule
+    A $\rightarrow$ Sum (平均) & 13.51 & 13.17 & 13.37 & 15.30 & 13.89 & 14.58 \\
+    B $\rightarrow$ Sum (平均) & 14.06 & 13.57 & 13.81 & 15.28 & 15.11 & 15.19 \\
+    $C_{\text{in}}$ $\rightarrow$ Sum (平均) & 6.03 & 4.82 & 5.42 & 13.79 & 14.42 & 14.11 \\
+    A $\rightarrow$ $C_{\text{out}}$ (平均) & 11.95 & 6.20 & 9.08 & 12.43 & 13.05 & 12.74 \\
+    B $\rightarrow$ $C_{\text{out}}$ (平均) & 16.61 & 11.21 & 13.91 & 12.00 & 12.79 & 12.40 \\
+    $C_{\text{in}}$ $\rightarrow$ $C_{\text{out}}$ (平均) & 1.79 & 2.12 & 1.95 & 11.61 & 12.12 & 11.87 \\
+    \midrule
+    所有模式平均 & 10.66 & 8.51 & 9.76 & 13.40 & 13.56 & 13.48 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{关键观察}：
+\begin{enumerate}
+    \item FA16在$C_{\text{in}}$相关路径上表现优异，特别是$C_{\text{in}} \rightarrow C_{\text{out}}$路径（1.95ps），这是由于其传输门逻辑的直接传输特性
+    \item FA28在A、B输入路径上表现更加稳定和均衡，各路径延迟差异较小
+    \item FA16的整体平均延迟（9.76ps）优于FA28（13.48ps），但FA16在某些路径上存在较大延迟（如B $\rightarrow$ $C_{\text{out}}$：13.91ps）
+\end{enumerate}
+
+\subsection{功耗仿真结果与分析}
+
+通过对FA16和FA28在相同动态激励下的功耗测量，结果如表\ref{tab:task1_power}所示。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task1 FA16与FA28功耗测量结果}
+    \label{tab:task1_power}
+    \begin{tabular}{lc}
+    \toprule
+    全加器类型 & 平均功耗 ($\mu$W) \\
+    \midrule
+    FA16 & 待测量 \\
+    FA28 & 待测量 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+注：功耗数据需要从Task1对应的power文件夹中的仿真结果中提取。
+
+%================================================================================
+% Task 2
+%================================================================================
+\newpage
+\section{Task 2: 8位加法器链路性能分析}
+
+\subsection{电路搭建}
+
+Task 2构建了两种8位加法器链路：
+\begin{itemize}
+    \item \textbf{Adder1}：由8个FA28串联组成
+    \item \textbf{Adder2}：由4个FA28和4个FA16交替排列组成（位置：FA28-FA16-FA28-FA16-FA28-FA16-FA28-FA16）
+\end{itemize}
+
+每个全加器单元都包含输入buffer（用于隔离输入端），以及输出负载（尺寸为2的反相器）。链路中，前一级的进位输出$C_{\text{out}}$连接到后一级的进位输入$C_{\text{in}}$。
+
+\subsection{激励源和输入模式说明}
+
+\subsubsection{延迟仿真输入模式}
+
+延迟仿真测量从$C_0$（初始进位输入）到两个关键输出的传播延迟：
+\begin{itemize}
+    \item $C_0 \rightarrow C_{\text{out}}$（最终进位输出）：测量进位信号沿链路传播的延迟
+    \item $C_0 \rightarrow S_7$（最高位和输出）：测量进位信号影响最高位和输出的延迟
+\end{itemize}
+
+输入条件：A[7:0] = 11111111（全1），B[7:0] = 00000000（全0），$C_0$施加脉冲激励。这种输入模式确保进位信号需要通过所有8级全加器传播。
+
+\subsubsection{功耗仿真输入模式}
+
+功耗仿真采用4种不同的输入激励模式（pattern1-4），通过改变A和B的输入值以及$C_0$的激励方式，测量不同工作场景下的功耗。
+
+\subsection{面积计算}
+
+\textbf{Adder1面积}：
+\begin{itemize}
+    \item 8个FA28单元：8 $\times$ 28 = 224个晶体管
+    \item 8个输入buffer（每个FA28的A、B各一个buffer，每个buffer = 2个反相器 = 4个晶体管）：8 $\times$ 2 $\times$ 4 = 64个晶体管
+    \item 8个输出负载反相器（Sum输出，每个2个晶体管）：8 $\times$ 2 = 16个晶体管
+    \item \textbf{总计}：224 + 64 + 16 = \textbf{304个晶体管}
+\end{itemize}
+
+\textbf{Adder2面积}：
+\begin{itemize}
+    \item 4个FA28单元：4 $\times$ 28 = 112个晶体管
+    \item 4个FA16单元：4 $\times$ 20 = 80个晶体管
+    \item 8个输入buffer：8 $\times$ 2 $\times$ 4 = 64个晶体管
+    \item 8个输出负载反相器：8 $\times$ 2 = 16个晶体管
+    \item \textbf{总计}：112 + 80 + 64 + 16 = \textbf{272个晶体管}
+\end{itemize}
+
+Adder2由于使用了部分FA16（20个晶体管/单元），相比Adder1（全FA28）节省了32个晶体管，面积减少约10.5\%。
+
+\subsection{延迟仿真结果与分析}
+
+表\ref{tab:task2_delay}展示了两种加法器链路的延迟测量结果。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task2 Adder1与Adder2延迟测量结果（单位：ps）}
+    \label{tab:task2_delay}
+    \begin{tabular}{lccc}
+    \toprule
+    路径 & $t_{\text{pLH}}$ & $t_{\text{pHL}}$ & $t_{\text{p}}$ \\
+    \midrule
+    \multicolumn{4}{c}{\textbf{Adder1（全FA28）}} \\
+    \midrule
+    $C_0 \rightarrow C_{\text{out}}$ & 97.84 & 107.10 & 102.50 \\
+    $C_0 \rightarrow S_7$ & 116.60 & 108.00 & 112.30 \\
+    \midrule
+    \multicolumn{4}{c}{\textbf{Adder2（FA28+FA16交替）}} \\
+    \midrule
+    $C_0 \rightarrow C_{\text{out}}$ & 96.63 & 122.20 & 109.40 \\
+    $C_0 \rightarrow S_7$ & 112.60 & 126.60 & 119.60 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{关键观察}：
+\begin{enumerate}
+    \item Adder1在$C_0 \rightarrow C_{\text{out}}$路径上的平均延迟（102.50ps）优于Adder2（109.40ps）
+    \item Adder1在$C_0 \rightarrow S_7$路径上的平均延迟（112.30ps）也优于Adder2（119.60ps）
+    \item 虽然FA16在单级上某些路径具有速度优势，但在8级链路中，FA28的整体稳定性使得全FA28设计（Adder1）在进位传播链路上表现更佳
+    \item Adder2的延迟不均衡性更明显（$t_{\text{pLH}}$与$t_{\text{pHL}}$差异较大），这是由于FA16和FA28混合使用导致的延迟不匹配
+\end{enumerate}
+
+\subsection{功耗仿真结果与分析}
+
+表\ref{tab:task2_power}展示了两种加法器在不同输入模式下的功耗测量结果。
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task2 Adder1与Adder2功耗测量结果（单位：$\mu$W）}
+    \label{tab:task2_power}
+    \begin{tabular}{lcc}
+    \toprule
+    输入模式 & Adder1（全FA28） & Adder2（FA28+FA16交替） \\
+    \midrule
+    Pattern 1 & 0.754 & 待测量 \\
+    Pattern 2 & 待测量 & 待测量 \\
+    Pattern 3 & 待测量 & 待测量 \\
+    Pattern 4 & 待测量 & 待测量 \\
+    \midrule
+    平均 & 待计算 & 待计算 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+注：完整的功耗数据需要从Task2对应的power文件夹中的所有pattern仿真结果中提取并计算平均值。
+
+%================================================================================
+% Conclusions
+%================================================================================
+\newpage
+\section{结论}
+
+通过本次实验，我们对16T全加器和28T全加器以及它们组成的8位加法器链路进行了全面的性能分析：
+
+\begin{enumerate}
+    \item \textbf{单级全加器性能}：
+    \begin{itemize}
+        \item FA16在平均延迟上略优于FA28（9.76ps vs 13.48ps），但延迟分布不均衡
+        \item FA28具有更均衡的延迟特性，各路径延迟差异较小
+        \item FA16的面积（20个晶体管）小于FA28（28个晶体管），面积节省约28.6\%
+    \end{itemize}
+    
+    \item \textbf{8位加法器链路性能}：
+    \begin{itemize}
+        \item 全FA28设计（Adder1）在进位传播路径上表现更优，延迟为102.50ps
+        \item FA28+FA16交替设计（Adder2）虽然节省了面积（272 vs 304个晶体管，减少10.5\%），但延迟增加到109.40ps
+        \item 在链路设计中，延迟均衡性和稳定性比单级速度优势更重要
+    \end{itemize}
+    
+    \item \textbf{设计权衡}：
+    \begin{itemize}
+        \item 若优先考虑性能，全FA28设计是更好的选择
+        \item 若优先考虑面积和功耗，可以考虑混合设计，但需要仔细权衡性能损失
+        \item 实际应用中需根据具体需求（性能、面积、功耗）选择合适的设计方案
+    \end{itemize}
+\end{enumerate}
+
+%================================================================================
+% Appendix
+%================================================================================
+\clearpage
+\appendix
+\section*{附录}
+\addcontentsline{toc}{section}{附录}
+
+\section{文件结构说明}
+
+本实验的HSPICE仿真脚本、Python自动化脚本及仿真结果文件的组织结构如下：
+
+\dirtree{%
+.1 Lab4/.
+.2 Task1/ : Task1相关文件.
+.3 FA16/ : 16T全加器测试文件.
+.4 delay/ : 延迟测试.
+.5 A\_000\_100\_S/ : A$\rightarrow$Sum延迟测试（初态000，末态100）.
+.6 FA16\_delay\_tb.sp : 延迟测试SPICE脚本.
+.5 A\_001\_101\_CO/ : A$\rightarrow$Cout延迟测试.
+.6 FA16\_delay\_tb.sp.
+.5 $\cdots$ : 其他18个延迟测试目录（各种输入组合）.
+.4 power/ : 功耗测试.
+.5 FA16\_tb.sp : 功耗测试SPICE脚本.
+.3 FA28/ : 28T全加器测试文件.
+.4 delay/ : 延迟测试（结构同FA16）.
+.5 $\cdots$ : 18个延迟测试目录.
+.4 power/ : 功耗测试.
+.5 FA28\_tb.sp : 功耗测试SPICE脚本.
+.3 generate\_sp.py : 批量生成延迟测试SPICE脚本.
+.3 run\_sp.py : 批量运行SPICE仿真.
+.3 parse\_delay.py : 解析延迟仿真结果并生成CSV.
+.3 delay\_summary.csv : 延迟测量汇总结果.
+.2 Task2/ : Task2相关文件.
+.3 Adder1/ : 8位全FA28加法器.
+.4 delay/ : 延迟测试.
+.5 adder1\_delay\_tb.sp : 延迟测试SPICE脚本.
+.5 adder1\_delay\_tb.csv : 延迟测试结果.
+.4 power/ : 功耗测试.
+.5 pattern1/ : 输入模式1.
+.6 adder1\_power\_tb.sp : 功耗测试SPICE脚本.
+.6 adder1\_power\_tb.csv : 功耗测试结果.
+.5 pattern2/ : 输入模式2.
+.6 $\cdots$.
+.5 pattern3/ : 输入模式3.
+.6 $\cdots$.
+.5 pattern4/ : 输入模式4.
+.6 $\cdots$.
+.3 Adder2/ : 8位FA28+FA16混合加法器.
+.4 delay/ : 延迟测试（结构同Adder1）.
+.5 adder2\_delay\_tb.sp.
+.5 adder2\_delay\_tb.csv.
+.4 power/ : 功耗测试（结构同Adder1）.
+.5 pattern1/ $\cdots$ pattern4/.
+.3 parser\_mt.py : 解析HSPICE .mt文件.
+.3 run\_sp.py : 批量运行SPICE仿真.
+.2 subckt.sp : 全加器子电路定义文件.
+.2 report.tex : 实验报告LaTeX源文件（本文件）.
+}
 
 \end{document}

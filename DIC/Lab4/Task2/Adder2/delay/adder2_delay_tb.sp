@@ -1,5 +1,5 @@
 *****************************************************
-* Lab4 - Task 1: Full Adder Simulation
+* Lab4 - Task 2: 8-bit Adder Simulation with FA28/FA16 and Buffers
 *****************************************************
 * global configuration
 .option post=2 RUNLVL = 6

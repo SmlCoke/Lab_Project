@@ -1,5 +1,5 @@
 *****************************************************
-* Lab4 - Task 1: Full Adder Simulation
+* Lab4 - Task 2: 8-bit Adder Simulation with FA28/FA16 and Buffers
 *****************************************************
 * global configuration
 .option post=2 RUNLVL = 6
@@ -93,10 +93,10 @@ VA4 A4 GND DC 'SUPPLY'
 VA5 A5 GND DC 'SUPPLY'
 VA6 A6 GND DC 'SUPPLY'
 VA7 A7 GND DC 'SUPPLY'
-VB7 B7 GND PULSE (0 'SUPPLY' 500p 50p 50p 950p 2n)
+VB7 B0 GND PULSE (0 'SUPPLY' 500p 50p 50p 950p 2n)
 
 * Circuit: Testbench for 8 bit Adder with FA28_with_buffer
-Xadder8 A0 A1 A2 A3 A4 A5 A6 A7 GND GND GND GND GND GND GND B7 GND Cout Sum0 Sum1 Sum2 Sum3 Sum4 Sum5 Sum6 Sum7 VDD VDD2 GND Adder8_1 Lg='Lg'
+Xadder8 A0 A1 A2 A3 A4 A5 A6 A7 B0 GND GND GND GND GND GND GND GND Cout Sum0 Sum1 Sum2 Sum3 Sum4 Sum5 Sum6 Sum7 VDD VDD2 GND Adder8_1 Lg='Lg'
 
 .tran 1p 5n
 .probe V(*) I(*)

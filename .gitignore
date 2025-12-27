@@ -59,3 +59,8 @@ hw*.pdf
 *.pptx
 *.docx
 *.xlsx
+
+*.zip
+*.rar
+*.7z
+*.tar.bz2

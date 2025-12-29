@@ -18,6 +18,7 @@ if __name__ == "__main__":
         B = C1_cm2s*np.exp(-E1/(k*T))
         B_A = C2_cm2s*np.exp(-E2/(k*T))
         A = B / B_A
+        print(f"系数A = {A:.8e} cm, B = {B:.8e} cm²/s")
         tau = (x0_cm**2 + A*x0_cm)/B
         print(f"偏移量 tau 为：{tau:.8f} 秒")
         print(f"即氧化初始厚度的时间为：{tau/3600:.8f} 小时")
